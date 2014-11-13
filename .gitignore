@@ -1,0 +1,14 @@
+*.h!
+*.map
+*.cof
+*.fct
+*.txt
+*.c!
+*.c~
+*.c_cbf
+*.hdr
+*.i
+Exe
+Linker
+List
+Obj
