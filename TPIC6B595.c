@@ -1,38 +1,28 @@
 #include "TPIC6B595.h"
 
-const int slaveSelectPin = 8;
+BSP_PORT slaveSelectPin = BSP_PIN_A0;
 
 void TPIC6B595_Setup(void){
-	// set the slaveSelectPin as an output:
-	pinMode (slaveSelectPin, OUTPUT);
+	
 	// initialize SPI:
-	SPI.begin();  
-    digitalWrite(slaveSelectPin,LOW);
+	bsp_pin_mode(TPIC6B595_STR_PIN, OUTPUT);
+	bsp_spi_setup();
+	bsp_io_write(TPIC6B595_STR_PIN, LOW);    
 }
 
 void TPIC6B595_SendData(int data) {
-  // take the SS pin low to select the chip:
-
-//  delay(10);
-  //  send in the address and value via SPI:
-  
-  SPI.transfer(data);
-
-  //delay(10);
-  // take the SS pin high to de-select the chip:
-//  digitalWrite(slaveSelectPin,HIGH); 
-  //delay(10);
-  
-//  digitalWrite(slaveSelectPin,LOW); 	
+	  
+	bsp_spi_send(data);  
 }
 
 void TPIC6B595_HideData(){
-  
-    digitalWrite(slaveSelectPin,LOW);
+	
+	bsp_io_write(TPIC6B595_STR_PIN, LOW);    
 }
 
 void TPIC6B595_ShowData(){
-      digitalWrite(slaveSelectPin,HIGH); 
-      delay(1);  
-      digitalWrite(slaveSelectPin,LOW); 
+	  
+	bsp_io_write(TPIC6B595_STR_PIN, HIGH);          
+	delay(1);  
+	bsp_io_write(TPIC6B595_STR_PIN, LOW);          
 }

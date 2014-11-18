@@ -1,4 +1,6 @@
 *.h!
+*.h~
+*.h_cbf
 *.map
 *.cof
 *.fct

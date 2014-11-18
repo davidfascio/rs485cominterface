@@ -8,8 +8,7 @@
 #define __TPIC6B595_H__
 
 
-#include "Arduino.h"
-#include <SPI.h>
+#include "bsp.h"
 /***********************************************************************
  
    Display 7 segments connection diagram
@@ -50,5 +49,32 @@ void TPIC6B595_SendData(int data);
 void TPIC6B595_HideData();
 void TPIC6B595_ShowData();
 
+
+#define TPIC6B595_STR_PIN  (BSP_PIN_A0)
+
+void TPIC6B595_Setup(void){
+	
+	// initialize SPI:
+	bsp_pin_mode(TPIC6B595_STR_PIN, OUTPUT);
+	bsp_spi_setup();
+	bsp_io_write(TPIC6B595_STR_PIN, LOW);    
+}
+
+void TPIC6B595_SendData(int data) {
+	  
+	bsp_spi_send(data);  
+}
+
+void TPIC6B595_HideData(){
+	
+	bsp_io_write(TPIC6B595_STR_PIN, LOW);    
+}
+
+void TPIC6B595_ShowData(){
+	  
+	bsp_io_write(TPIC6B595_STR_PIN, HIGH);          
+	bsp_delay_ms(1);  
+	bsp_io_write(TPIC6B595_STR_PIN, LOW);          
+}
 
 #endif /* __TPIC6B595_H__ */
