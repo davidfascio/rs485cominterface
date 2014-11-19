@@ -1,8 +1,9 @@
-/***********************************************************************
- * ScreenDisplay7Seg.h -- 
+/*
+ * File: ScreenDisplay7Seg.h
+ * Author: fascio
  * 
- * November 12th, 2014 4:21 pm
- ***********************************************************************/
+ * Created on November 12th, 2014, 16:21
+ */ 
  
 #ifndef __SCREEN_DISPLAY_7_SEG_H__
 #define __SCREEN_DISPLAY_7_SEG_H__

@@ -1,7 +1,9 @@
 /*
- *
- *  
- */
+ * File: bsp.h
+ * Author: fascio
+ * 
+ * Created on November 13th, 2014, 17:18
+ */ 
  
 #ifndef __BSP_H__
 #define __BSP_H__
@@ -29,14 +31,14 @@ typedef enum bsp_ports{
 }BSP_PORT;
 
 //**********************************************************************
-// BSP System Functions
+// BSP System Prototype Functions
 //**********************************************************************
 void bsp_setup(void);
 void bsp_delay_ms(int mscount);
 
 
 //**********************************************************************
-// BSP IO Functions
+// BSP IO Prototype Functions
 //**********************************************************************
 void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin);
 void bsp_io_write(BSP_PORT bsp_pin, int state_pin);
@@ -217,6 +219,8 @@ void bsp_spi_send(int data){
 //**********************************************************************
 // BSP USART Functions
 //**********************************************************************
+
+// BSP USART Defines  
 
 #define BSP_NO_ERROR_CODE											(0)
 #define BSP_USART_READ_DATA_LENGHT_ERROR_CODE						(-1)

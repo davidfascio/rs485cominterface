@@ -1,8 +1,9 @@
-/***********************************************************************
- * TPIC6B595.h -- Power Logic 8-BIT Shift Register Library
+/*
+ * File: TPIC6B595.h
+ * Author: fascio
  * 
- * November 12th, 2014 12:25 pm
- ***********************************************************************/ 
+ * Created on November 12th, 2014, 12:25
+ */ 
 
 #ifndef __TPIC6B595_H__
 #define __TPIC6B595_H__

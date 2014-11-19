@@ -1,8 +1,9 @@
-/***********************************************************************
- * Display7Seg.h -- 
+/*
+ * File: Display7Seg.h
+ * Author: fascio
  * 
- * November 12th, 2014 12:25 pm
- ***********************************************************************/ 
+ * Created on November 12th, 2014, 12:25
+ */ 
 
 #ifndef __DISPLAY_7_SEG_H__
 #define __DISPLAY_7_SEG_H__
