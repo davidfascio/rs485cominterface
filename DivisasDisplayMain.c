@@ -40,9 +40,14 @@ int index;
 
 void main(void)
 {
+	char texto [] = "Hola Mundo\n";
+	int texto_size = sizeof(texto);
+	
 	float datademo;	
 	
 	bsp_setup();
+	bsp_usart_setup();
+	
 	bsp_pin_mode(BSP_PIN_A0,OUTPUT);
 	ScreenDispla7Seg_Setup(&screendisplay7segdemo, 0.0,  display7segbufferdemo, DISPLAY_7_SEG_BUFFER_SIZE_DEMO);
 	
@@ -51,6 +56,7 @@ void main(void)
 	while(datademo < 1000.0){
 		ScreenDispla7Seg_UpdateData(&screendisplay7segdemo, datademo);
         datademo = datademo + 0.001;              
+        bsp_usart_write(texto, texto_size);
 		bsp_delay_ms(1000);
 	}
 }

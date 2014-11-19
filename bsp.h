@@ -1,3 +1,8 @@
+/*
+ *
+ *  
+ */
+ 
 #ifndef __BSP_H__
 #define __BSP_H__
 
@@ -23,28 +28,51 @@ typedef enum bsp_ports{
 	BSP_PIN_A0	
 }BSP_PORT;
 
+//**********************************************************************
+// BSP System Functions
+//**********************************************************************
 void bsp_setup(void);
+void bsp_delay_ms(int mscount);
+
 
 //**********************************************************************
 // BSP IO Functions
 //**********************************************************************
-
 void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin);
 void bsp_io_write(BSP_PORT bsp_pin, int state_pin);
-void bsp_delay_ms(int mscount);
 
 
 //**********************************************************************
 // BSP SPI Functions
 //**********************************************************************
-
 void bsp_spi_setup(void);
 void bsp_spi_send(int data);
 
 
-////////////////////////////////////////////////////////////////////////
+//**********************************************************************
+// BSP USART Functions
+//**********************************************************************
+void bsp_usart_setup(void);
+void bsp_usart_putc(char data);
+char bsp_usart_getc(void);
+int  bsp_usart_status(void);
+int bsp_usart_fstatus(void);
+void bsp_usart_flush(void);
+int bsp_usart_write(char * data, int data_lenght);
+int bsp_usart_read(char * data, int data_lenght);
 
 
+/***********************************************************************
+ *
+ * File name: BSP.C 
+ *
+ * #include "bsp.h"
+ *
+ **********************************************************************/
+
+//**********************************************************************
+// BSP System Functions
+//**********************************************************************
 void bsp_setup(void){
 	// Declare your local variables here
 
@@ -132,6 +160,11 @@ void bsp_setup(void){
 	SFIOR=0x00;
 }
 
+void bsp_delay_ms(int mscount){
+	
+    delay_ms(mscount);
+}
+
 //**********************************************************************
 // BSP IO Functions
 //**********************************************************************
@@ -181,7 +214,217 @@ void bsp_spi_send(int data){
 }
 
 
-void bsp_delay_ms(int mscount){
-    delay_ms(mscount);
+//**********************************************************************
+// BSP USART Functions
+//**********************************************************************
+
+#define BSP_NO_ERROR_CODE											(0)
+#define BSP_USART_READ_DATA_LENGHT_ERROR_CODE						(-1)
+#define BSP_USART_WRITE_DATA_LENGHT_ERROR_CODE						(-2)
+
+#define RXB8 														(1)
+#define TXB8 														(0)
+#define UPE 														(2)
+#define OVR 														(3)
+#define FE 															(4)
+#define UDRE 														(5)
+#define RXC 														(7)
+
+#define FRAMING_ERROR 											(1<<FE)
+#define PARITY_ERROR 											(1<<UPE)
+#define DATA_OVERRUN 											(1<<OVR)
+#define DATA_REGISTER_EMPTY 									(1<<UDRE)
+#define RX_COMPLETE 											(1<<RXC)
+
+// USART Receiver buffer
+#define RX_BUFFER_SIZE 												(128)
+char rx_buffer[RX_BUFFER_SIZE];
+
+#if RX_BUFFER_SIZE < (256)
+	unsigned char rx_wr_index,rx_rd_index,rx_counter;
+#else
+	unsigned int rx_wr_index,rx_rd_index,rx_counter;
+#endif
+
+// This flag is set on USART Receiver buffer overflow
+bit rx_buffer_overflow;
+
+// USART Receiver interrupt service routine
+interrupt [USART_RXC] void usart_rx_isr(void)
+{
+	char status,data;
+	status=UCSRA;
+	data=UDR;
+	if ((status & (FRAMING_ERROR | PARITY_ERROR | DATA_OVERRUN))==0)
+	{
+		rx_buffer[rx_wr_index]=data;
+		
+		if (++rx_wr_index == RX_BUFFER_SIZE) 
+			rx_wr_index=0;
+			
+		if (++rx_counter == RX_BUFFER_SIZE)
+		{
+			rx_counter=0;
+			rx_buffer_overflow=1;
+		}
+	}
 }
+
+#ifndef _DEBUG_TERMINAL_IO_
+	// Get a character from the USART Receiver buffer
+	#define _ALTERNATE_GETCHAR_
+	
+	#pragma used+
+
+	char getchar(void)
+	{
+		char data;
+		
+		while (rx_counter==0);
+		
+		data=rx_buffer[rx_rd_index];
+		if (++rx_rd_index == RX_BUFFER_SIZE) 
+			rx_rd_index=0;
+			
+		#asm("cli")
+		--rx_counter;
+		#asm("sei")
+		
+		return data;
+	}
+	
+	#pragma used-
+	
+#endif
+
+// USART Transmitter buffer
+#define TX_BUFFER_SIZE 												(128)
+char tx_buffer[TX_BUFFER_SIZE];
+
+#if TX_BUFFER_SIZE < (256)
+	unsigned char tx_wr_index,tx_rd_index,tx_counter;
+#else
+	unsigned int tx_wr_index,tx_rd_index,tx_counter;
+#endif
+
+// This flag is set on USART Transmitter buffer 
+bit tx_buffer_flush;
+
+// USART Transmitter interrupt service routine
+interrupt [USART_TXC] void usart_tx_isr(void)
+{
+	if (tx_counter)
+	{
+		--tx_counter;
+		UDR=tx_buffer[tx_rd_index];
+		
+		if (++tx_rd_index == TX_BUFFER_SIZE) 
+			tx_rd_index=0;
+	}
+	
+	tx_buffer_flush = 1;
+}
+
+#ifndef _DEBUG_TERMINAL_IO_
+	// Write a character to the USART Transmitter buffer
+	#define _ALTERNATE_PUTCHAR_
+
+	#pragma used+
+
+	void putchar(char c)
+	{
+		while (tx_counter == TX_BUFFER_SIZE);
+		
+		tx_buffer_flush = 0;
+		#asm("cli")
+		
+		if (tx_counter || ((UCSRA & DATA_REGISTER_EMPTY)==0))
+		{
+			tx_buffer[tx_wr_index]=c;
+			
+			if (++tx_wr_index == TX_BUFFER_SIZE) 
+				tx_wr_index=0;
+				
+			++tx_counter;
+		}
+		else
+		   UDR=c;
+		   
+		#asm("sei")
+	}
+	
+	#pragma used-
+	
+#endif
+
+
+void bsp_usart_setup(void){
+	
+	// USART initialization
+	// Communication Parameters: 8 Data, 1 Stop, No Parity
+	// USART Receiver: On
+	// USART Transmitter: On
+	// USART Mode: Asynchronous
+	// USART Baud Rate: 9600
+	UCSRA=0x00;
+	UCSRB=0xD8;
+	UCSRC=0x86;
+	UBRRH=0x00;
+	UBRRL=0x33;
+	
+	// Global enable interrupts
+	#asm("sei")
+}
+
+void bsp_usart_putc(char data){
+	
+	putchar(data);
+}
+
+char bsp_usart_getc(void){
+	
+	return getchar();	
+}
+
+int  bsp_usart_status(void){
+	
+	return rx_counter;
+}
+
+int bsp_usart_fstatus(void){
+	
+	return tx_buffer_flush;
+}
+
+void bsp_usart_flush(void){
+	
+	// Do nothing
+}
+
+int bsp_usart_write(char * data, int data_lenght){
+	
+	int usart_index;
+
+	if(data_lenght > (TX_BUFFER_SIZE - tx_counter))
+		return BSP_USART_WRITE_DATA_LENGHT_ERROR_CODE;
+		
+	for(usart_index = 0; usart_index < data_lenght; usart_index++)
+		bsp_usart_putc(data[usart_index]);
+		
+	return BSP_NO_ERROR_CODE;	
+}
+
+int bsp_usart_read(char * data, int data_lenght){
+	
+	int usart_index;
+	
+	if(data_lenght > bsp_usart_status())
+		return BSP_USART_READ_DATA_LENGHT_ERROR_CODE;
+	
+	for(usart_index = 0; usart_index < data_lenght; usart_index++)
+		data[usart_index] = bsp_usart_getc();
+		
+	return BSP_NO_ERROR_CODE;
+}
+
 #endif /* __BSP_H__ */
