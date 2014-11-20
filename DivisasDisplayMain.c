@@ -26,6 +26,7 @@ Data Stack size     : 128
 // SPI functions
 
 #include "ScreenDisplay7Seg.h"
+#include "Com485Protocol.h"
 
 
 // set pin 10 as the slave select for the digital pot:

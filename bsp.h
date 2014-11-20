@@ -428,7 +428,7 @@ int bsp_usart_read(char * data, int data_lenght){
 	for(usart_index = 0; usart_index < data_lenght; usart_index++)
 		data[usart_index] = bsp_usart_getc();
 		
-	return BSP_NO_ERROR_CODE;
+	return data_lenght;
 }
 
 #endif /* __BSP_H__ */
