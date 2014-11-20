@@ -19,51 +19,51 @@
 
 // High Level Defines
 #ifndef COM_485_PROTOCOL_RX_WINDOW_SIZE   
-#define COM_485_PROTOCOL_RX_WINDOW_SIZE 										(20)
+#define COM_485_PROTOCOL_RX_WINDOW_SIZE 								(20)
 #endif
 
 #ifndef RTCS_ERROR
-#define RTCS_ERROR 																					(-1)
+#define RTCS_ERROR 														(-1)
 #endif
 
 #ifndef RTCS_NO_ERROR
-#define RTCS_NO_ERROR 																				(0)
+#define RTCS_NO_ERROR 													(0)
 #endif
 
 #ifndef COM_485_PROTOCOL_PACKET_RECEIVED
-#define COM_485_PROTOCOL_PACKET_RECEIVED 										(1)
+#define COM_485_PROTOCOL_PACKET_RECEIVED 								(1)
 #endif
 
 #ifndef COM_485_PROTOCOL_PACKET_SENT
-#define COM_485_PROTOCOL_PACKET_SENT 											(1)
+#define COM_485_PROTOCOL_PACKET_SENT 									(1)
 #endif
 
-#define COM_485_PROTOCOL_DO_NOT_SEND_DATA_PACKET	(0)
-#define COM_485_PROTOCOL_DO_NOT_WAIT_DATA_PACKET	(0)
+#define COM_485_PROTOCOL_DO_NOT_SEND_DATA_PACKET						(0)
+#define COM_485_PROTOCOL_DO_NOT_WAIT_DATA_PACKET						(0)
 
-#define COM_485_PROTOCOL_MAX_TIME_OUT_LOOPS		(500)
+#define COM_485_PROTOCOL_MAX_TIME_OUT_LOOPS								(500)
 
 
-#define COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY				(1)
-#define COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DEFAULT_RETIES			(3)
+#define COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY	(1)
+#define COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DEFAULT_RETIES	(3)
 
 // Error Code Defines
-#define COM_485_PROTOCOL_DATA_PACKET_ARRIVED										(1)
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_BAD_PARAMETERS					(-50)
+#define COM_485_PROTOCOL_DATA_PACKET_ARRIVED							(1)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_BAD_PARAMETERS		(-50)
 #define COM_485_PROTOCOL_PACKET_RECEIVED_IS_LARGER_THAN_RECV_BUFFER		(-51)
 #define COM_485_PROTOCOL_PACKET_RECEIVED_UNEXPECTED_ID_COMMAND_RECEIVED	(-52)
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_TIMEOUT_OCCURRED				(-53)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_TIMEOUT_OCCURRED	(-53)
 #define COM_485_PROTOCOL_PACKET_RECEIVED_DOES_NOT_HAVE_LAST_CHAR		(-54)
 
 // Protocol Defines
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE								sizeof(int) 	// (2)
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE							sizeof(int) 	// (2)
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE						sizeof(char) 	// (1)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE					sizeof(int) 	// (2)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE				sizeof(int) 	// (2)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE			sizeof(char) 	// (1)
 
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD								(COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD					(COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE)
 
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR								0XFF
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_MAX_DATA_LEN							(TX_BUFFER_SIZE - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR					0XFF
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_MAX_DATA_LEN				(TX_BUFFER_SIZE - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD)
 
 
 //**********************************************************************
@@ -80,7 +80,7 @@ typedef struct Com485InterfaceProtocolStruct
 	int		CommandIdInPacketReceived;
 	char * 	DataInPacketReceived;
 	int		DataInPacketReceivedLen;
-	boolean		DataPacketArrived;		
+	boolean	DataPacketArrived;		
 	int		WaitDataPacketTimeOutLoopCntr;	
 } COM_485_PROTOCOL_CONTROL_STRUCT, * COM_485_PROTOCOL_CONTROL_STRUCT_PTR_;
 
@@ -430,7 +430,7 @@ int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
 		    (CommandIDReceived == TRUE) &&
 		    (Com485InterfaceProtocol_GetTotalDataArrived(Com485InterfaceProtocolControl) >= DataLenExpected)) {
 				
-			LastChar = ( char *) (Com485InterfaceProtocol_GetRecvBuffer(Com485InterfaceProtocolControl) + (DataLenExpected - 1));//SocketClientCOMControl.RecvBufferPtr - 1;
+			LastChar = ( char *) (Com485InterfaceProtocol_GetRecvBuffer(Com485InterfaceProtocolControl) + (DataLenExpected - 1));
 			
 			if(*LastChar == COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR)
 			{
@@ -472,12 +472,9 @@ int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
 int Com485InterfaceProtocol_SendDataPackWaitForResponse(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int CommandId, char * PacketData, int PacketDataLen, 
 														int ResponseCommandId, int WaitTimeOutSec, int Retries){
 															
-	//int_32 SocketClientrecvRslt = 0;
 	int SendRslt = 0;
 	int RetiresCounter = 0;
-	//unsigned char LastChar = COM_PROTOCOLL_CONFIG_DATA_PACKET_FINISH_CHAR;
-	
-	
+		
 	if(CommandId!=0)
 	{				
 		if((PacketDataLen == 0)||(PacketDataLen > COM_485_PROTOCOL_CONFIG_DATA_PACKET_MAX_DATA_LEN))	
