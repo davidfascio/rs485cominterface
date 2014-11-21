@@ -48,6 +48,7 @@ COM_485_PROTOCOL_CONTROL_STRUCT ScreenDisplayProtocolControl;
 void ScreenDisplayProtocol_Setup(void){
 	
 	Com485InterfaceProtocol_Setup(&ScreenDisplayProtocolControl, BSP_USART_COM_HDLR);
+	ScreenDisplayCommands_Setup();
 }
 
 void ScreenDisplayProtocol_WaitDataPacketCheck(void){
@@ -64,15 +65,13 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 	int DataPacketSize;
 	char * cpPacketData;
 	
+	COMMAND_RESPONSE_STRUCT CommandResponseControl;
+	int CommandIdResponse;
+	int CommandErrorCodeResponse;
+	
 	if(ComInterfaceProtocolsPacketArrived(&ScreenDisplayProtocolControl)) 
   {
-    int_32 result = 0;
-    int_32 resultInverted=0;
-    
-    uint_32 ulRelaysSatus = 0;
-    uint_32 ulRelaysExpSatus = 0;
-
-    
+        
     Handler = Com485InterfaceProtocol_GetComHndlr(&ScreenDisplayProtocolControl);
         
     TotalDataSize = Com485InterfaceProtocol_GetTotalDataArrived(&ScreenDisplayProtocolControl);
@@ -85,8 +84,22 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
     
     DataPacketSize = Com485InterfaceProtocol_GetDataInPacketReceivedLen(&ScreenDisplayProtocolControl);
         
-    CommandID = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);
-    Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, CommandID , cpPacketData, PacketDataLen, ResponseCommandId, WaitTimeOutSec, Retries);
+    CommandResponseControl = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);
+    
+    CommandIdResponse = ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl);
+    
+    if(CommandIdResponse != SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID){
+		
+		CommandErrorCodeResponse = ScreenDisplayCommands_GetCommandErrorCodeResponse(&CommandResponseControl);
+		
+		Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, 
+															CommandIdResponse , 
+															(char *) & CommandErrorCodeResponse, 
+															sizeof(CommandErrorCodeResponse), 
+															SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID, 
+															COM_485_PROTOCOL_DO_NOT_WAIT_DATA_PACKET, 
+															COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY);
+	}
 		
 	Com485InterfaceProtocol_SetDataPacketArrived(&ScreenDisplayProtocolControl, FALSE);
   

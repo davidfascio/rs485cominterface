@@ -127,7 +127,7 @@ Column11=18
 State11=2
 TimeStamp11=1165262024
 [Compiler]
-RebuildAll=0
+RebuildAll=1
 LinkageInformationPresent=1
 Chip=ATmega8535
 CPUClock=4000000
@@ -211,7 +211,7 @@ WarningCOFFArrayDim=1
 WarningCOFFDataComplex=1
 LinkerWarnings=1
 DebugBootLoader=0
-Build=70
+Build=71
 UseEEPROMLocation0=1
 [Assembler]
 OutputFormat=1
