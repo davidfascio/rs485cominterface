@@ -67,6 +67,9 @@ void ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, flo
 	
 	//if(ScreenDispla7Seg_GetData(screendisplay7seg) == data)
 	//	return;
+	
+	//! Special Messages HERE
+	
 	if(ScreenDispla7Seg_FloatParseToScreenDisplay(screendisplay7seg, data) != SCREEN_DISPLAY_7_SEG_NO_ERROR_CODE)
 		return;
 	

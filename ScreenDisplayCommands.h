@@ -33,7 +33,7 @@ typedef struct command_result_struct{
 	int commandErrorCodeResponse;
 } COMMAND_RESPONSE_STRUCT, * COMMAND_RESPONSE_STRUCT_PTR_;
 
-typedef (COMMAND_RESPONSE_STRUCT )  (* SCREEN_DISPLAY_COMMANDS_FUNCTION )(int commandId, char * data, int dataSize);
+typedef COMMAND_RESPONSE_STRUCT  (* SCREEN_DISPLAY_COMMANDS_FUNCTION )(int commandId, char * data, int dataSize);
 
 //**********************************************************************
 // Setters and Getters Prototype Functions
@@ -44,7 +44,7 @@ int ScreenDisplayCommands_GetCommandIdResponse(COMMAND_RESPONSE_STRUCT_PTR_ Comm
 void ScreenDisplayCommands_SetCommandErrorCodeResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl, int commandErrorCodeResponse);
 int ScreenDisplayCommands_GetCommandErrorCodeResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl);
 
-void ScreenDisplayCommands_Setup(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl);
+void ScreenDisplayCommands_CommandResponseSetup(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl);
 
 //**********************************************************************
 // API Prototype Fucntions
@@ -89,7 +89,7 @@ int ScreenDisplayCommands_GetCommandErrorCodeResponse(COMMAND_RESPONSE_STRUCT_PT
 	return CommandIdResponseControl->commandErrorCodeResponse;
 }
 
-void ScreenDisplayCommands_Setup(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl){
+void ScreenDisplayCommands_CommandResponseSetup(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl){
 	
 	memset(CommandIdResponseControl, 0, sizeof(COMMAND_RESPONSE_STRUCT));	
 }
@@ -120,12 +120,12 @@ COMMAND_RESPONSE_STRUCT  ScreenDisplayCommands_ExecCommand(int commandId, char *
 	int index;
 	COMMAND_RESPONSE_STRUCT CommandResponseControl;
 	
-	ScreenDisplayCommands_Setup(&CommandResponseControl);
+	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);
 	
 	while(ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl) == SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID &&
 			index < ScreenDisplayComands_NumberOfCommandFunctions) {
 		
-		CommadResponseControl = ScreenDisplayComands_CommandFunction[index](commandId, data, dataSize);
+		CommandResponseControl = ScreenDisplayComands_CommandFunction[index](commandId, data, dataSize);
 	}
 	
 	return CommandResponseControl;

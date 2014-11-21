@@ -257,6 +257,9 @@ void Com485InterfaceProtocol_Setup(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485In
 	
 	memset(Com485InterfaceProtocolControl, 0, sizeof(COM_485_PROTOCOL_CONTROL_STRUCT));
 	Com485InterfaceProtocol_SetComHndlr(Com485InterfaceProtocolControl, comHndlr);
+	
+	//! Com485Interface_setup();
+	bsp_usart_setup();
 }
 
 void Com485InterfaceProtocol_RecvBufferReset(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl){
@@ -285,6 +288,7 @@ int Com485InterfaceProtocol_ReceiveData(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com
 	
 	int recvrslt;
 	
+	//! recvrslt = Com485Interface_read();
 	recvrslt = bsp_usart_read(DataReceiveBuffer, DataLen);
 		
 	if(recvrslt <= 0 )
@@ -297,6 +301,7 @@ int Com485InterfaceProtocol_SendData(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485
 	
 	int sendrslt;
 	
+	//! sendrslt = Com485Interface_write(DataToSend, DataLen);
 	sendrslt = bsp_usart_write(DataToSend, DataLen);
 		
 	if(sendrslt != RTCS_NO_ERROR)

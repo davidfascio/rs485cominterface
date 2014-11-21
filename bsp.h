@@ -27,7 +27,8 @@
 // BSP Data Types
 //**********************************************************************
 typedef enum bsp_ports{
-	BSP_PIN_A0	
+	BSP_PIN_A0,
+	BSP_PIN_A1
 }BSP_PORT;
 
 //**********************************************************************
@@ -177,6 +178,10 @@ void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin){
 			DDRA.0 = dir_pin ; /*DDRA |(dir_pin << 0x00);*/
 			break;
 			
+		case BSP_PIN_A1:
+			DDRA.1 = dir_pin ; /*DDRA |(dir_pin << 0x00);*/
+			break;
+			
 		default:
 			break;			
 	}	
@@ -187,6 +192,10 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 	switch(bsp_pin){
 		case BSP_PIN_A0:
 			PORTA.0 = state_pin;
+			break;
+		
+		case BSP_PIN_A1:
+			PORTA.1 = state_pin;
 			break;
 			
 		default:
@@ -221,6 +230,7 @@ void bsp_spi_send(int data){
 //**********************************************************************
 
 // BSP USART Defines  
+#define BSP_USART_COM_HDLR											(1)	
 
 #define BSP_NO_ERROR_CODE											(0)
 #define BSP_USART_READ_DATA_LENGHT_ERROR_CODE						(-1)

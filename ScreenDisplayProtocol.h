@@ -24,10 +24,13 @@
 //**********************************************************************
 
 void ScreenDisplayProtocol_Setup(void);
-void ScreenDisplayProtocol_Update(void);
+//void ScreenDisplayProtocol_Update(void);
 
 void ScreenDisplayProtocol_WaitDataPacketCheck(void);
-void ScreenDisplayProtocol_DataPacketArrivedCheck(void);
+
+void ScreenDisplayProtocol_ProcessingDataPacketArrived(void);
+
+void SEND_DEMO(void);
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -69,41 +72,52 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 	int CommandIdResponse;
 	int CommandErrorCodeResponse;
 	
-	if(ComInterfaceProtocolsPacketArrived(&ScreenDisplayProtocolControl)) 
-  {
+	if(Com485InterfaceProtocol_GetDataPacketArrived(&ScreenDisplayProtocolControl)) 
+	{
         
-    Handler = Com485InterfaceProtocol_GetComHndlr(&ScreenDisplayProtocolControl);
-        
-    TotalDataSize = Com485InterfaceProtocol_GetTotalDataArrived(&ScreenDisplayProtocolControl);
-        
-    PacketSize = Com485InterfaceProtocol_GetPacketLength(&ScreenDisplayProtocolControl);
-        
-    CommandID = Com485InterfaceProtocol_GetCommandIdInPacketReceived(&ScreenDisplayProtocolControl);
-        
-    cpPacketData = Com485InterfaceProtocol_GetDataInPacketReceived(&ScreenDisplayProtocolControl);
-    
-    DataPacketSize = Com485InterfaceProtocol_GetDataInPacketReceivedLen(&ScreenDisplayProtocolControl);
-        
-    CommandResponseControl = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);
-    
-    CommandIdResponse = ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl);
-    
-    if(CommandIdResponse != SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID){
+		Handler = Com485InterfaceProtocol_GetComHndlr(&ScreenDisplayProtocolControl);
+			
+		TotalDataSize = Com485InterfaceProtocol_GetTotalDataArrived(&ScreenDisplayProtocolControl);
+			
+		PacketSize = Com485InterfaceProtocol_GetPacketLength(&ScreenDisplayProtocolControl);
+			
+		CommandID = Com485InterfaceProtocol_GetCommandIdInPacketReceived(&ScreenDisplayProtocolControl);
+			
+		cpPacketData = Com485InterfaceProtocol_GetDataInPacketReceived(&ScreenDisplayProtocolControl);
 		
-		CommandErrorCodeResponse = ScreenDisplayCommands_GetCommandErrorCodeResponse(&CommandResponseControl);
+		DataPacketSize = Com485InterfaceProtocol_GetDataInPacketReceivedLen(&ScreenDisplayProtocolControl);
+			
+		CommandResponseControl = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);
 		
-		Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, 
-															CommandIdResponse , 
-															(char *) & CommandErrorCodeResponse, 
-															sizeof(CommandErrorCodeResponse), 
-															SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID, 
-															COM_485_PROTOCOL_DO_NOT_WAIT_DATA_PACKET, 
-															COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY);
+		CommandIdResponse = ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl);
+		
+		if(CommandIdResponse != SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID){
+			
+			CommandErrorCodeResponse = ScreenDisplayCommands_GetCommandErrorCodeResponse(&CommandResponseControl);
+			
+			Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, 
+																CommandIdResponse , 
+																(char *) & CommandErrorCodeResponse, 
+																sizeof(CommandErrorCodeResponse), 
+																SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID, 
+																COM_485_PROTOCOL_DO_NOT_WAIT_DATA_PACKET, 
+																COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY);
+		}
+			
+		Com485InterfaceProtocol_SetDataPacketArrived(&ScreenDisplayProtocolControl, FALSE);	
 	}
-		
-	Com485InterfaceProtocol_SetDataPacketArrived(&ScreenDisplayProtocolControl, FALSE);
-  
-	
 }
 
+void SEND_DEMO(void){
+	int CommandIdResponse = 1001;
+	int CommandErrorCodeResponse = 1;
+	
+	Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, 
+																CommandIdResponse , 
+																(char *) & CommandErrorCodeResponse, 
+																sizeof(CommandErrorCodeResponse), 
+																SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID, 
+																COM_485_PROTOCOL_DO_NOT_WAIT_DATA_PACKET, 
+																COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY);
+}
 #endif /* __SCREEN_DISPLAY_PROTOCOL_H__ */
