@@ -58,7 +58,7 @@
 // Protocol Defines
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE					sizeof(int) 	// (2)
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE				sizeof(int) 	// (2)
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE			sizeof(char) 	// (1)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE			(1)//sizeof(char) 	// (1)
 
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD					(COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE)
 
@@ -136,7 +136,8 @@ int Com485InterfaceProtocol_SendDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
 int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int WaitTimeOutSeconds);
 int Com485InterfaceProtocol_SendDataPackWaitForResponse(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int CommandId, char * PacketData, int PacketDataLen, 
 														int ResponseCommandId, int WaitTimeOutSec, int Retries);
-														
+
+void COM485DEMO(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int dato);														
 ////////////////////////////////////////////////////////////////////////
 //
 // File name: Com485InterfaceProtocol.c
@@ -313,14 +314,17 @@ int Com485InterfaceProtocol_SendData(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485
 int Com485InterfaceProtocol_SendDataPackHdr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int DataLen, int CommandID){
 	
 	int sendrslt;
-	int packetsize = DataLen + COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE;
-	char headerbuff[ COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE];
+	volatile int packetsize = 0;
+	volatile char headerbuff[ COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE];
+	
 	
 	if(DataLen > COM_485_PROTOCOL_CONFIG_DATA_PACKET_MAX_DATA_LEN)	
 		return COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_BAD_PARAMETERS;
+		
+	packetsize = DataLen + COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE;
 	
-	memcpy(headerbuff, (char *) &packetsize, COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE);
-	memcpy(headerbuff + COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE, (char *) &CommandID, COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE);
+	memcpy(headerbuff, (char *) & packetsize, COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE);
+	memcpy((headerbuff + COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE), (char *) &CommandID, COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE);
 	
 	sendrslt = Com485InterfaceProtocol_SendData(Com485InterfaceProtocolControl, Com485InterfaceProtocol_GetComHndlr(Com485InterfaceProtocolControl), headerbuff, sizeof(headerbuff) );
 	
@@ -330,7 +334,7 @@ int Com485InterfaceProtocol_SendDataPackHdr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_
 int Com485InterfaceProtocol_SendDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int CommandId, char * PacketData, int PacketDataLen){
 
 	int sendrslt;
-	char lastchar = COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR;
+	volatile char lastchar = COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR;
 	
 	if( PacketDataLen == 0 || PacketDataLen > COM_485_PROTOCOL_CONFIG_DATA_PACKET_MAX_DATA_LEN)	
 		return COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_BAD_PARAMETERS;
@@ -343,7 +347,7 @@ int Com485InterfaceProtocol_SendDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
 		
 		if(sendrslt == RTCS_NO_ERROR){
 			
-			sendrslt = Com485InterfaceProtocol_SendData(Com485InterfaceProtocolControl, Com485InterfaceProtocol_GetComHndlr(Com485InterfaceProtocolControl), (char *) &lastchar, sizeof(lastchar));
+			sendrslt = Com485InterfaceProtocol_SendData(Com485InterfaceProtocolControl, Com485InterfaceProtocol_GetComHndlr(Com485InterfaceProtocolControl), (char *) &lastchar, COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE);
 		}		
 	}	
 	
@@ -517,5 +521,9 @@ int Com485InterfaceProtocol_SendDataPackWaitForResponse(COM_485_PROTOCOL_CONTROL
 	return COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_TIMEOUT_OCCURRED;															
 }
 
+void COM485DEMO(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int dato){	
+
+	Com485InterfaceProtocol_SendData(Com485InterfaceProtocolControl, Com485InterfaceProtocol_GetComHndlr(Com485InterfaceProtocolControl), (char *) &dato, sizeof(dato) );
+}
 
 #endif /* __COM_485_PROTOCOL_H__ */

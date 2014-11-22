@@ -95,13 +95,19 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 			
 			CommandErrorCodeResponse = ScreenDisplayCommands_GetCommandErrorCodeResponse(&CommandResponseControl);
 			
-			Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, 
+			Com485InterfaceProtocol_SendDataPacket(&ScreenDisplayProtocolControl, 
+																CommandIdResponse , 
+																(char *) & CommandErrorCodeResponse, 
+																sizeof(CommandErrorCodeResponse));
+			
+			/*Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, 
 																CommandIdResponse , 
 																(char *) & CommandErrorCodeResponse, 
 																sizeof(CommandErrorCodeResponse), 
 																SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID, 
 																COM_485_PROTOCOL_DO_NOT_WAIT_DATA_PACKET, 
 																COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY);
+			*/
 		}
 			
 		Com485InterfaceProtocol_SetDataPacketArrived(&ScreenDisplayProtocolControl, FALSE);	
@@ -109,15 +115,21 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 }
 
 void SEND_DEMO(void){
-	int CommandIdResponse = 1001;
-	int CommandErrorCodeResponse = 1;
 	
-	Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, 
+	volatile int CommandIdResponse = 2001;
+	volatile int CommandErrorCodeResponse = 1;
+	
+	/*Com485InterfaceProtocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, 
 																CommandIdResponse , 
 																(char *) & CommandErrorCodeResponse, 
 																sizeof(CommandErrorCodeResponse), 
 																SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID, 
 																COM_485_PROTOCOL_DO_NOT_WAIT_DATA_PACKET, 
-																COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY);
+																COM_485_PROTOCOL_SEND_DATA_PACKET_WAIT_RESPONSE_DO_NOT_RETRY);*/
+																
+	
+	Com485InterfaceProtocol_SendDataPacket(&ScreenDisplayProtocolControl,CommandIdResponse, (char *) & CommandErrorCodeResponse, sizeof(CommandErrorCodeResponse) );
+	
+	//COM485DEMO(&ScreenDisplayProtocolControl,  CommandErrorCodeResponse);
 }
 #endif /* __SCREEN_DISPLAY_PROTOCOL_H__ */

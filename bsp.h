@@ -362,7 +362,7 @@ interrupt [USART_TXC] void usart_tx_isr(void)
 			++tx_counter;
 		}
 		else
-		   UDR=c;
+		   UDR = c;
 		   
 		#asm("sei")
 	}
