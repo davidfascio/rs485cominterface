@@ -431,14 +431,20 @@ int bsp_usart_write(char * data, int data_lenght){
 int bsp_usart_read(char * data, int data_lenght){
 	
 	int usart_index;
+	int local_data_lenght = bsp_usart_status();
 	
-	if(data_lenght > bsp_usart_status())
-		return BSP_USART_READ_DATA_LENGHT_ERROR_CODE;
+	if(local_data_lenght > 0){
 	
-	for(usart_index = 0; usart_index < data_lenght; usart_index++)
-		data[usart_index] = bsp_usart_getc();
-		
-	return data_lenght;
+		if(local_data_lenght > data_lenght)
+			local_data_lenght = data_lenght;
+			
+		for(usart_index = 0; usart_index < local_data_lenght; usart_index++)
+			data[usart_index] = bsp_usart_getc();
+			
+		return local_data_lenght;
+	} 
+	
+	return 0;
 }
 
 #endif /* __BSP_H__ */

@@ -359,17 +359,21 @@ int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
 	int receiveBufferLen = 0;
 	int recvRslt = 0;
 	
-	boolean PacketLenReceived = FALSE;
-	boolean CommandIDReceived = FALSE;
-	boolean DataPacketReceived = FALSE;
+	volatile boolean PacketLenReceived = FALSE;
+	volatile boolean CommandIDReceived = FALSE;
+	volatile boolean DataPacketReceived = FALSE;
 	
-	int DataLenReceived = 0;
-	int DataLenExpected = COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE;
-	int CommandIDValueReceived = 0;
+	volatile int DataLenReceived = 0;
+	volatile int DataLenExpected = COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE;
+	volatile int CommandIDValueReceived = 0;
 	
 	char * CommandIdInPacket;
 	char * LastChar;
 	
+	//! DEBUG VARIABLES
+	char message [20];
+	int messagelen;
+	//! DEBUG VARIABLES
 	
 	if(Com485InterfaceProtocol_GetDataPacketArrived(Com485InterfaceProtocolControl) == TRUE)
 		return COM_485_PROTOCOL_DATA_PACKET_ARRIVED;
@@ -398,21 +402,40 @@ int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
 		recvRslt = Com485InterfaceProtocol_ReceiveData( Com485InterfaceProtocolControl,
 														Com485InterfaceProtocol_GetComHndlr(Com485InterfaceProtocolControl),
 														Com485InterfaceProtocol_GetRecvBufferPtr(Com485InterfaceProtocolControl),
-													    Com485InterfaceProtocol_GetRecvBufferSize(Com485InterfaceProtocolControl));
+													    receiveBufferLen);
+		/*//! DEBUG VARIABLES
+		memset(message,0,20);
+		sprintf(message, "recvRslt: %d\n", recvRslt);
+		messagelen = strlen(message);
+		bsp_usart_write(message, messagelen);		
+		//! DEBUG VARIABLES*/
 		
 		if(recvRslt <= 0)
 			return recvRslt;
 		
 		Com485InterfaceProtocol_SetRecvBufferPtr(Com485InterfaceProtocolControl, Com485InterfaceProtocol_GetRecvBufferPtr(Com485InterfaceProtocolControl) + recvRslt );
-		Com485InterfaceProtocol_SetTotalDataArrived(Com485InterfaceProtocolControl, recvRslt);
+		Com485InterfaceProtocol_SetTotalDataArrived(Com485InterfaceProtocolControl, Com485InterfaceProtocol_GetTotalDataArrived(Com485InterfaceProtocolControl) + recvRslt);
 		Com485InterfaceProtocol_SetWaitDataPacketTimeOutLoopCntr(Com485InterfaceProtocolControl, 0);
 		
+		/*//! DEBUG VARIABLES
+		memset(message,0,20);
+		sprintf(message, "TotalDataArrived: %d\n", Com485InterfaceProtocol_GetTotalDataArrived(Com485InterfaceProtocolControl));
+		messagelen = strlen(message);
+		bsp_usart_write(message, messagelen);		
+		//! DEBUG VARIABLES*/
 		
 		if( (PacketLenReceived == FALSE) && Com485InterfaceProtocol_GetTotalDataArrived(Com485InterfaceProtocolControl) >= COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE ) {
 			
 			memcpy((char *) &DataLenReceived, Com485InterfaceProtocol_GetRecvBuffer(Com485InterfaceProtocolControl), COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE);
 			
 			DataLenExpected = DataLenReceived + COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE;
+			
+			/*//! DEBUG VARIABLES
+			memset(message,0,20);
+			sprintf(message, "DataLenExpected: %d\n", DataLenExpected);
+			messagelen = strlen(message);
+			bsp_usart_write(message, messagelen);		
+			//! DEBUG VARIABLES*/
 			
 			if(DataLenExpected >= COM_485_PROTOCOL_RX_WINDOW_SIZE){
 				
@@ -431,15 +454,57 @@ int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
 			CommandIdInPacket = Com485InterfaceProtocol_GetRecvBuffer(Com485InterfaceProtocolControl) + COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE;
 			
 			memcpy((char*)&CommandIDValueReceived, CommandIdInPacket ,COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE);
-				
+			
 			CommandIDReceived = TRUE;
+			//! DEBUG VARIABLES
+			memset(message,0,20);
+			sprintf(message, "CommandIDValueReceived: %d\n", CommandIDValueReceived);
+			messagelen = strlen(message);
+			bsp_usart_write(message, messagelen);		
+			//! DEBUG VARIABLES
+				
+			//! DEBUG VARIABLES
+			memset(message,0,20);
+			sprintf(message, "CommandIDReceived: %d\n", CommandIDReceived);
+			messagelen = strlen(message);
+			bsp_usart_write(message, messagelen);		
+			//! DEBUG VARIABLES
+			
+			//! DEBUG VARIABLES
+			memset(message,0,20);
+			sprintf(message, "TotalDataArrived: %d\n", Com485InterfaceProtocol_GetTotalDataArrived(Com485InterfaceProtocolControl));
+			messagelen = strlen(message);
+			bsp_usart_write(message, messagelen);		
+			//! DEBUG VARIABLES
+			
+			//! DEBUG VARIABLES
+			memset(message,0,20);
+			sprintf(message, "DataLenExpected: %d\n", DataLenExpected);
+			messagelen = strlen(message);
+			bsp_usart_write(message, messagelen);		
+			//! DEBUG VARIABLES
+			
 		}
 		
 		if( (PacketLenReceived == TRUE) && 
 		    (CommandIDReceived == TRUE) &&
 		    (Com485InterfaceProtocol_GetTotalDataArrived(Com485InterfaceProtocolControl) >= DataLenExpected)) {
+			
+			//! DEBUG VARIABLES
+			memset(message,0,20);
+			sprintf(message, "AQUI\n");
+			messagelen = strlen(message);
+			bsp_usart_write(message, messagelen);		
+			//! DEBUG VARIABLES
 				
 			LastChar = ( char *) (Com485InterfaceProtocol_GetRecvBuffer(Com485InterfaceProtocolControl) + (DataLenExpected - 1));
+			
+			//! DEBUG VARIABLES
+			memset(message,0,20);
+			sprintf(message, "LastChar: %x\n", *LastChar);
+			messagelen = strlen(message);
+			bsp_usart_write(message, messagelen);		
+			//! DEBUG VARIABLES
 			
 			if(*LastChar == COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR)
 			{
@@ -469,7 +534,12 @@ int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
 																												
 		Com485InterfaceProtocol_SetDataInPacketReceivedLen(Com485InterfaceProtocolControl, DataLenExpected - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD);
 		Com485InterfaceProtocol_SetDataPacketArrived(Com485InterfaceProtocolControl, TRUE);	
-		
+		//!
+		//!Com485InterfaceProtocol_SendDataPacket(Com485InterfaceProtocolControl, 
+		//!Com485InterfaceProtocol_GetCommandIdInPacketReceived(Com485InterfaceProtocolControl) , /* CommandID*/
+		//!Com485InterfaceProtocol_GetDataInPacketReceived(Com485InterfaceProtocolControl), /* DataInPacketReceived*/ 
+		//!Com485InterfaceProtocol_GetDataInPacketReceivedLen(Com485InterfaceProtocolControl)); /* DataInPacketReceivedLen*/ 
+		//!
 		return COM_485_PROTOCOL_PACKET_RECEIVED;
 	}
 	
