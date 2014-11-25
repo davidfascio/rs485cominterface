@@ -92,7 +92,7 @@ void TPIC6B595_HideData(){
 void TPIC6B595_ShowData(){
 	  
 	bsp_io_write(TPIC6B595_STR_PIN, HIGH);          
-	bsp_delay_ms(1);  
+	bsp_delay_ms(10);  
 	bsp_io_write(TPIC6B595_STR_PIN, LOW);          
 }
 

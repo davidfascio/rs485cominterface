@@ -35,7 +35,7 @@ float ScreenDispla7Seg_GetData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg);
 DISPLAY_7_SEG_PTR ScreenDispla7Seg_GetDisplay7Seg(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg);
 
 void ScreenDispla7Seg_Setup(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data, int * display7segbuffer, int display7segbuffersize);
-void ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data);
+int ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data);
 int ScreenDispla7Seg_FloatParseToScreenDisplay(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data);
 
 int n_tu(int number, int count);
@@ -61,20 +61,27 @@ void ScreenDispla7Seg_Setup(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float da
 	
 	ScreenDispla7Seg_SetData(screendisplay7seg, data);
 	Display7Seg_Setup(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg), display7segbuffer, display7segbuffersize);
+	
+	//! Preinit
+	ScreenDispla7Seg_UpdateData(screendisplay7seg, data);
 }
 
-void ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data){
+int ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data){
 	
 	//if(ScreenDispla7Seg_GetData(screendisplay7seg) == data)
 	//	return;
-	
+	volatile int error_code;
 	//! Special Messages HERE
+	bsp_usart_write((char *) &data, sizeof(data));
+	error_code = ScreenDispla7Seg_FloatParseToScreenDisplay(screendisplay7seg, data);
 	
-	if(ScreenDispla7Seg_FloatParseToScreenDisplay(screendisplay7seg, data) != SCREEN_DISPLAY_7_SEG_NO_ERROR_CODE)
-		return;
+	if( error_code == SCREEN_DISPLAY_7_SEG_NO_ERROR_CODE){
+			
+		Display7Seg_SendBuffer(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));	
+		ScreenDispla7Seg_SetData(screendisplay7seg, data);	
+	}
 	
-	Display7Seg_SendBuffer(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));	
-	ScreenDispla7Seg_SetData(screendisplay7seg, data);	
+	return error_code;
 }
 
 int ScreenDispla7Seg_FloatParseToScreenDisplay(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data){

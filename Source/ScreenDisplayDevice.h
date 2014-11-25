@@ -30,7 +30,7 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void);
 // API Prototype Fucntions
 //**********************************************************************
 void ScreenDisplayDevice_Setup(void);
-void ScreenDisplayDevice_Update(float data);
+int ScreenDisplayDevice_Update(float data);
 
 //**********************************************************************
 // Command List Fucntions
@@ -42,6 +42,7 @@ void ScreenDisplayDevice_Update(float data);
 // More Information see ScreenDisplayCommands.h library
 //**********************************************************************
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_LEDStatus(int commandId, char * data, int dataSize);
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * data, int dataSize);
 
 int LEDStatus(int status);
 
@@ -81,12 +82,16 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void){
 //**********************************************************************
 void ScreenDisplayDevice_Setup(void){
 	
-	ScreenDispla7Seg_Setup(&ScreenDisplay7SegControl, 0.0,  ScreenDisplay7SegBuffer, ScreenDisplay7SegBufferLen);
-	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_LEDStatus);
+	ScreenDispla7Seg_Setup(&ScreenDisplay7SegControl, 1.63,  ScreenDisplay7SegBuffer, ScreenDisplay7SegBufferLen);
+	
+	/* Install Commands*/
+	//ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_LEDStatus);
+	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_UpdateValue);
+	
 }
 
-void ScreenDisplayDevice_Update(float data){
-	ScreenDispla7Seg_UpdateData(&ScreenDisplay7SegControl, data);
+int ScreenDisplayDevice_Update(float data){
+	return ScreenDispla7Seg_UpdateData(&ScreenDisplay7SegControl, data);
 }
 
 //**********************************************************************
@@ -127,6 +132,24 @@ int LEDStatus(int status){
 	}
 		
 	return status;
+}
+
+
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * data, int dataSize){
+	
+	COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	int commandErrorCodeResponse;
+	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);
+	
+	if((commandId == SCREEN_DISPLAY_DEVICE_MASTER_COMMAND_ID_FLOAT_VALUE_UPDATE) && 
+		dataSize == sizeof(float)) {
+		
+		ScreenDisplayCommands_SetCommandIdResponse(&CommandResponseControl, SCREEN_DISPLAY_DEVICE_SLAVE_COMMAND_ID_FLOAT_VALUE_UPDATE);
+		
+		commandErrorCodeResponse = ScreenDisplayDevice_Update((float) *data);
+		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
+	}
+	return	CommandResponseControl;		
 }
 
 #endif /* __SCREEN_DISPLAY_DEVICE_H__  */

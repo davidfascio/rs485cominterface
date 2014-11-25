@@ -17,3 +17,5 @@ Linker
 List
 Obj
 *.hci
+*.cbi
+*.cci
