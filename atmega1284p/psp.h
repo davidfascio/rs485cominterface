@@ -27,32 +27,11 @@ typedef char 	boolean;
 #define TRUE  														(1)
 #define FALSE  														(0)
 
+//#define NULL 												        (0)
+
 //**********************************************************************
 // Util Prototype Functions
 //**********************************************************************
 int meminvrtncpy(char * BufferDestination, char * BufferSource, long SizeOfBuffers);
-
-
-//**********************************************************************
-// Util Functions
-//**********************************************************************
-int meminvrtncpy(char * BufferDestination, char * BufferSource, long SizeOfBuffers)
-{
-	char * BufferSourcePointer;
-	if((BufferSource == NULL) || (BufferDestination == NULL) || (SizeOfBuffers <= 0))
-	return -1;
-	
-	
-	BufferSourcePointer = BufferSource + SizeOfBuffers - 1;
-	
-	while(BufferSourcePointer >= BufferSource)
-	{
-	    *BufferDestination = *BufferSourcePointer;
-		
-		BufferSourcePointer--;
-		BufferDestination++;
-	}
-	return 1;
-}
 
 #endif /* __PSP_H__ */

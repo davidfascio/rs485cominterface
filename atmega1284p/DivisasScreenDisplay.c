@@ -15,8 +15,7 @@
 // API Fucntions
 //**********************************************************************
 void main(void)
-{
-	float show_data = 0.0;
+{      	
 	//! SETUP
 	bsp_setup();    
 	ScreenDisplayProtocol_Setup();	
