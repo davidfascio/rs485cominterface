@@ -193,6 +193,22 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 	}		
 }
 
+void bsp_io_toggle(BSP_PORT bsp_pin){
+		
+	switch(bsp_pin){
+		case BSP_PIN_A0:
+			PORTA.0 ^= 1;			 
+			break;
+		
+		case BSP_PIN_A1:
+			PORTA.1 ^= 1;			 
+						
+		default:
+			break;			
+	}		
+	
+}
+
 //**********************************************************************
 // BSP SPI Functions
 //**********************************************************************
@@ -225,13 +241,17 @@ void bsp_spi_send(int data){
 char rx_buffer0[RX_BUFFER_SIZE0];
 
 #if RX_BUFFER_SIZE0 <= 256
-unsigned char rx_wr_index0,rx_rd_index0,rx_counter0;
+unsigned char rx_wr_index0 = 0;
+unsigned char rx_rd_index0 = 0;
+unsigned char rx_counter0 = 0;
 #else
-unsigned int rx_wr_index0,rx_rd_index0,rx_counter0;
+unsigned int rx_wr_index0 = 0;
+unsigned int rx_rd_index0 = 0;
+unsigned int rx_counter0 = 0;
 #endif
 
 // This flag is set on USART0 Receiver buffer overflow
-bit rx_buffer_overflow0;
+bit rx_buffer_overflow0 = 0;
 
 // USART0 Receiver interrupt service routine
 interrupt [USART0_RXC] void usart0_rx_isr(void)
@@ -296,16 +316,20 @@ interrupt [USART0_RXC] void usart0_rx_isr(void)
 #endif
 
 // This flag is set on USART Transmitter buffer 
-bit tx_buffer_flush;
+bit tx_buffer_flush = 0;
 
 // USART0 Transmitter buffer
 
 char tx_buffer0[TX_BUFFER_SIZE0];
 
 #if TX_BUFFER_SIZE0 <= 256
-unsigned char tx_wr_index0,tx_rd_index0,tx_counter0;
+unsigned char tx_wr_index0 = 0;
+unsigned char tx_rd_index0 = 0;
+unsigned char tx_counter0 = 0;
 #else
-unsigned int tx_wr_index0,tx_rd_index0,tx_counter0;
+unsigned int tx_wr_index0 =0;
+unsigned int tx_rd_index0 = 0;
+unsigned int tx_counter0 = 0;
 #endif
 
 // USART0 Transmitter interrupt service routine
@@ -426,7 +450,7 @@ int bsp_usart_write(char * data, int data_lenght){
 int bsp_usart_read(char * data, int data_lenght){
 	
 	int usart_index;
-	int local_data_lenght = bsp_usart_status();
+	volatile int local_data_lenght = bsp_usart_status();
 	
 	if(local_data_lenght > 0){
 	

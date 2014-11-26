@@ -46,6 +46,7 @@ void bsp_delay_ms(int mscount);
 //**********************************************************************
 void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin);
 void bsp_io_write(BSP_PORT bsp_pin, int state_pin);
+void bsp_io_toggle(BSP_PORT bsp_pin);
 
 
 //**********************************************************************

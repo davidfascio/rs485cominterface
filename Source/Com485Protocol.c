@@ -154,15 +154,15 @@ void ErrorInCom485InterfaceProtocolCommunication(COM_485_PROTOCOL_CONTROL_STRUCT
 // Verbose Function
 //void Com485InterfaceProtocol_DataPacketArrived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
 
-int Com485InterfaceProtocol_ReceiveData(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen){
+int Com485InterfaceProtocol_ReceiveData(int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen){
 	
 	int recvrslt;
 	
 	//! recvrslt = Com485Interface_read();
 	recvrslt = bsp_usart_read(DataReceiveBuffer, DataLen);
 		
-	if(recvrslt <= 0 )
-		ErrorInCom485InterfaceProtocolCommunication(Com485InterfaceProtocolControl);
+	//if(recvrslt <= 0 )
+	//	ErrorInCom485InterfaceProtocolCommunication(Com485InterfaceProtocolControl);
 		
 	return recvrslt;
 }
@@ -258,7 +258,7 @@ int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ 
    			SocketClientReceiveBufferLen = DataLenExpected;
    		}
    		
-   		SocketClientrecvRslt = Com485InterfaceProtocol_ReceiveData(Com485InterfaceProtocolControl, Com485InterfaceProtocolControl->comHndlr, Com485InterfaceProtocolControl->RecvBufferPtr, SocketClientReceiveBufferLen);
+   		SocketClientrecvRslt = Com485InterfaceProtocol_ReceiveData(Com485InterfaceProtocolControl->comHndlr, Com485InterfaceProtocolControl->RecvBufferPtr, SocketClientReceiveBufferLen);
    		if (SocketClientrecvRslt < 0)
 		{
 			//!UART_DBG_EnvCad("\nrecv() error");

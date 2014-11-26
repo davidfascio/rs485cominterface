@@ -18,6 +18,7 @@ void main(void)
 {      	
 	//! SETUP
 	bsp_setup();    
+	bsp_pin_mode(BSP_PIN_A1, OUTPUT);
 	ScreenDisplayProtocol_Setup();	
 	
 	//! AFTER SETUP
@@ -27,9 +28,7 @@ void main(void)
 	while(TRUE){
 		
 		ScreenDisplayProtocol_WaitDataPacketCheck();
-		ScreenDisplayProtocol_ProcessingDataPacketArrived();
-		//ScreenDisplayDevice_Update(++show_data);
-        //SEND_DEMO();
-		bsp_delay_ms(1000);	
+		ScreenDisplayProtocol_ProcessingDataPacketArrived();		
+		bsp_io_toggle(BSP_PIN_A1);
 	}
 }

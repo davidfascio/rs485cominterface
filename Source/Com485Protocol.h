@@ -128,7 +128,7 @@ void Com485InterfaceProtocol_Setup(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485In
 void Com485InterfaceProtocol_RecvBufferReset(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
 void ErrorInCom485InterfaceProtocolCommunication(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
 
-int Com485InterfaceProtocol_ReceiveData(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen);
+int Com485InterfaceProtocol_ReceiveData(int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen);
 int Com485InterfaceProtocol_SendData(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int Com485InterfaceHandler, char * DataToSend, int DataLen);
 
 int Com485InterfaceProtocol_SendDataPackHdr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int DataLen, int CommandID);
