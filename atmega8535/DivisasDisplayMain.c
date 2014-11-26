@@ -29,6 +29,6 @@ void main(void)
 		ScreenDisplayProtocol_WaitDataPacketCheck();
 		ScreenDisplayProtocol_ProcessingDataPacketArrived();	
         //SEND_DEMO();
-		bsp_delay_ms(3000);	
+		bsp_delay_ms(100);	
 	}
 }

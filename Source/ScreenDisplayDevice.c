@@ -103,7 +103,7 @@ COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_LEDStatus(int commandId, char * data
 
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * data, int dataSize){
 	
-	//! Upper Cast Implementation for ScreenDisplayDevice_LEDStatus Command	
+	//! Upper Cast Implementation for ScreenDisplayDevice_UpdateValue Command	
 	//!
 	//! Notice:
 	//! 	- *data is float type
