@@ -18,6 +18,10 @@
 //**********************************************************************
 // Defines
 //**********************************************************************
+#define SCREEN_DISPLAY_PROTOCOL_DEFAULT_SLAVE_ADDRESS			   	(0x11)
+#define SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS			   	(0x01)
+#define SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS		   	(0x00)
+
 #define SCREEN_DISPLAY_PROTOCOL_WAIT_TIME_OUT					   (30000)
 
 //**********************************************************************

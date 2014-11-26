@@ -55,12 +55,15 @@
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_TIMEOUT_OCCURRED	(-53)
 #define COM_485_PROTOCOL_PACKET_RECEIVED_DOES_NOT_HAVE_LAST_CHAR		(-54)
 
-// Protocol Defines
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE					(2) 	// (2)
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE				(2) 	// (2)
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE			(1)//sizeof(char) 	// (1)
 
-#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD					(COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_COMMAND_ID_SIZE + COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR_SIZE)
+// Protocol Defines
+#define COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE						(2) 	// (2 Bytes)
+#define COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE			(1)		// (1 Byte)
+#define COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE				(2) 	// (2 Bytes)
+#define COM_485_PROTOCOL_DATA_PACKET_EOT_FIELD_SIZE						(1)		// (1 Byte)
+
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE					(COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE + COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE + COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE)
+#define COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD					(COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE + COM_485_PROTOCOL_DATA_PACKET_EOT_FIELD_SIZE)
 
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR					0XFF
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_MAX_DATA_LEN				(TX_BUFFER_SIZE0 - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD)
@@ -70,71 +73,106 @@
 // Structures 
 //**********************************************************************
 
-typedef struct Com485InterfaceProtocolStruct
+//! Protocol description in Packet Received:
+//!																		   |------------- PACKET LENGTH ----------|
+//! |----------------------------------------------------------------------|-----------------|--------------------|
+//! |					 			HEADER 					 			   |      DATA       | END OF TRANSMITION |
+//! |------------------------|-----------------------|---------------------|-----------------|--------------------|
+//! | PacketLength (2 Bytes) | SlaveAddress (1 Byte) | CommandId (2 bytes) | Data ( n Bytes) | EOT-0xFF (1 Byte ) |
+//! |------------------------|-----------------------|---------------------|-----------------|--------------------|
+//!
+//!  PacketLength: Number of Bytes from Data[0] ... Data[n-1] to EOT character
+//!  SlaveAddress: Address of device which must to excecute the commandId function
+//!  CommandId:    Function or Operation to excecute
+//!  Data:		   Arguments associated to CommandId
+//!  EOT:		   End of Transmition, Last Character in Transmition and always is (0xFF) char value
+	
+typedef struct Com485ProtocolStruct
 {
-	int		comHndlr;
+	// Device configuration
+	int		ComHndlr;	
+	char 	ComAddress;
+	
+	// Received Buffer resource information
 	char 	RecvBuffer [COM_485_PROTOCOL_RX_WINDOW_SIZE];
 	char * 	RecvBufferPtr;
-	int 	TotalDataArrived;	
-	int		PacketLength;
+	int 	TotalDataArrived;		
+	
+	// Packet received fields
+	int		PacketLength;	
+	char 	SlaveAddressInPacketReceived;
 	int		CommandIdInPacketReceived;
 	char * 	DataInPacketReceived;
 	int		DataInPacketReceivedLen;
+	
+	// Control Fields
 	boolean	DataPacketArrived;		
 	int		WaitDataPacketTimeOutLoopCntr;	
-} COM_485_PROTOCOL_CONTROL_STRUCT, * COM_485_PROTOCOL_CONTROL_STRUCT_PTR_;
+		
+} COM_485_PROTOCOL_STRUCT, * COM_485_PROTOCOL_STRUCT_PTR_;
 
 //**********************************************************************
 // Setters and Getters Prototype Fucntions
 //**********************************************************************
 
-void Com485InterfaceProtocol_SetComHndlr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int comHndlr);
-int Com485InterfaceProtocol_GetComHndlr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+// Device configuration
+void Com485Protocol_SetComHndlr(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int comHndlr);
+int Com485Protocol_GetComHndlr(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-char * Com485InterfaceProtocol_GetRecvBuffer(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
-int Com485InterfaceProtocol_GetRecvBufferSize(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+void Com485Protocol_SetComAddress(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, char ComAddress);
+char Com485Protocol_GetComAddress(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-void Com485InterfaceProtocol_SetRecvBufferPtr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, char * RecvBufferPtr);
-char * Com485InterfaceProtocol_GetRecvBufferPtr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+// Received Buffer resource information
+char * Com485Protocol_GetRecvBuffer(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
+int Com485Protocol_GetRecvBufferSize(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-void Com485InterfaceProtocol_SetTotalDataArrived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int TotalDataArrived);
-int  Com485InterfaceProtocol_GetTotalDataArrived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+void Com485Protocol_SetRecvBufferPtr(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, char * RecvBufferPtr);
+char * Com485Protocol_GetRecvBufferPtr(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-void Com485InterfaceProtocol_SetPacketLength(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int PacketLength);
-int  Com485InterfaceProtocol_GetPacketLength(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+void Com485Protocol_SetTotalDataArrived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int TotalDataArrived);
+int  Com485Protocol_GetTotalDataArrived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-void Com485InterfaceProtocol_SetCommandIdInPacketReceived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int CommandIdInPacketReceived);
-int  Com485InterfaceProtocol_GetCommandIdInPacketReceived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+// Packet received fields
+void Com485Protocol_SetPacketLength(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int PacketLength);
+int  Com485Protocol_GetPacketLength(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-void  Com485InterfaceProtocol_SetDataInPacketReceived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, char * DataInPacketReceived);
-char *  Com485InterfaceProtocol_GetDataInPacketReceived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+void Com485Protocol_SetSlaveAddressInPacketReceived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, char SlaveAddressInPacketReceived);
+char  Com485Protocol_GetSlaveAddressInPacketReceived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-void Com485InterfaceProtocol_SetDataInPacketReceivedLen(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int DataInPacketReceivedLen);
-int  Com485InterfaceProtocol_GetDataInPacketReceivedLen(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+void Com485Protocol_SetCommandIdInPacketReceived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int CommandIdInPacketReceived);
+int  Com485Protocol_GetCommandIdInPacketReceived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-void Com485InterfaceProtocol_SetDataPacketArrived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, boolean DataPacketArrived);
-boolean  Com485InterfaceProtocol_GetDataPacketArrived(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+void  Com485Protocol_SetDataInPacketReceived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, char * DataInPacketReceived);
+char *  Com485Protocol_GetDataInPacketReceived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-void Com485InterfaceProtocol_SetWaitDataPacketTimeOutLoopCntr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int WaitDataPacketTimeOutLoopCntr);
-boolean  Com485InterfaceProtocol_GetWaitDataPacketTimeOutLoopCntr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+void Com485Protocol_SetDataInPacketReceivedLen(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int DataInPacketReceivedLen);
+int  Com485Protocol_GetDataInPacketReceivedLen(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
+
+// Control Fields
+void Com485Protocol_SetDataPacketArrived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, boolean DataPacketArrived);
+boolean  Com485Protocol_GetDataPacketArrived(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
+
+void Com485Protocol_SetWaitDataPacketTimeOutLoopCntr(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int WaitDataPacketTimeOutLoopCntr);
+boolean  Com485Protocol_GetWaitDataPacketTimeOutLoopCntr(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
 
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
 
-void Com485InterfaceProtocol_Setup(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int comHndlr);
+void Com485Protocol_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int comHndlr, char ComAddress);
 
-void Com485InterfaceProtocol_RecvBufferReset(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
-void ErrorInCom485InterfaceProtocolCommunication(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl);
+void Com485Protocol_RecvBufferReset(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
+void ErrorInCom485ProtocolCommunication(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
-int Com485InterfaceProtocol_ReceiveData(int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen);
-int Com485InterfaceProtocol_SendData(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int Com485InterfaceHandler, char * DataToSend, int DataLen);
+int Com485Protocol_ReceiveData(int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen);
+int Com485Protocol_SendData(int Com485InterfaceHandler, char * DataToSend, int DataLen);
 
-int Com485InterfaceProtocol_SendDataPackHdr(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int DataLen, int CommandID);
-int Com485InterfaceProtocol_SendDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int CommandId, char * PacketData, int PacketDataLen);
-int Com485InterfaceProtocol_WaitDataPacket(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int WaitTimeOutLoops);
-int Com485InterfaceProtocol_SendDataPackWaitForResponse(COM_485_PROTOCOL_CONTROL_STRUCT_PTR_ Com485InterfaceProtocolControl, int CommandId, char * PacketData, int PacketDataLen, 
+int Com485Protocol_SendHeaderPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int DataLen, char SlaveAddress, int CommandID);
+int Com485Protocol_SendDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen);
+
+int Com485Protocol_WaitDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int WaitTimeOutLoops);
+int Com485Protocol_SendDataPackWaitForResponse(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen, 
 														int ResponseCommandId, int WaitTimeOutSec, int Retries);
 
 
