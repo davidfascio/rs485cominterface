@@ -296,7 +296,7 @@ int Com485Protocol_WaitDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolCon
 		{			
 			Com485ProtocolControl->RecvBufferPtr += SocketClientrecvRslt;
 			Com485ProtocolControl->TotalDataArrived += SocketClientrecvRslt;
-			Com485ProtocolControl->WaitDataPacketTimeOutLoopCntr = 0;		
+			//Com485ProtocolControl->WaitDataPacketTimeOutLoopCntr = 0;		
 			
 			// Processing DataPacketLen Field
 			if ((PacketLenReceived == FALSE) && 
@@ -365,6 +365,7 @@ int Com485Protocol_WaitDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolCon
 	if(DataPacketReceived == TRUE)
 	{
 		Com485ProtocolControl->PacketLength = DataLenExpected;
+		Com485ProtocolControl->SlaveAddressInPacketReceived = SlaveAddressValueReceived;
 		Com485ProtocolControl->CommandIdInPacketReceived = CommandIDValueReceived;
 		Com485ProtocolControl->DataInPacketReceived = Com485ProtocolControl->RecvBuffer + COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE;
 		Com485ProtocolControl->DataInPacketReceivedLen = DataLenExpected - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD;

@@ -53,33 +53,33 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 		SlaveAddress 	= Com485Protocol_GetSlaveAddressInPacketReceived(&ScreenDisplayProtocolControl);	
 		
 		// Verifying Slave Address with Device Address
-		if (ComAddress != SlaveAddress && 
-			SlaveAddress!= SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS)
-			return;
+		if (ComAddress == SlaveAddress ||
+			SlaveAddress == SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS){
 		
-		Handler 		= Com485Protocol_GetComHndlr(&ScreenDisplayProtocolControl);			
-		TotalDataSize 	= Com485Protocol_GetTotalDataArrived(&ScreenDisplayProtocolControl);			
-		PacketSize 		= Com485Protocol_GetPacketLength(&ScreenDisplayProtocolControl);			
-		CommandID 		= Com485Protocol_GetCommandIdInPacketReceived(&ScreenDisplayProtocolControl);			
-		cpPacketData 	= Com485Protocol_GetDataInPacketReceived(&ScreenDisplayProtocolControl);		
-		DataPacketSize 	= Com485Protocol_GetDataInPacketReceivedLen(&ScreenDisplayProtocolControl);		
-		
-		ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);		
+			Handler 		= Com485Protocol_GetComHndlr(&ScreenDisplayProtocolControl);			
+			TotalDataSize 	= Com485Protocol_GetTotalDataArrived(&ScreenDisplayProtocolControl);			
+			PacketSize 		= Com485Protocol_GetPacketLength(&ScreenDisplayProtocolControl);			
+			CommandID 		= Com485Protocol_GetCommandIdInPacketReceived(&ScreenDisplayProtocolControl);			
+			cpPacketData 	= Com485Protocol_GetDataInPacketReceived(&ScreenDisplayProtocolControl);		
+			DataPacketSize 	= Com485Protocol_GetDataInPacketReceivedLen(&ScreenDisplayProtocolControl);		
+			
+			ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);		
+					
+			CommandResponseControl = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);		
+			CommandIdResponse = ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl);
+			
+			// Answering to Master Request
+			if (CommandIdResponse != SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID &&
+				SlaveAddress!= SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS) {
 				
-		CommandResponseControl = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);		
-		CommandIdResponse = ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl);
-		
-		// Answering to Master Request
-		if (CommandIdResponse != SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID &&
-			SlaveAddress!= SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS) {
-			
-			CommandErrorCodeResponse = ScreenDisplayCommands_GetCommandErrorCodeResponse(&CommandResponseControl);			
-			
-			Com485Protocol_SendDataPacket(	&ScreenDisplayProtocolControl, 
-											SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS,
-											CommandIdResponse, 
-											(char *) & CommandErrorCodeResponse, 
-											sizeof(CommandErrorCodeResponse));
+				CommandErrorCodeResponse = ScreenDisplayCommands_GetCommandErrorCodeResponse(&CommandResponseControl);			
+				
+				Com485Protocol_SendDataPacket(	&ScreenDisplayProtocolControl, 
+												SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS,
+												CommandIdResponse, 
+												(char *) & CommandErrorCodeResponse, 
+												sizeof(CommandErrorCodeResponse));
+			}
 		}
 		
 		// Command was processing
