@@ -131,9 +131,9 @@ int bsp_usart_read(char * data, int data_lenght);
 //**********************************************************************
 
 // Vartypes
-typedef void (*BSP_TIMER_100MS_UPDATE_FUNCTION)(void);
+typedef void (*BSP_TIMER_UPDATE_FUNCTION)(void);
 
 // API Prototype
-void bsp_timer100ms_setup(BSP_TIMER_100MS_UPDATE_FUNCTION update_function);
+void bsp_timer_setup(BSP_TIMER_UPDATE_FUNCTION update_function);
 
 #endif /* __BSP_H__ */

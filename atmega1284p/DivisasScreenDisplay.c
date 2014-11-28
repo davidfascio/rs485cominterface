@@ -12,7 +12,7 @@
 #include "ScreenDisplayProtocol.h"
 #include "Timer100ms.h"
 
-TIMER_100MS_STRUCT myTimer;
+TIMER_STRUCT myTimer;
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
@@ -20,22 +20,22 @@ void main(void)
 {      	
 	//! SETUP
 	bsp_setup();    
-	Timer100ms_Setup();
+	Timer_Setup();
 	bsp_pin_mode(BSP_PIN_A1, OUTPUT);
 	ScreenDisplayProtocol_Setup();	
 	
 	//! AFTER SETUP
 	ScreenDisplayDevice_Setup();
-	AddTimer100ms(&myTimer, 10);
+	AddTimer(&myTimer, 1000);
 	//! LOOP
 	while(TRUE){
 		
 		//ScreenDisplayProtocol_WaitDataPacketCheck();
 		//ScreenDisplayProtocol_ProcessingDataPacketArrived();		
 		
-		if(Timer100ms_GetOverflow(&myTimer) == TRUE){
+		if(Timer_GetOverflow(&myTimer) == TRUE){
 			bsp_io_toggle(BSP_PIN_A1);
-			Timer100ms_Reset(&myTimer);
+			Timer_Reset(&myTimer);
 		}
 	}
 }

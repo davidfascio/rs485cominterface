@@ -5,8 +5,8 @@
  * Created on November 27th, 2014, 6:35
  */ 
 
-#ifndef __TIMER_100MS_H__
-#define __TIMER_100MS_H__
+#ifndef __TIMER_H__
+#define __TIMER_H__
 
 //**********************************************************************
 // Includes
@@ -16,18 +16,23 @@
 //**********************************************************************
 // Defines
 //**********************************************************************
-#define TIMER_100MS_MAX_SUPPORTED_NUMBER						  	(4)
-#define TIMER_100MS_MAX_SUPPORTED_NUMBER_OVERFLOW				 	(-1)
+
+#define TIMER_MAX_SUPPORTED_NUMBER						  	(4)
+#define TIMER_MIN_VALUE_SUPPORT_IN_MS						(100)
+
+//Error defines
+#define TIMER_MAX_SUPPORTED_NUMBER_OVERFLOW				 	(-1)
+#define TIMER_MIN_VALUE_SUPPORT_IN_MS_IS_NOT_SUPPORT	 	(-2)
 
 //**********************************************************************
 // Structures 
 //**********************************************************************
-typedef struct timer100ms_struct{
+typedef struct timer_struct{
 	int counter;
 	int overflow_value;
 	boolean overflow;
 	/*int (*timerFunctionToCall)(void);*/		
-} TIMER_100MS_STRUCT, * TIMER_100MS_STRUCT_PTR_;
+} TIMER_STRUCT, * TIMER_STRUCT_PTR_;
 
 
 //**********************************************************************
@@ -35,20 +40,20 @@ typedef struct timer100ms_struct{
 //**********************************************************************
 
 // Setters and Getters prototype functions
-void Timer100ms_SetCounter(TIMER_100MS_STRUCT_PTR_ timer_control, int counter);
-int Timer100ms_GetCounter(TIMER_100MS_STRUCT_PTR_ timer_control);
+void Timer_SetCounter(TIMER_STRUCT_PTR_ timer_control, int counter);
+int Timer_GetCounter(TIMER_STRUCT_PTR_ timer_control);
 
-void Timer100ms_SetOverflowValue(TIMER_100MS_STRUCT_PTR_ timer_control, int overflow_value);
-int Timer100ms_GetOverflowValue(TIMER_100MS_STRUCT_PTR_ timer_control);
+void Timer_SetOverflowValue(TIMER_STRUCT_PTR_ timer_control, int overflow_value);
+int Timer_GetOverflowValue(TIMER_STRUCT_PTR_ timer_control);
 
-void Timer100ms_SetOverflow(TIMER_100MS_STRUCT_PTR_ timer_control, boolean overflow);
-boolean Timer100ms_GetOverflow(TIMER_100MS_STRUCT_PTR_ timer_control);
+void Timer_SetOverflow(TIMER_STRUCT_PTR_ timer_control, boolean overflow);
+boolean Timer_GetOverflow(TIMER_STRUCT_PTR_ timer_control);
 
-void Timer100ms_Reset(TIMER_100MS_STRUCT_PTR_ timer_control);
+void Timer_Reset(TIMER_STRUCT_PTR_ timer_control);
 
 // API Prototype
-void Timer100ms_Setup(void);
-int AddTimer100ms(TIMER_100MS_STRUCT_PTR_ timer_control, int overflow_value);
-void Timer100ms_Update(void);
+void Timer_Setup(void);
+int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value);
+void Timer_Update(void);
 
-#endif /* #ifndef __TIMER_100MS_H__ */
+#endif /* #ifndef __TIMER_H__ */

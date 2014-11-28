@@ -467,17 +467,17 @@ int bsp_usart_read(char * data, int data_lenght){
 //**********************************************************************
 // BSP TIMER 16 bits Functions
 //**********************************************************************
-BSP_TIMER_100MS_UPDATE_FUNCTION bsp_timer100ms_update;
+BSP_TIMER_UPDATE_FUNCTION bsp_timer_update;
 
 // Timer1 output compare A interrupt service routine every 100 ms
 interrupt [TIM1_COMPA] void timer1_compa_isr(void)
 {
 	// Place your code here	
-	bsp_timer100ms_update();
+	bsp_timer_update();
 }
 
 // API
-void bsp_timer100ms_setup(BSP_TIMER_100MS_UPDATE_FUNCTION update_function){
+void bsp_timer_setup(BSP_TIMER_UPDATE_FUNCTION update_function){
 	
 	// Global disable interrupts
 	#asm("cli")
@@ -511,6 +511,6 @@ void bsp_timer100ms_setup(BSP_TIMER_100MS_UPDATE_FUNCTION update_function){
 	// Global enable interrupts
 	#asm("sei")	
 	
-	bsp_timer100ms_update = update_function;	
+	bsp_timer_update = update_function;	
 }
 

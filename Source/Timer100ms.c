@@ -11,97 +11,104 @@
 //**********************************************************************
 // Variables
 //**********************************************************************
-TIMER_100MS_STRUCT_PTR_ Timer100ms_List[TIMER_100MS_MAX_SUPPORTED_NUMBER];
-int Timer100ms_Number;
+TIMER_STRUCT_PTR_ Timer_List[TIMER_MAX_SUPPORTED_NUMBER];
+int Timer_Number;
 
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
 
 // Setters and Getters
-void Timer100ms_SetCounter(TIMER_100MS_STRUCT_PTR_ timer_control, int counter){
+void Timer_SetCounter(TIMER_STRUCT_PTR_ timer_control, int counter){
 	
 	timer_control->counter = counter;
 }
 
-int Timer100ms_GetCounter(TIMER_100MS_STRUCT_PTR_ timer_control){
+int Timer_GetCounter(TIMER_STRUCT_PTR_ timer_control){
 	
 	return timer_control->counter;
 }
 
-void Timer100ms_SetOverflowValue(TIMER_100MS_STRUCT_PTR_ timer_control, int overflow_value){
+void Timer_SetOverflowValue(TIMER_STRUCT_PTR_ timer_control, int overflow_value){
 	
 	timer_control->overflow_value = overflow_value;
 }
 
-int Timer100ms_GetOverflowValue(TIMER_100MS_STRUCT_PTR_ timer_control){
+int Timer_GetOverflowValue(TIMER_STRUCT_PTR_ timer_control){
 	
 	return timer_control->overflow_value;
 }
 
-void Timer100ms_SetOverflow(TIMER_100MS_STRUCT_PTR_ timer_control, boolean overflow){
+void Timer_SetOverflow(TIMER_STRUCT_PTR_ timer_control, boolean overflow){
 	
 	timer_control->overflow = overflow;
 }
 
-boolean Timer100ms_GetOverflow(TIMER_100MS_STRUCT_PTR_ timer_control){
+boolean Timer_GetOverflow(TIMER_STRUCT_PTR_ timer_control){
 	
 	return timer_control->overflow;
 }
 
-void Timer100ms_Reset(TIMER_100MS_STRUCT_PTR_ timer_control){
+void Timer_Reset(TIMER_STRUCT_PTR_ timer_control){
 	
-	Timer100ms_SetCounter(timer_control, 0);
-	Timer100ms_SetOverflow(timer_control, FALSE);	
+	Timer_SetCounter(timer_control, 0);
+	Timer_SetOverflow(timer_control, FALSE);	
 }
 
 //**********************************************************************
 // API Functions
 //**********************************************************************
-void Timer100ms_Setup(void){
+void Timer_Setup(void){
 	
 	
 	// API Initialization
-	memset(Timer100ms_List, 0, sizeof(Timer100ms_List));
-	Timer100ms_Number = 0;
+	memset(Timer_List, 0, sizeof(Timer_List));
+	Timer_Number = 0;
 	
 	//! bsp function
-	bsp_timer100ms_setup(Timer100ms_Update);
+	bsp_timer_setup(Timer_Update);
 }
 
-int AddTimer100ms(TIMER_100MS_STRUCT_PTR_ timer_control, int overflow_value){
+int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms){
 	
-	if(Timer100ms_Number >= TIMER_100MS_MAX_SUPPORTED_NUMBER)
-		return TIMER_100MS_MAX_SUPPORTED_NUMBER_OVERFLOW;	
+	int overflow_value = TIMER_MIN_VALUE_SUPPORT_IN_MS;
+	
+	if(Timer_Number >= TIMER_MAX_SUPPORTED_NUMBER)
+		return TIMER_MAX_SUPPORTED_NUMBER_OVERFLOW;	
+	
+	if(overflow_value_in_ms < overflow_value)
+		return TIMER_MIN_VALUE_SUPPORT_IN_MS_IS_NOT_SUPPORT;
+	
+	overflow_value = overflow_value_in_ms / overflow_value;
 			
-	Timer100ms_Reset(timer_control);
-	Timer100ms_SetOverflowValue(timer_control, overflow_value);	
+	Timer_Reset(timer_control);
+	Timer_SetOverflowValue(timer_control, overflow_value);	
 	
-	Timer100ms_List[Timer100ms_Number] = timer_control;	
-	Timer100ms_Number++;	
+	Timer_List[Timer_Number] = timer_control;	
+	Timer_Number++;	
 		
-	return Timer100ms_Number;			
+	return Timer_Number;			
 }
 
-void Timer100ms_Update(void){
+void Timer_Update(void){
 	
 	volatile int index = 0;		
 	
 	
-	while(index < Timer100ms_Number) {
+	while(index < Timer_Number) {
 		
 		// Increase counter number if there isnt overflow status
-		if (Timer100ms_List[index]->overflow == FALSE){
+		if (Timer_List[index]->overflow == FALSE){
 			
-			Timer100ms_List[index]->counter++;
+			Timer_List[index]->counter++;
 		}
 		
 		
 		// Turn overflow status on
-		if (Timer100ms_List[index]->counter >= 
-			Timer100ms_List[index]->overflow_value ){
+		if (Timer_List[index]->counter >= 
+			Timer_List[index]->overflow_value ){
 			
-			Timer100ms_List[index]->overflow = TRUE;
+			Timer_List[index]->overflow = TRUE;
 		}
 		
 		index++;
