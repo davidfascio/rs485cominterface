@@ -12,6 +12,7 @@
 // Includes
 //**********************************************************************
 #include "CommonSystemLibraries.h"
+#include "Timer.h"
 
 //**********************************************************************
 // Defines
@@ -68,7 +69,7 @@
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR					0XFF
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_MAX_DATA_LEN				(TX_BUFFER_SIZE0 - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD)
 
-
+#define COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS							(1000)
 //**********************************************************************
 // Structures 
 //**********************************************************************

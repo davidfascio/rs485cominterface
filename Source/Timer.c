@@ -90,6 +90,21 @@ int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms){
 	return Timer_Number;			
 }
 
+int Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms){
+	
+	int overflow_value = TIMER_MIN_VALUE_SUPPORT_IN_MS;
+	
+	if(overflow_value_in_ms < overflow_value)
+		return TIMER_MIN_VALUE_SUPPORT_IN_MS_IS_NOT_SUPPORT;
+	
+	overflow_value = overflow_value_in_ms / overflow_value;
+			
+	Timer_Reset(timer_control);
+	Timer_SetOverflowValue(timer_control, overflow_value);	
+	
+	return overflow_value;
+}
+
 void Timer_Update(void){
 	
 	volatile int index = 0;		
