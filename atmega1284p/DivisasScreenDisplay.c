@@ -10,7 +10,7 @@
 //**********************************************************************
 #include "ScreenDisplayDevice.h"
 #include "ScreenDisplayProtocol.h"
-#include "Timer100ms.h"
+#include "Timer.h"
 
 TIMER_STRUCT myTimer;
 //**********************************************************************

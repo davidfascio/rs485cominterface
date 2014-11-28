@@ -53,7 +53,7 @@ void Timer_Reset(TIMER_STRUCT_PTR_ timer_control);
 
 // API Prototype
 void Timer_Setup(void);
-int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value);
+int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms);
 void Timer_Update(void);
 
 #endif /* #ifndef __TIMER_H__ */
