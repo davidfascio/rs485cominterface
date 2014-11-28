@@ -145,9 +145,7 @@ void bsp_setup(void){
 	// ADC initialization
 	// ADC disabled
 	ADCSRA=0x00;
-
-
-
+	
 	// TWI initialization
 	// TWI disabled
 	TWCR=0x00;
@@ -385,8 +383,8 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
 
 void bsp_usart_setup(void){
 	
-	
-	
+	// Global disable interrupts
+	#asm("cli")
 	
 	// USART0 initialization
 	// Communication Parameters: 8 Data, 1 Stop, No Parity
@@ -465,3 +463,54 @@ int bsp_usart_read(char * data, int data_lenght){
 	
 	return 0;
 }
+
+//**********************************************************************
+// BSP TIMER 16 bits Functions
+//**********************************************************************
+BSP_TIMER_100MS_UPDATE_FUNCTION bsp_timer100ms_update;
+
+// Timer1 output compare A interrupt service routine every 100 ms
+interrupt [TIM1_COMPA] void timer1_compa_isr(void)
+{
+	// Place your code here	
+	bsp_timer100ms_update();
+}
+
+// API
+void bsp_timer100ms_setup(BSP_TIMER_100MS_UPDATE_FUNCTION update_function){
+	
+	// Global disable interrupts
+	#asm("cli")
+	
+	// Timer/Counter 1 initialization
+	// Clock source: System Clock
+	// Clock value: 31.250 kHz
+	// Mode: CTC top=OCR1A
+	// OC1A output: Discon.
+	// OC1B output: Discon.
+	// Noise Canceler: Off
+	// Input Capture on Falling Edge
+	// Timer1 Overflow Interrupt: Off
+	// Input Capture Interrupt: Off
+	// Compare A Match Interrupt: On
+	// Compare B Match Interrupt: Off
+	TCCR1A=0x00;
+	TCCR1B=0x0C;
+	TCNT1H=0x00;
+	TCNT1L=0x00;
+	ICR1H=0x00;
+	ICR1L=0x00;
+	OCR1AH=0x0C; //0x0C
+	OCR1AL=0x35; //0x35
+	OCR1BH=0x00;
+	OCR1BL=0x00;
+	
+	// Timer/Counter 1 Interrupt(s) initialization
+	TIMSK1=0x02;
+	
+	// Global enable interrupts
+	#asm("sei")	
+	
+	bsp_timer100ms_update = update_function;	
+}
+
