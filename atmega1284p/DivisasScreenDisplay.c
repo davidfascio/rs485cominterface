@@ -20,22 +20,22 @@ void main(void)
 {      	
 	//! SETUP
 	bsp_setup();    
-	//Timer_Setup();
+	Timer_Setup();
 	bsp_pin_mode(BSP_PIN_A1, OUTPUT);
 	ScreenDisplayProtocol_Setup();	
 	
 	//! AFTER SETUP
 	ScreenDisplayDevice_Setup();
-	//AddTimer(&myTimer, 1000);
+	AddTimer(&myTimer, 1000);
 	//! LOOP
 	while(TRUE){
 		
 		ScreenDisplayProtocol_WaitDataPacketCheck();
 		ScreenDisplayProtocol_ProcessingDataPacketArrived();		
 		
-		//if(Timer_GetOverflow(&myTimer) == TRUE){
+		if(Timer_GetOverflow(&myTimer) == TRUE){
 			bsp_io_toggle(BSP_PIN_A1);
-			//Timer_Reset(&myTimer);
-		//}
+			Timer_Reset(&myTimer);
+		}
 	}
 }

@@ -152,7 +152,7 @@ void Com485Protocol_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, in
 	Com485Protocol_SetComAddress(Com485ProtocolControl, ComAddress);
 	Com485Protocol_RecvBufferReset(Com485ProtocolControl);	
 	//! Configure Timer
-	//AddTimer(&Com485Timer, COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
+	AddTimer(&Com485Timer, COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
 	//! Com485Interface_setup();
 	bsp_usart_setup();
 }
@@ -261,7 +261,8 @@ int Com485Protocol_WaitDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolCon
 	if(Com485ProtocolControl->DataPacketArrived == TRUE)
 		return 1;
 	
-	if(WaitTimeOutLoops == 0)
+	//if(WaitTimeOutLoops == 0)
+	if(Timer_SetOverflowValue_MS(&Com485Timer, WaitTimeOutLoops) < 0)
 		return COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_BAD_PARAMETERS;
 	
 	// Initialization Process
@@ -270,7 +271,8 @@ int Com485Protocol_WaitDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolCon
    	SocketClientReceiveBufferLen = DataLenExpected;
 	
 	
-	while(Com485ProtocolControl->WaitDataPacketTimeOutLoopCntr <= WaitTimeOutLoops)
+	//while(Com485ProtocolControl->WaitDataPacketTimeOutLoopCntr <= WaitTimeOutLoops)
+	while(Timer_GetOverflow(&Com485Timer) == FALSE)
 	{
    		SocketClientReceiveBufferLen = (int)Com485ProtocolControl->RecvBufferPtr - (int)Com485ProtocolControl->RecvBuffer;
    		SocketClientReceiveBufferLen = DataLenExpected - SocketClientReceiveBufferLen;
