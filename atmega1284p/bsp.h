@@ -126,7 +126,14 @@ void bsp_usart_flush(void);
 int bsp_usart_write(char * data, int data_lenght);
 int bsp_usart_read(char * data, int data_lenght);
 
+//**********************************************************************
+// BSP TIMER 16 bits Functions
+//**********************************************************************
 
+// Vartypes
+typedef void (*BSP_TIMER_UPDATE_FUNCTION)(void);
 
+// API Prototype
+void bsp_timer_setup(BSP_TIMER_UPDATE_FUNCTION update_function);
 
 #endif /* __BSP_H__ */
