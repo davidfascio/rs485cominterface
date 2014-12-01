@@ -11,9 +11,9 @@
 //**********************************************************************
 // Includes
 //**********************************************************************
-#ifdef __ATMEGA_1284P__
-#include <mega1284p.h>
-#endif /* #ifdef __ATMEGA_1284P__ */
+#ifdef __ATMEGA_8535__
+#include <mega8535.h>
+#endif /* #ifdef __ATMEGA_8535__ */
 
 
 //**********************************************************************
@@ -24,35 +24,12 @@ typedef char 	boolean;
 //**********************************************************************
 // Defines
 //**********************************************************************
-#define TRUE  												((boolean) 1)
-#define FALSE  												((boolean) 0)
+#define TRUE  												( 1)
+#define FALSE  												( 0)
 
 //**********************************************************************
 // Util Prototype Functions
 //**********************************************************************
 int meminvrtncpy(char * BufferDestination, char * BufferSource, long SizeOfBuffers);
-
-
-//**********************************************************************
-// Util Functions
-//**********************************************************************
-int meminvrtncpy(char * BufferDestination, char * BufferSource, long SizeOfBuffers)
-{
-	char * BufferSourcePointer;
-	if((BufferSource == NULL) || (BufferDestination == NULL) || (SizeOfBuffers <= 0))
-	return -1;
-	
-	
-	BufferSourcePointer = BufferSource + SizeOfBuffers - 1;
-	
-	while(BufferSourcePointer >= BufferSource)
-	{
-	    *BufferDestination = *BufferSourcePointer;
-		
-		BufferSourcePointer--;
-		BufferDestination++;
-	}
-	return 1;
-}
 
 #endif /* __PSP_H__ */

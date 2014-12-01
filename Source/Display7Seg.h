@@ -16,6 +16,36 @@
 //**********************************************************************
 // Defines
 //********************************************************************** 
+////////////////////////////////////////////////////////////////////////
+// 
+//   Display 7 segments connection diagram
+//  
+//							/- A -/
+//						   C     B
+//      			      /- D -/
+//     				     F     E
+//    				    /- G -/
+//            					*DP
+//	Where:
+//			Binary data 0x01 - Segment B
+//						0x02 - A
+//						0x04 - E
+//						0x08 - G
+//						0x10 - D
+//						0x20 - C
+//						0x40 - F 
+//						0x80 - DP
+////////////////////////////////////////////////////////////////////////
+
+// Pinout 7 Segments Defines
+#define DISPLAY_7_SEG_A			(0x02)
+#define DISPLAY_7_SEG_B			(0x01)
+#define DISPLAY_7_SEG_C			(0x20)
+#define DISPLAY_7_SEG_D			(0x10)
+#define DISPLAY_7_SEG_E			(0x04)
+#define DISPLAY_7_SEG_F			(0x40)
+#define DISPLAY_7_SEG_G			(0x08)
+#define DISPLAY_7_SEG_DP		(0x80)
 
 // Characters Defines
 #define DISPLAY_7_SEG_CHARACTER_0 (DISPLAY_7_SEG_A | DISPLAY_7_SEG_B | DISPLAY_7_SEG_C | DISPLAY_7_SEG_E | DISPLAY_7_SEG_F | DISPLAY_7_SEG_G)
@@ -66,4 +96,4 @@ void Display7Seg_SendDataInterface(int data);
 void  Display7Seg_SendBuffer(DISPLAY_7_SEG_PTR display7seg);
 int  Display7Seg_IntParseTo7Seg(int integerData);
 
-#endif /* __TPIC6B595_H__ */
+#endif /* __DISPLAY_7_SEG_H__ */

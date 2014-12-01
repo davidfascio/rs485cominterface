@@ -1,12 +1,12 @@
 /*
- * File: TPIC6B595.h
+ * File: SN54LS145N.h
  * Author: fascio
  * 
- * Created on November 12th, 2014, 12:25
+ * Created on November 28th, 2014, 15:22
  */ 
 
-#ifndef __TPIC6B595_H__
-#define __TPIC6B595_H__
+#ifndef __SN54LS145N_H__
+#define __SN54LS145N_H__
 
 //**********************************************************************
 // Includes
@@ -16,16 +16,22 @@
 //**********************************************************************
 // Defines
 //**********************************************************************
-#define TPIC6B595_STR_PIN  (BSP_PIN_A0)
+
+#define SN54LS145N_PIN_A  									(BSP_PIN_D3)
+#define SN54LS145N_PIN_B  									(BSP_PIN_D4)
+#define SN54LS145N_PIN_C  									(BSP_PIN_D5)
+#define SN54LS145N_PIN_D  									(BSP_PIN_D6)
+
+#define SN54LS145N_CLEAR_DATA									  (0x0F)
+
 
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
 
-void TPIC6B595_Setup(void);
-void TPIC6B595_SendData(int data);
+void SN54LS145N_Setup(void);
+void SN54LS145N_ClearData(void);
+void SN54LS145N_SendData(char data);
 
-void TPIC6B595_HideData();
-void TPIC6B595_ShowData();
 
-#endif /* __TPIC6B595_H__ */
+#endif /* __SN54LS145N_H__ */
