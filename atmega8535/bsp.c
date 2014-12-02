@@ -121,6 +121,30 @@ void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin){
 			DDRA.1 = dir_pin ; 
 			break;
 		
+		case BSP_PIN_A2:
+			DDRA.2 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_A3:
+			DDRA.3 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_B0:
+			DDRB.0 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_B1:
+			DDRB.1 = dir_pin ; 
+			break;
+			
+		case BSP_PIN_B2:
+			DDRB.2 = dir_pin ; 
+			break;
+			
+		case BSP_PIN_B3:
+			DDRB.3 = dir_pin ; 
+			break;			
+		
 		case BSP_PIN_D3:
 			DDRD.3 = dir_pin ; 
 			break;
@@ -152,7 +176,31 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 		case BSP_PIN_A1:
 			PORTA.1 = state_pin;
 			break;
+			
+		case BSP_PIN_A2:
+			PORTA.2 = state_pin;
+			break;
+			
+		case BSP_PIN_A3:
+			PORTA.3 = state_pin;
+			break;
 		
+		case BSP_PIN_B0:
+			PORTB.0 = state_pin;
+			break;
+		
+		case BSP_PIN_B1:
+			PORTB.1 = state_pin;
+			break;
+		
+		case BSP_PIN_B2:
+			PORTB.2 = state_pin;
+			break;
+			
+		case BSP_PIN_B3:
+			PORTB.3 = state_pin;
+			break;
+			
 		case BSP_PIN_D3:
 			PORTD.3 = state_pin;
 			break;
@@ -176,7 +224,7 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 
 
 void bsp_io_toggle(BSP_PORT bsp_pin){
-		
+	/*	
 	switch(bsp_pin){
 		case BSP_PIN_A0:
 			PORTA.0 ^= 1;			 
@@ -184,6 +232,24 @@ void bsp_io_toggle(BSP_PORT bsp_pin){
 		
 		case BSP_PIN_A1:
 			PORTA.1 ^= 1;			 
+			
+		case BSP_PIN_A2:
+			PORTA.2 ^= 1;			 
+			
+		case BSP_PIN_A3:
+			PORTA.3 ^= 1;			 
+		
+		case BSP_PIN_B0:
+			PORTB.0 ^= 1;
+			
+		case BSP_PIN_B1:
+			PORTB.1 ^= 1;
+			
+		case BSP_PIN_B2:
+			PORTB.2 ^= 1;
+			
+		case BSP_PIN_B3:
+			PORTB.3 ^= 1;			
 		
 		case BSP_PIN_D3:
 			PORTD.3 ^= 1;
@@ -200,7 +266,7 @@ void bsp_io_toggle(BSP_PORT bsp_pin){
 		default:
 			break;			
 	}		
-	
+	*/
 }
 
 

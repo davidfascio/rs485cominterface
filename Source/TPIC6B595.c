@@ -20,11 +20,6 @@ void TPIC6B595_Setup(void){
 	bsp_io_write(TPIC6B595_STR_PIN, LOW);    
 }
 
-void TPIC6B595_SendData(int data) {
-	  
-	bsp_spi_send(data);  
-}
-
 void TPIC6B595_HideData(){
 	
 	bsp_io_write(TPIC6B595_STR_PIN, LOW);    
@@ -35,4 +30,32 @@ void TPIC6B595_ShowData(){
 	bsp_io_write(TPIC6B595_STR_PIN, HIGH);          
 	bsp_delay_100us();  
 	bsp_io_write(TPIC6B595_STR_PIN, LOW);          
+}
+
+void TPIC6B595_SendBuffer(char * buffer, char bufferLen){
+	
+	char index;
+	
+	TPIC6B595_HideData();
+	
+	for(index = 0; index < bufferLen; index++){
+	
+		bsp_spi_send(buffer[index]);
+	}
+	
+	TPIC6B595_ShowData();	 
+}
+
+void TPIC6B595_Clear(char bufferLen){
+	
+	char index;
+	
+	TPIC6B595_HideData();
+	
+	for(index = 0; index < bufferLen; index++){
+	
+		bsp_spi_send(0);
+	}
+	
+	TPIC6B595_ShowData();	 
 }

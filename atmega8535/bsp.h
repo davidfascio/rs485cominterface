@@ -32,6 +32,12 @@
 typedef enum bsp_ports{
 	BSP_PIN_A0,
 	BSP_PIN_A1,
+	BSP_PIN_A2,
+	BSP_PIN_A3,	
+	BSP_PIN_B0,
+	BSP_PIN_B1,
+	BSP_PIN_B2,
+	BSP_PIN_B3,
 	BSP_PIN_D3,
 	BSP_PIN_D4,
 	BSP_PIN_D5,

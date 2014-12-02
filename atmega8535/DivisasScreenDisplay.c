@@ -11,42 +11,59 @@
 //#include "ScreenDisplayDevice.h"
 //#include "ScreenDisplayProtocol.h"
 #include "CommonSystemLibraries.h"
-#include "TPIC6B595.h"
+/*#include "TPIC6B595.h"
 #include "SN54LS145N.h"
-#include "Timer.h"
+#include "Timer.h"*/
+#include "DotMatrix.h"
 
 TIMER_STRUCT myTimer;
+DOT_MATRIX_STRUCT dotMatrixControl;
+
+#define DEMO_WIDTH 					(3)
+#define DEMO_HEIGHT 				(7)
+
+char DEMO_DOT_MATRIX_BUFFER[DEMO_WIDTH * DEMO_HEIGHT];
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
+
+int n_pow(int number, int count) {
+	int result = 1;
+	
+	while(count-- > 0)
+		result *=number;  
+
+	return result;
+}
 void main(void)
-{   char row = 0;   	
+{   
+	int index;
 	//! SETUP
 	bsp_setup();    
+	bsp_usart_setup();
 	Timer_Setup();
 	bsp_pin_mode(BSP_PIN_A1, OUTPUT);
+	bsp_pin_mode(BSP_PIN_A2, OUTPUT);	
+	bsp_pin_mode(BSP_PIN_A3, OUTPUT);
 	
-	TPIC6B595_Setup();
-	SN54LS145N_Setup();
+	DotMatrix_Setup(&dotMatrixControl, 
+					DEMO_DOT_MATRIX_BUFFER, 
+					DEMO_WIDTH, 
+					DEMO_HEIGHT);
 	
 	//! AFTER SETUP	
-	AddTimer(&myTimer, 1000);
-	
+	//AddTimer(&myTimer, 1000);	
+	for(index = 0; index < DEMO_HEIGHT; index++)
+		memset(DEMO_DOT_MATRIX_BUFFER + (DEMO_WIDTH * index), n_pow(2,index), DEMO_WIDTH );
 	//! LOOP
-	while(TRUE){	
+	while(TRUE){			
 		
-		TPIC6B595_HideData();
-		TPIC6B595_SendData(0xFF);
-		TPIC6B595_ShowData();
+		DotMatrix_Update(&dotMatrixControl);
 		
-		SN54LS145N_SendData(row++);
-		if(row >= 7)
-			row = 0;
-		
-		if(Timer_GetOverflow(&myTimer) == TRUE){
+		/*if(Timer_GetOverflow(&myTimer) == TRUE){				
 			
-			bsp_io_toggle(BSP_PIN_A1);			
+			bsp_io_toggle(BSP_PIN_A2);			
 			Timer_Reset(&myTimer);
-		}
+		}*/
 	}
 }

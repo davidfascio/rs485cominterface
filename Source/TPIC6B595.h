@@ -23,9 +23,11 @@
 //**********************************************************************
 
 void TPIC6B595_Setup(void);
-void TPIC6B595_SendData(int data);
 
 void TPIC6B595_HideData();
 void TPIC6B595_ShowData();
+
+void TPIC6B595_SendBuffer(char * buffer, char bufferLen);
+void TPIC6B595_Clear(char bufferLen);
 
 #endif /* __TPIC6B595_H__ */
