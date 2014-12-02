@@ -14,7 +14,7 @@
 #include "TPIC6B595.h"
 #include "SN54LS145N.h"
 #include "Timer.h"
-#include "Dotmatrix_FONT_7X5.h"
+
 
 //**********************************************************************
 // Defines

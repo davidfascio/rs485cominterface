@@ -6,11 +6,8 @@
 //**********************************************************************
 // Includes
 //**********************************************************************
- #include "DotMatrix.h"
- 
- const char DOT_MATRIX_FONT_7X5 [] = {
-	0, 1
-};
+#include "DotMatrix.h"
+
 //**********************************************************************
 // Functions
 //********************************************************************** 
@@ -93,7 +90,7 @@ void DotMatrix_Setup(DOT_MATRIX_STRUCT_PTR_ dotMatrixControl, char * dotMatrix_B
 	
 	TIMER_STRUCT_PTR_ timer;
 
-	memset(dotMatrix_Buffer, 0x00, width * height);
+	//memset(dotMatrix_Buffer, 0x00, width * height);
 		
 	dotMatrixControl->dotMatrix_Buffer 			= dotMatrix_Buffer;	
 	dotMatrixControl->dotMatrix_Width 			=  width;
