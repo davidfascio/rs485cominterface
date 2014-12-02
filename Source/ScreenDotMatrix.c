@@ -40,7 +40,7 @@ void ScreenDotMatrix_Clear(void){
 	memset(SCREEN_DOT_MATRIX_BUFFER, 0x00, sizeof(SCREEN_DOT_MATRIX_BUFFER));
 }
 
-void ScreenDotMatrix_Draw(	 char * img, int width_pixels, int height_pixels, 
+void ScreenDotMatrix_Draw(	 char flash * img, int width_pixels, int height_pixels, 
 							int x_pixels, int y_pixels){
 
 	int w_bytes = width_pixels / 8;
@@ -90,3 +90,34 @@ char * ScreenDotMatrix_GetByteAddressByPosition(int x_pixels, int y_pixels){
 	int x_bytes = x_pixels/8;		
 	return SCREEN_DOT_MATRIX_BUFFER + x_bytes + y_pixels * SCREEN_DOT_MATRIX_WIDTH;
 }
+
+
+void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash * font, int font_width, 
+							  int font_height){
+	int index = 0;
+	char current_char;
+	int current_x_pixel = x_pixel;
+								  
+	while(text[index] != '\0'){
+		
+		current_char = text[index] - 65;
+		
+		if(current_char < 0 || current_char >= (90 -65) ){
+			++index;
+			continue;
+		}
+		
+		if(current_x_pixel >= SCREEN_DOT_MATRIX_WIDTH * 8)
+			break;
+		
+		if(current_x_pixel + font_width >= 0 ){
+			
+			ScreenDotMatrix_Draw(font + (
+			((font_width % 8) ? font_width / 8 + 1 : font_width / 8 )* font_height * current_char), 
+			font_width, font_height, current_x_pixel, y_pixel);
+		}
+		
+		current_x_pixel += font_width;
+		++index;	
+	}
+ }

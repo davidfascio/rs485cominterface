@@ -25,7 +25,9 @@ void ScreenDotMatrix_Setup(void);
 void ScreenDotMatrix_Render(void);
 void ScreenDotMatrix_Clear(void);
 
-void ScreenDotMatrix_Draw( 	char * img, int width_pixels, int height_pixels, int x_pixels, int y_pixels);
+void ScreenDotMatrix_Draw( 	char flash * img, int width_pixels, int height_pixels, int x_pixels, int y_pixels);
 char * ScreenDotMatrix_GetByteAddressByPosition(int x_pixels, int y_pixels);
+
+void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash * font, int font_width, int font_height);
 
 #endif /* __SCREEN_DOT_MATRIX_H__ */
