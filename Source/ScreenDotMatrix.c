@@ -100,9 +100,9 @@ void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash 
 								  
 	while(text[index] != '\0'){
 		
-		current_char = text[index] - 65;
+		current_char = text[index] - FONTS_MINIMUM_ASCII_CHARACTER_TO_SHOW;
 		
-		if(current_char < 0 || current_char >= (90 -65) ){
+		if(current_char < 0 || current_char > (FONTS_MAXIMUM_ASCII_CHARACTER_TO_SHOW - FONTS_MINIMUM_ASCII_CHARACTER_TO_SHOW) ){
 			++index;
 			continue;
 		}
@@ -110,14 +110,14 @@ void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash 
 		if(current_x_pixel >= SCREEN_DOT_MATRIX_WIDTH * 8)
 			break;
 		
-		if(current_x_pixel + font_width >= 0 ){
+		if(current_x_pixel + (font_width -1) >= 0 ){ // font_width 
 			
 			ScreenDotMatrix_Draw(font + (
 			((font_width % 8) ? font_width / 8 + 1 : font_width / 8 )* font_height * current_char), 
 			font_width, font_height, current_x_pixel, y_pixel);
 		}
 		
-		current_x_pixel += font_width;
+		current_x_pixel += (font_width -1); // font_width 
 		++index;	
 	}
  }
