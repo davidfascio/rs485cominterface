@@ -63,7 +63,7 @@ F7=..\Source\DotMatrix.c
 F8=..\Source\ScreenDotMatrix.c
 F9=..\Source\Fonts.c
 [Compiler]
-RebuildAll=0
+RebuildAll=1
 LinkageInformationPresent=1
 Chip=ATmega8535
 CPUClock=8000000
@@ -155,7 +155,7 @@ WarningExternalDeclaredNeverDefined=1
 WarningUnknownPragma=1
 DebugBootLoader=0
 WatchAVR8LAutoVariables=0
-Build=146
+Build=149
 UseEEPROMLocation0=1
 ExternalInterruptVectors=0
 IncludePath0=E:\development\DivisasDisplay\CodeVisionAVR\Source

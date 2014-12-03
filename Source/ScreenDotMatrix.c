@@ -19,6 +19,11 @@ extern char * FONT_7x6_PTR_;
 DOT_MATRIX_STRUCT dotMatrixControl;
 char SCREEN_DOT_MATRIX_BUFFER [SCREEN_DOT_MATRIX_WIDTH * SCREEN_DOT_MATRIX_HEIGHT];
 
+char flash ScreenDotMatrixBuffer[SCREEN_DOT_MATRIX_DEFAULT_BUFFER_SIZE];
+SCREEN_DOT_MATRIX_EFFECT ScreenDotMatrixEffect ;
+int ScreenDotMatrixEffectIndex;
+TIMER_STRUCT ScreenDotMatrixTimer;
+
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
@@ -28,11 +33,37 @@ void ScreenDotMatrix_Setup(void){
 	ScreenDotMatrix_Clear();
 	DotMatrix_Setup(&dotMatrixControl, SCREEN_DOT_MATRIX_BUFFER, 
 					SCREEN_DOT_MATRIX_WIDTH, SCREEN_DOT_MATRIX_HEIGHT);
+					
+	memset(ScreenDotMatrixBuffer, 0, sizeof(ScreenDotMatrixBuffer));
+	ScreenDotMatrixEffect = STATIC_TEXT;
+	ScreenDotMatrixEffectIndex = 0;
+	AddTimer(&ScreenDotMatrixTimer, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);		
 }
 
 void ScreenDotMatrix_Render(void){
 	
 	DotMatrix_Update(&dotMatrixControl);
+	
+	if(ScreenDotMatrixEffect == STATIC_TEXT)
+		return;
+		
+	if(Timer_GetOverflow(&ScreenDotMatrixTimer) == TRUE){				
+			
+		ScreenDotMatrix_Clear();		
+		ScreenDotMatrix_DrawText(ScreenDotMatrixBuffer,ScreenDotMatrixEffectIndex,0,FONT_7x6, FONT_7x6_WIDTH, FONT_7x6_HEIGHT);
+
+		if (ScreenDotMatrixEffect == DYNAMIC_LEFT){
+		
+			ScreenDotMatrixEffectIndex = (ScreenDotMatrixEffectIndex < -FONT_7x6_WIDTH*strlen(ScreenDotMatrixBuffer)) ? 
+					SCREEN_DOT_MATRIX_WIDTH * 8 :
+					ScreenDotMatrixEffectIndex -- ; 			
+		} else {
+			ScreenDotMatrixEffectIndex = (ScreenDotMatrixEffectIndex > SCREEN_DOT_MATRIX_WIDTH * 8 ) ? 
+					-FONT_7x6_WIDTH*strlen(ScreenDotMatrixBuffer):
+					ScreenDotMatrixEffectIndex ++ ; 								
+		}		
+		Timer_Reset(&ScreenDotMatrixTimer);
+	}
 }
 
 void ScreenDotMatrix_Clear(void){
@@ -121,3 +152,42 @@ void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash 
 		++index;	
 	}
  }
+
+
+int ScreenDotMatrix_SendTextWithCustomDelay(char *text, SCREEN_DOT_MATRIX_EFFECT effect, int delay_in_ms){
+	int error_code;
+	
+	error_code = ScreenDotMatrix_SendText(text, effect);
+	
+	if (error_code == SCREEN_DOT_MATRIX_NO_ERROR){
+		
+		Timer_SetOverflowValue_MS(&ScreenDotMatrixTimer, delay_in_ms);
+		Timer_Reset(&ScreenDotMatrixTimer);
+	}
+	return error_code;
+}
+
+int ScreenDotMatrix_SendText(char *text, SCREEN_DOT_MATRIX_EFFECT effect){	
+	
+	if (ScreenDotMatrixEffect == STATIC_TEXT) {
+		
+		ScreenDotMatrixEffect = effect;	
+		ScreenDotMatrix_Clear();		
+		ScreenDotMatrix_DrawText(text,SCREEN_DOT_MATRIX_DEFAULT_OFFSET_ON_X,0,FONT_7x6, FONT_7x6_WIDTH, FONT_7x6_HEIGHT);
+		
+	} else if (ScreenDotMatrixEffect == DYNAMIC_LEFT || ScreenDotMatrixEffect == DYNAMIC_RIGHT ){
+		
+		ScreenDotMatrixEffect = effect;	
+		ScreenDotMatrix_Clear();		
+		
+		memset(ScreenDotMatrixBuffer, 0, sizeof(ScreenDotMatrixBuffer));	
+		memcpy( ScreenDotMatrixBuffer, text, sizeof(ScreenDotMatrixBuffer) <= strlen(text) ? sizeof(ScreenDotMatrixBuffer) : strlen(text));		
+		
+		ScreenDotMatrixEffectIndex = (ScreenDotMatrixEffect == DYNAMIC_LEFT) ? SCREEN_DOT_MATRIX_WIDTH * 8 : -FONT_7x6_WIDTH*strlen(ScreenDotMatrixBuffer);     
+				
+		Timer_Reset(&ScreenDotMatrixTimer);		
+	} else 
+		return SCREEN_DOT_MATRIX_BAD_EFFECT;
+	
+	return SCREEN_DOT_MATRIX_NO_ERROR;	
+}

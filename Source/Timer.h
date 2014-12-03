@@ -35,8 +35,7 @@
 typedef struct timer_struct{
 	int counter;
 	int overflow_value;
-	boolean overflow;
-	/*int (*timerFunctionToCall)(void);*/		
+	boolean overflow;		
 } TIMER_STRUCT, * TIMER_STRUCT_PTR_;
 
 
