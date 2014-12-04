@@ -1,5 +1,5 @@
 /*
- * File: DivisasScreenDisplay.h
+ * File: DivisasScreenDotMatrix.h
  * Author: fascio
  * 
  * Created on November 10th, 2014 12:00:00
@@ -8,421 +8,56 @@
 //**********************************************************************
 // Includes
 //**********************************************************************
-//#include "ScreenDisplayDevice.h"
-//#include "ScreenDisplayProtocol.h"
 #include "CommonSystemLibraries.h"
-/*#include "TPIC6B595.h"
-#include "SN54LS145N.h"
-#include "Timer.h"*/
-//#include "DotMatrix.h"
 #include "ScreenDotMatrix.h"
-/*
-flash char FONT_7x6 [] = {
-	  
-	0b0111100, // 0 
-	0b1100110,
-	0b1101110,
-	0b1111110,
-	0b1110110,
-	0b1100110,
-	0b0111100,	  
-		
-	0b0011000,
-	0b0111000,
-	0b1111000,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	0b1111110,	
-	
-	0b0111100,
-	0b1100110,
-	0b0000110,
-	0b0011100,
-	0b0110000,
-	0b1100000,	
-	0b1111110,
-	  
-	0b0111100,
-	0b1100110,
-	0b0000110,
-	0b0011100,
-	0b0000110,
-	0b1100110,
-	0b0111100,
-	
-	0b0001100,
-	0b0011100,
-	0b0111100,
-	0b1101100,
-	0b1111110,
-	0b0001100,
-	0b0001100,
-	
-	0b1111110,
-	0b1100000,
-	0b1111100,
-	0b0000110,
-	0b0000110,
-	0b1100110,	
-	0b0111100,
-	
-	0b0011100,
-	0b0110000,
-	0b1100000,	
-	0b1111100,
-	0b1100110,	
-	0b1100110,	
-	0b0111100,	
-	
-	0b1111110,
-	0b0000110,
-	0b0001100,
-	0b0011000,
-	0b0110000,
-	0b0110000,
-	0b0110000,
-	
-	0b0111100,
-	0b1100110,	
-	0b1100110,	
-	0b0111100,
-	0b1100110,	
-	0b1100110,	
-	0b0111100,
-	
-	0b0111100, // 9
-	0b1100110,	
-	0b1100110,	
-	0b0111110,
-	0b0000110,	
-	0b0001100,	
-	0b0111000,	
-	
-	0b0000000, // :
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	
-	0b0000000, // ;
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	
-	0b0000000, // <
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	
-	0b0000000, // =
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	
-	0b0000000, // >
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	
-	0b0000000, // ?
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	
-	0b0000000, // @
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	0b0000000,
-	
-	  
-	0b0111100, // A 
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1111110,
-	0b1100110,
-	0b1100110,	
-	
-	0b1111100,
-	0b1100110,
-	0b1100110,
-	0b1111100,
-	0b1100110,	
-	0b1100110,
-	0b1111100,
-	
-	0b0111100,
-	0b1100110,
-	0b1100000,
-	0b1100000,
-	0b1100000,
-	0b1100110,
-	0b0111100,
-	
-	0b1111000,
-	0b1101100,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1101100,
-	0b1111000,
-	
-	0b1111110,
-	0b1100000,
-	0b1100000,
-	0b1111100,
-	0b1100000,
-	0b1100000,
-	0b1111110,
-	
-	0b1111110,
-	0b1100000,
-	0b1100000,
-	0b1111100,
-	0b1100000,
-	0b1100000,
-	0b1100000,
-	
-	0b0111100,
-	0b1100110,
-	0b1100000,
-	0b1101110,
-	0b1100110,
-	0b1100110,
-	0b0111110,
-	
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1111110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	
-	0b0111100,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	0b0111100,
-	
-	0b0011110,
-	0b0001100,
-	0b0001100,
-	0b0001100,
-	0b1101100,
-	0b1101100,
-	0b0111000,
-	
-	0b1100110,
-	0b1101100,
-	0b1111000,
-	0b1110000,
-	0b1111000,
-	0b1101100,
-	0b1100110,
-	
-	0b1100000,
-	0b1100000,
-	0b1100000,
-	0b1100000,
-	0b1100000,
-	0b1100000,
-	0b1111110,
-	
-	0b1100110,
-	0b1111110,
-	0b1111110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	
-	0b1100110,
-	0b1100110,
-	0b1110110,
-	0b1111110,
-	0b1101110,
-	0b1100110,
-	0b1100110,
-	
-	0b0111100,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b0111100,
-	
-	0b1111100,
-	0b1100110,
-	0b1100110,
-	0b1111100,
-	0b1100000,
-	0b1100000,
-	0b1100000,
-	
-	0b0111100,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100100,
-	0b0111010,
-	
-	0b1111100,
-	0b1100110,
-	0b1100110,
-	0b1111100,
-	0b1111000,
-	0b1101100,
-	0b1100110,
-	
-	0b0111100,
-	0b1100110,
-	0b1100000,
-	0b0111100,
-	0b0000110,
-	0b1100110,
-	0b0111100,
-	
-	0b1111110,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b0111100,
-	
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b0111100,
-	0b0011000,
-		
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b1111110,
-	0b1111110,
-	0b1100110,
-	
-	0b1100110,
-	0b1100110,
-	0b0111100,
-	0b0011000,
-	0b0111100,
-	0b1100110,
-	0b1100110,
-	
-	0b1100110,
-	0b1100110,
-	0b1100110,
-	0b0111100,
-	0b0011000,
-	0b0011000,
-	0b0011000,
-	
-	0b1111110, //Z 
-	0b0000110,
-	0b0001100,
-	0b0011000,
-	0b0110000,
-	0b1100000,
-	0b1111110
-	
-};
 
-*/
 TIMER_STRUCT myTimer;
-/*DOT_MATRIX_STRUCT dotMatrixControl;
 
-#define DEMO_WIDTH 					(3)
-#define DEMO_HEIGHT 				(7)
-
-char DEMO_DOT_MATRIX_BUFFER[DEMO_WIDTH * DEMO_HEIGHT];*/
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
 
-/*int n_pow(int number, int count) {
-	int result = 1;
-	
-	while(count-- > 0)
-		result *=number;  
+char * messages [] = {"EUR",					  
+					  "EURO",
+					  "USD",
+					  "DOLAR",
+					  "COMPRA", 
+					  "VENTA"};
 
-	return result;
-}*/
+SCREEN_DOT_MATRIX_EFFECT	message_types[]	= {	STATIC_TEXT, 
+												DYNAMIC_LEFT,
+												STATIC_TEXT, 
+												DYNAMIC_LEFT,
+												DYNAMIC_LEFT,
+												DYNAMIC_LEFT
+												};
+int message_len = 6;
+
 void main(void)
-{   
-	int index = 24;
+{   	
+	char texto []=  "TEXTO";
+	int index = 0; 
 	//! SETUP
-	bsp_setup();    
-	bsp_usart_setup();
+	bsp_setup();    	
 	Timer_Setup();
-	bsp_pin_mode(BSP_PIN_A1, OUTPUT);
-	bsp_pin_mode(BSP_PIN_A2, OUTPUT);	
-	bsp_pin_mode(BSP_PIN_A3, OUTPUT);
 	
-	/*DotMatrix_Setup(&dotMatrixControl, 
-					DEMO_DOT_MATRIX_BUFFER, 
-					DEMO_WIDTH, 
-					DEMO_HEIGHT);*/
+	
+	
 	ScreenDotMatrix_Setup();
 	
 	//! AFTER SETUP	
-	AddTimer(&myTimer, 200);	
-	/*for(index = 0; index < DEMO_HEIGHT; index++)
-		memset(DEMO_DOT_MATRIX_BUFFER + (DEMO_WIDTH * index), n_pow(2,index), DEMO_WIDTH );*/
+	AddTimer(&myTimer, 10000);		
 	
+	ScreenDotMatrix_SendText(texto,  DYNAMIC_LEFT);	
 	//! LOOP
 	while(TRUE){			
 		
-		ScreenDotMatrix_Render();
-		//DotMatrix_Update(&dotMatrixControl);
+		ScreenDotMatrix_Render();		
 		
-		if(Timer_GetOverflow(&myTimer) == TRUE){				
+		if(Timer_GetOverflow(&myTimer) == TRUE){		
 			
-			ScreenDotMatrix_Clear();
-			//ScreenDotMatrix_Draw(FONT_7x6,8,7,index,0);
-			ScreenDotMatrix_DrawText("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",index,0,FONT_7x6, FONT_7x6_WIDTH, FONT_7x6_HEIGHT);
-			index --;
-			if(index < -8*36)
-				index = 24;
-			//bsp_io_toggle(BSP_PIN_A2);			
+			ScreenDotMatrix_SendText(messages[index], message_types[index]);	
+			index = (index < (message_len - 1)) ? index + 1 : 0;
 			Timer_Reset(&myTimer);
 		}
 	}

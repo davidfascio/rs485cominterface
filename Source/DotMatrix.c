@@ -126,8 +126,8 @@ void DotMatrix_Update(DOT_MATRIX_STRUCT_PTR_ dotMatrixControl){
 	
 	timer = DotMatrix_GetRenderRowTimer(dotMatrixControl);
 	
-	/*if(!Timer_GetOverflow(timer))
-		return;*/
+	if(!Timer_GetOverflow(timer))
+		return;
 		
 		
 	if(	dotMatrixControl->dotMatrix_RenderRowIndex >= 

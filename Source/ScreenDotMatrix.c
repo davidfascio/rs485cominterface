@@ -19,6 +19,12 @@ extern char * FONT_7x6_PTR_;
 DOT_MATRIX_STRUCT dotMatrixControl;
 char SCREEN_DOT_MATRIX_BUFFER [SCREEN_DOT_MATRIX_WIDTH * SCREEN_DOT_MATRIX_HEIGHT];
 
+char ScreenDotMatrixBuffer[SCREEN_DOT_MATRIX_DEFAULT_BUFFER_SIZE];
+SCREEN_DOT_MATRIX_EFFECT ScreenDotMatrixEffect ;
+int ScreenDotMatrixEffectIndex;
+TIMER_STRUCT ScreenDotMatrixTimer;
+
+int estado = LOW;    
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
@@ -28,11 +34,51 @@ void ScreenDotMatrix_Setup(void){
 	ScreenDotMatrix_Clear();
 	DotMatrix_Setup(&dotMatrixControl, SCREEN_DOT_MATRIX_BUFFER, 
 					SCREEN_DOT_MATRIX_WIDTH, SCREEN_DOT_MATRIX_HEIGHT);
+					
+	memset(ScreenDotMatrixBuffer, 0, sizeof(ScreenDotMatrixBuffer));
+	ScreenDotMatrixEffect = STATIC_TEXT;
+	ScreenDotMatrixEffectIndex = 0;
+	AddTimer(&ScreenDotMatrixTimer, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);	
+	
+	bsp_pin_mode(BSP_PIN_A1, OUTPUT);		
+	bsp_io_write(BSP_PIN_A1, estado);	
+	
+	bsp_usart_setup();			
 }
 
 void ScreenDotMatrix_Render(void){
 	
 	DotMatrix_Update(&dotMatrixControl);
+	
+	if(ScreenDotMatrixEffect == STATIC_TEXT)
+		return;
+		
+	if(Timer_GetOverflow(&ScreenDotMatrixTimer) == TRUE){				
+			
+		ScreenDotMatrix_Clear();		
+		ScreenDotMatrix_DrawText(ScreenDotMatrixBuffer,ScreenDotMatrixEffectIndex,0,FONT_7x6, FONT_7x6_WIDTH, FONT_7x6_HEIGHT);
+
+		if (ScreenDotMatrixEffect == DYNAMIC_LEFT){
+			
+			if(ScreenDotMatrixEffectIndex <  SCREEN_DOT_MATRIX_MINIMUM_POS_LIMIT_ON_X(strlen(ScreenDotMatrixBuffer)))
+				ScreenDotMatrixEffectIndex = SCREEN_DOT_MATRIX_MAXIMUM_POS_LIMIT_ON_X() ;
+			else
+				--ScreenDotMatrixEffectIndex;
+			
+		} else {
+			if(ScreenDotMatrixEffectIndex >  SCREEN_DOT_MATRIX_MAXIMUM_POS_LIMIT_ON_X() )
+				ScreenDotMatrixEffectIndex = SCREEN_DOT_MATRIX_MINIMUM_POS_LIMIT_ON_X(strlen(ScreenDotMatrixBuffer));
+			else
+				++ScreenDotMatrixEffectIndex; 								
+		}	
+		
+		estado = (estado == LOW )? HIGH : LOW;
+		bsp_io_write(BSP_PIN_A1, estado);		
+		
+		/*bsp_usart_write((char * ) &ScreenDotMatrixEffect, sizeof(ScreenDotMatrixEffect));
+		bsp_usart_write((char * ) &ScreenDotMatrixEffectIndex, sizeof(ScreenDotMatrixEffectIndex));*/
+		Timer_Reset(&ScreenDotMatrixTimer);
+	}
 }
 
 void ScreenDotMatrix_Clear(void){
@@ -121,3 +167,47 @@ void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash 
 		++index;	
 	}
  }
+
+
+int ScreenDotMatrix_SendTextWithCustomDelay(char *text, SCREEN_DOT_MATRIX_EFFECT effect, int delay_in_ms){
+	
+	switch(effect){
+		
+		case STATIC_TEXT:
+		case DYNAMIC_LEFT:
+		case DYNAMIC_RIGHT:
+			
+			if(strlen(text) >= sizeof(ScreenDotMatrixBuffer))
+				return SCREEN_DOT_MATRIX_NO_ENOUGH_BUFFER_RESOURCES;
+
+			ScreenDotMatrixEffect = effect;	
+			ScreenDotMatrix_Clear();		
+
+			memset(ScreenDotMatrixBuffer, 0, sizeof(ScreenDotMatrixBuffer));			
+			memcpy( ScreenDotMatrixBuffer, text , strlen(text));	
+			
+			break;
+		default:
+			return SCREEN_DOT_MATRIX_BAD_EFFECT;
+	}
+	
+	
+	if (effect == STATIC_TEXT) { 				
+		ScreenDotMatrix_DrawText(ScreenDotMatrixBuffer,SCREEN_DOT_MATRIX_DEFAULT_OFFSET_ON_X,0,FONT_7x6, FONT_7x6_WIDTH, FONT_7x6_HEIGHT);
+	}
+	else {		
+		ScreenDotMatrixEffectIndex = (ScreenDotMatrixEffect == DYNAMIC_LEFT) ? SCREEN_DOT_MATRIX_MAXIMUM_POS_LIMIT_ON_X() : SCREEN_DOT_MATRIX_MINIMUM_POS_LIMIT_ON_X(strlen(ScreenDotMatrixBuffer));     
+	}
+	
+	//bsp_usart_write(ScreenDotMatrixBuffer, strlen(ScreenDotMatrixBuffer));
+	
+	Timer_SetOverflowValue_MS(&ScreenDotMatrixTimer, delay_in_ms);	
+	Timer_Reset(&ScreenDotMatrixTimer);
+	
+	return SCREEN_DOT_MATRIX_NO_ERROR;	
+}
+
+int ScreenDotMatrix_SendText(char *text, SCREEN_DOT_MATRIX_EFFECT effect){		
+	
+	return ScreenDotMatrix_SendTextWithCustomDelay(text, effect, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);	
+}

@@ -97,6 +97,5 @@ void  Display7Seg_SendBuffer(DISPLAY_7_SEG_PTR display7seg){
 		Display7Seg_SendDataInterface(Display7Seg_GetBufferByIndex(display7seg, index));
 	}
 
-    TPIC6B595_ShowData();         
-    
+    TPIC6B595_ShowData();             
 }

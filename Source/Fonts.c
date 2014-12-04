@@ -1,7 +1,7 @@
 #include "Fonts.h"
 
 
-  flash char FONT_7x6 [] = {
+flash char FONT_7x6 [] = {
 	  
 	0b0111100, // 0 
 	0b1100110,
@@ -349,5 +349,3 @@
 	0b1111110
 	
 };
-
-char flash * FONT_7x6_PTR_ = FONT_7x6;
