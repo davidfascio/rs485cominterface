@@ -31,7 +31,17 @@
 //**********************************************************************
 typedef enum bsp_ports{
 	BSP_PIN_A0,
-	BSP_PIN_A1
+	BSP_PIN_A1,
+	BSP_PIN_A2,
+	BSP_PIN_A3,	
+	BSP_PIN_B0,
+	BSP_PIN_B1,
+	BSP_PIN_B2,
+	BSP_PIN_B3,
+	BSP_PIN_D3,
+	BSP_PIN_D4,
+	BSP_PIN_D5,
+	BSP_PIN_D6
 }BSP_PORT;
 
 //**********************************************************************
@@ -39,14 +49,14 @@ typedef enum bsp_ports{
 //**********************************************************************
 void bsp_setup(void);
 void bsp_delay_ms(int mscount);
-
+void bsp_delay_100us(void);
 
 //**********************************************************************
 // BSP IO Prototype Functions
 //**********************************************************************
 void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin);
 void bsp_io_write(BSP_PORT bsp_pin, int state_pin);
-void bsp_io_toggle(BSP_PORT bsp_pin);
+//void bsp_io_toggle(BSP_PORT bsp_pin);
 
 
 //**********************************************************************

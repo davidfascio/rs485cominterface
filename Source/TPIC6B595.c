@@ -59,3 +59,9 @@ void TPIC6B595_Clear(char bufferLen){
 	
 	TPIC6B595_ShowData();	 
 }
+
+void TPIC6B595_WriteData(char data){
+	
+	bsp_spi_send(data);
+}
+

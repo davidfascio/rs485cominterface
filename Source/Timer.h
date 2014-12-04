@@ -19,11 +19,8 @@
 
 #define TIMER_MAX_SUPPORTED_NUMBER						  	(4)
 
-#ifdef 	__TIMER_MIN_VALUE_SUPPORT_1_MS__
 #define TIMER_MIN_VALUE_SUPPORT_IN_MS						(1)
-#else
-#define TIMER_MIN_VALUE_SUPPORT_IN_MS						(100)
-#endif  /*TIMER_MIN_VALUE_SUPPORT_IN_MS*/
+
 
 //Error defines
 #define TIMER_MAX_SUPPORTED_NUMBER_OVERFLOW				 	(-1)

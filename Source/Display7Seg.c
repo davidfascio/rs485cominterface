@@ -36,6 +36,11 @@ void Display7Seg_SetBuffer(DISPLAY_7_SEG_PTR display7seg, int * display7segbuffe
 	display7seg->display7segbuffer = display7segbuffer;	
 }
 
+int * Display7Seg_GetBuffer(DISPLAY_7_SEG_PTR display7seg){
+	
+	return display7seg->display7segbuffer;	
+}
+
 void Display7Seg_SetBufferSize(DISPLAY_7_SEG_PTR display7seg, int display7segbuffersize ){
 	
 	display7seg->display7segbuffersize = display7segbuffersize;
@@ -71,7 +76,7 @@ void Display7Seg_Setup(DISPLAY_7_SEG_PTR display7seg, int * display7segbuffer, i
 void Display7Seg_SendDataInterface(int data) {
   
   //Driver
-  TPIC6B595_SendData(data);	
+  TPIC6B595_WriteData(data);	
 }
 
 int  Display7Seg_IntParseTo7Seg( int integerData){
@@ -92,5 +97,6 @@ void  Display7Seg_SendBuffer(DISPLAY_7_SEG_PTR display7seg){
 		Display7Seg_SendDataInterface(Display7Seg_GetBufferByIndex(display7seg, index));
 	}
 
-    TPIC6B595_ShowData();      
+    TPIC6B595_ShowData();         
+    
 }

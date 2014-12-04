@@ -87,6 +87,7 @@ void Display7Seg_SetBuffer(DISPLAY_7_SEG_PTR display7seg, int * display7segbuffe
 void Display7Seg_SetBufferSize(DISPLAY_7_SEG_PTR display7seg, int display7segbuffersize );
 void Display7Seg_SetBufferByIndex(DISPLAY_7_SEG_PTR display7seg, int index, int data);
 
+int * Display7Seg_GetBuffer(DISPLAY_7_SEG_PTR display7seg);
 int Display7Seg_GetBufferSize(DISPLAY_7_SEG_PTR display7seg);
 int Display7Seg_GetBufferByIndex(DISPLAY_7_SEG_PTR display7seg, int index);
 

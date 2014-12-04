@@ -156,6 +156,11 @@ void bsp_delay_ms(int mscount){
     delay_ms(mscount);
 }
 
+void bsp_delay_100us(void){
+	
+	delay_us(100);
+}
+
 //**********************************************************************
 // BSP IO Functions
 //**********************************************************************
@@ -169,7 +174,46 @@ void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin){
 		case BSP_PIN_A1:
 			DDRA.1 = dir_pin ; /*DDRA |(dir_pin << 0x00);*/
 			break;
+		case BSP_PIN_A2:
+			DDRA.2 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_A3:
+			DDRA.3 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_B0:
+			DDRB.0 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_B1:
+			DDRB.1 = dir_pin ; 
+			break;
 			
+		case BSP_PIN_B2:
+			DDRB.2 = dir_pin ; 
+			break;
+			
+		case BSP_PIN_B3:
+			DDRB.3 = dir_pin ; 
+			break;			
+		
+		case BSP_PIN_D3:
+			DDRD.3 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_D4:
+			DDRD.4 = dir_pin ; 
+			break;	
+		
+		case BSP_PIN_D5:
+			DDRD.5 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_D6:
+			DDRD.6 = dir_pin ; 
+			break;
+				
 		default:
 			break;			
 	}	
@@ -185,13 +229,53 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 		case BSP_PIN_A1:
 			PORTA.1 = state_pin;
 			break;
+		
+		case BSP_PIN_A2:
+			PORTA.2 = state_pin;
+			break;
+			
+		case BSP_PIN_A3:
+			PORTA.3 = state_pin;
+			break;
+		
+		case BSP_PIN_B0:
+			PORTB.0 = state_pin;
+			break;
+		
+		case BSP_PIN_B1:
+			PORTB.1 = state_pin;
+			break;
+		
+		case BSP_PIN_B2:
+			PORTB.2 = state_pin;
+			break;
+			
+		case BSP_PIN_B3:
+			PORTB.3 = state_pin;
+			break;
+			
+		case BSP_PIN_D3:
+			PORTD.3 = state_pin;
+			break;
+		
+		case BSP_PIN_D4:
+			PORTD.4 = state_pin;
+			break;
+		
+		case BSP_PIN_D5:
+			PORTD.5 = state_pin;
+			break;
+		
+		case BSP_PIN_D6:
+			PORTD.6 = state_pin;
+			break;
 			
 		default:
 			break;			
 	}		
 }
 
-void bsp_io_toggle(BSP_PORT bsp_pin){
+/*void bsp_io_toggle(BSP_PORT bsp_pin){
 		
 	switch(bsp_pin){
 		case BSP_PIN_A0:
@@ -205,7 +289,7 @@ void bsp_io_toggle(BSP_PORT bsp_pin){
 			break;			
 	}		
 	
-}
+}*/
 
 //**********************************************************************
 // BSP SPI Functions
@@ -481,10 +565,10 @@ void bsp_timer_setup(BSP_TIMER_UPDATE_FUNCTION update_function){
 	
 	// Global disable interrupts
 	#asm("cli")
-	
+		
 	// Timer/Counter 1 initialization
 	// Clock source: System Clock
-	// Clock value: 31.250 kHz
+	// Clock value: 125.000 kHz
 	// Mode: CTC top=OCR1A
 	// OC1A output: Discon.
 	// OC1B output: Discon.
@@ -495,13 +579,13 @@ void bsp_timer_setup(BSP_TIMER_UPDATE_FUNCTION update_function){
 	// Compare A Match Interrupt: On
 	// Compare B Match Interrupt: Off
 	TCCR1A=0x00;
-	TCCR1B=0x0C;
+	TCCR1B=0x0B;
 	TCNT1H=0x00;
 	TCNT1L=0x00;
 	ICR1H=0x00;
 	ICR1L=0x00;
-	OCR1AH=0x0C; //0x0C
-	OCR1AL=0x35; //0x35
+	OCR1AH=0x00;
+	OCR1AL=0x7D;
 	OCR1BH=0x00;
 	OCR1BL=0x00;
 	

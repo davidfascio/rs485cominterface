@@ -223,8 +223,8 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 }
 
 
-void bsp_io_toggle(BSP_PORT bsp_pin){
-	/*	
+/*void bsp_io_toggle(BSP_PORT bsp_pin){
+		
 	switch(bsp_pin){
 		case BSP_PIN_A0:
 			PORTA.0 ^= 1;			 
@@ -266,8 +266,8 @@ void bsp_io_toggle(BSP_PORT bsp_pin){
 		default:
 			break;			
 	}		
-	*/
-}
+	
+}*/
 
 
 //**********************************************************************

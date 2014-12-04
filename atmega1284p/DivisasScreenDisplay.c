@@ -17,7 +17,8 @@ TIMER_STRUCT myTimer;
 // API Fucntions
 //**********************************************************************
 void main(void)
-{      	
+{
+    int estado = LOW;      	
 	//! SETUP
 	bsp_setup();    
 	Timer_Setup();
@@ -34,7 +35,8 @@ void main(void)
 		ScreenDisplayProtocol_ProcessingDataPacketArrived();		
 		
 		if(Timer_GetOverflow(&myTimer) == TRUE){
-			bsp_io_toggle(BSP_PIN_A1);
+			estado = (estado == LOW )? HIGH : LOW;
+			bsp_io_write(BSP_PIN_A1, estado);
 			Timer_Reset(&myTimer);
 		}
 	}
