@@ -6,27 +6,27 @@ A=Grupo Elektra SA de CV
 C=DSI Grupo Salinas
 D=24/11/2014 12:43:08 p.m.
 Files=11
-OpenedFiles=1
+OpenedFiles=2
 OF1=DivisasScreenDisplay.c
-Active1=1
+Active1=0
 OutputListFilesDirectory=List
 OutputObjectFilesDirectory=Obj
 OutputExecutableFilesDirectory=Exe
 OutputLinkerFilesDirectory=Linker
-AllowDisplayFunctionCallTree=0
+AllowDisplayFunctionCallTree=1
 CleanUp=2
 EditorPanelMode=0
 ActiveEditorPanel=0
-Active0=0
+Active0=1
 EditorPanel0=0
 PageIndex0=0
 EditorPanel1=0
 TimeStamp1=1166247314
 PageIndex1=1
-OF2=psp.c
+OF2=..\Source\Display7Seg.c
 Active2=0
 EditorPanel2=0
-TimeStamp2=1165595064
+TimeStamp2=1166248960
 PageIndex2=2
 OF3=..\Source\Display7Seg.c
 Active3=0
@@ -197,7 +197,7 @@ WarningExternalDeclaredNeverDefined=1
 WarningUnknownPragma=1
 DebugBootLoader=0
 WatchAVR8LAutoVariables=0
-Build=147
+Build=148
 UseEEPROMLocation0=1
 ExternalInterruptVectors=0
 IncludePath0=E:\development\DivisasDisplay\CodeVisionAVR\Source
@@ -460,7 +460,7 @@ BK7=-1
 BK8=-1
 BK9=-1
 [Bookmarks6]
-TimeStamp=1166247314
+TimeStamp=1166249140
 Row=20
 Column=4
 ScrollPosX=0
@@ -480,7 +480,7 @@ Row=0
 Column=0
 ScrollPosX=0
 ScrollPosY=0
-TimeStamp=1166248248
+TimeStamp=1166302107
 [Bookmarks7]
 TimeStamp=1165587673
 Row=67
@@ -606,9 +606,9 @@ BK7=-1
 BK8=-1
 BK9=-1
 [Bookmarks14]
-TimeStamp=1165595249
-Row=0
-Column=0
+TimeStamp=1166248960
+Row=3
+Column=37
 ScrollPosX=0
 ScrollPosY=0
 BK0=-1
@@ -773,8 +773,6 @@ BK9=-1
 Blocks=0
 [FoldedCode13]
 Blocks=0
-[FoldedCode14]
-Blocks=0
 [FoldedCode15]
 Blocks=0
 [FoldedCode11]
@@ -792,8 +790,6 @@ Blocks=0
 [FoldedCode22]
 Blocks=0
 [FoldedCode23]
-Blocks=0
-[FoldedCode6]
 Blocks=0
 [HeadersList]
 Files=11
@@ -962,3 +958,7 @@ F8=E:\cvavr2\inc\mega1284p_bits.h
 F9=bsp.h
 F10=E:\cvavr2\inc\SPI.h
 F11=E:\cvavr2\inc\delay.h
+[FoldedCode6]
+Blocks=0
+[FoldedCode14]
+Blocks=0
