@@ -31,7 +31,8 @@ void main(void)
 	//! LOOP
 	while(TRUE){
 		
-		ScreenDisplayProtocol_WaitDataPacketCheck();
+		//ScreenDisplayProtocol_WaitDataPacketCheck();
+		ScreenDisplayProtocol_StateMachineUpdate();
 		ScreenDisplayProtocol_ProcessingDataPacketArrived();		
 		
 		if(Timer_GetOverflow(&myTimer) == TRUE){

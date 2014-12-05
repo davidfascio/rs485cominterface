@@ -55,6 +55,8 @@
 #define COM_485_PROTOCOL_PACKET_RECEIVED_UNEXPECTED_ID_COMMAND_RECEIVED	(-52)
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_TIMEOUT_OCCURRED	(-53)
 #define COM_485_PROTOCOL_PACKET_RECEIVED_DOES_NOT_HAVE_LAST_CHAR		(-54)
+#define COM_485_PROTOCOL_DATA_PACKET_RECEIVED_PROCESSING				(-55)
+#define COM_485_PROTOCOL_DATA_PACKET_ARRIVED_PROCESSING					(-56)
 
 
 // Protocol Defines
@@ -161,7 +163,7 @@ boolean  Com485Protocol_GetWaitDataPacketTimeOutLoopCntr(COM_485_PROTOCOL_STRUCT
 // API Prototype Fucntions
 //**********************************************************************
 
-void Com485Protocol_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int comHndlr, char ComAddress);
+void Com485Protocol_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int comHndlr,char ComAddress, int WaitTimeOutInMS);
 
 void Com485Protocol_RecvBufferReset(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 void ErrorInCom485ProtocolCommunication(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
@@ -175,7 +177,43 @@ int Com485Protocol_SendDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolCon
 int Com485Protocol_WaitDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int WaitTimeOutLoops);
 int Com485Protocol_SendDataPackWaitForResponse(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen, 
 														int ResponseCommandId, int WaitTimeOutSec, int Retries);
+//***********************************************************************************
+//* 						COM 485 PROTOCOL STATE MACHINE FUNCTIONS				*
+//***********************************************************************************
+typedef enum protocol_state_machine_enum{
+	COM_485_PROTOCOL_STATE_MACHINE_NO_INIT,	
+	COM_485_PROTOCOL_STATE_MACHINE_PACKET_LEN_PROCESSING,
+	COM_485_PROTOCOL_STATE_MACHINE_SLAVE_ADDRESS_PROCESSING,
+	COM_485_PROTOCOL_STATE_MACHINE_COMMAND_ID_PROCESSING,
+	COM_485_PROTOCOL_STATE_MACHINE_EOT_PROCESSING,
+	COM_485_PROTOCOL_STATE_MACHINE_DATA_PACKET_RECEIVED_PROCESSING,
+	COM_485_PROTOCOL_STATE_MACHINE_UNKNOW
+} COM_485_PROTOCOL_STATE_MACHINE_ENUM, *COM_485_PROTOCOL_STATE_MACHINE_ENUM_PTR_ ;
 
+typedef struct protocol_state_machine_struct{
+	
+	int SocketClientReceiveBufferLen;
+	int SocketClientrecvRslt;
+	
+	boolean PacketLenReceived;
+	boolean SlaveAddressReceived ;
+	boolean CommandIDReceived;
+	boolean DataPacketReceived ;	
+		
+	int DataLenReceived;
+	char SlaveAddressValueReceived;
+	int CommandIDValueReceived;
+	
+	int DataLenExpected;	
+	char * RecvBufferIndexPtr;
+	
+	COM_485_PROTOCOL_STATE_MACHINE_ENUM Com485ProtocolStateMachine;
+	
+} COM_485_PROTOCOL_STATE_MACHINE_STRUCT, * COM_485_PROTOCOL_STATE_MACHINE_STRUCT_PTR_;
+
+int Com485ProtocolStateMachine_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int WaitTimeOutInMS);
+void Com485ProtocolStateMachine_Reset(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
+int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
 
 #endif /* __COM_485_PROTOCOL_H__ */

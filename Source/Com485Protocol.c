@@ -144,15 +144,18 @@ boolean  Com485Protocol_GetWaitDataPacketTimeOutLoopCntr(COM_485_PROTOCOL_STRUCT
 // API Prototype Fucntions
 //**********************************************************************
 
-void Com485Protocol_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int comHndlr,char ComAddress){
+void Com485Protocol_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int comHndlr,char ComAddress, int WaitTimeOutInMS){
 	
 	memset(Com485ProtocolControl, 0, sizeof(COM_485_PROTOCOL_STRUCT));
 	
 	Com485Protocol_SetComHndlr(Com485ProtocolControl, comHndlr);
 	Com485Protocol_SetComAddress(Com485ProtocolControl, ComAddress);
 	Com485Protocol_RecvBufferReset(Com485ProtocolControl);	
+
 	//! Configure Timer
-	AddTimer(&Com485Timer, COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
+	AddTimer(&Com485Timer, WaitTimeOutInMS);
+	Com485ProtocolStateMachine_Setup(Com485ProtocolControl, WaitTimeOutInMS);
+
 	//! Com485Interface_setup();
 	bsp_usart_setup();
 }
@@ -433,3 +436,232 @@ int Com485Protocol_SendDataPackWaitForResponse(COM_485_PROTOCOL_STRUCT_PTR_ Com4
 	return COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_TIMEOUT_OCCURRED;															
 }
 
+//***********************************************************************************
+//* 						COM 485 PROTOCOL STATE MACHINE FUNCTIONS				*
+//***********************************************************************************
+ 
+COM_485_PROTOCOL_STATE_MACHINE_STRUCT Com485ProtocolStateMachineControl;
+
+int Com485ProtocolStateMachine_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int WaitTimeOutInMS){		
+	
+	if(Timer_SetOverflowValue_MS(&Com485Timer, WaitTimeOutInMS) < 0)
+		return COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_BAD_PARAMETERS;
+	
+	Com485ProtocolStateMachine_Reset(Com485ProtocolControl);
+	return RTCS_NO_ERROR;
+}
+
+void Com485ProtocolStateMachine_Reset(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl){
+	
+	Com485ProtocolStateMachineControl.SocketClientrecvRslt = 0;
+	
+	Com485ProtocolStateMachineControl.PacketLenReceived 	= FALSE;
+	Com485ProtocolStateMachineControl.SlaveAddressReceived 	= FALSE;
+	Com485ProtocolStateMachineControl.CommandIDReceived 	= FALSE;
+	Com485ProtocolStateMachineControl.DataPacketReceived 	= FALSE;
+	
+		
+	Com485ProtocolStateMachineControl.DataLenReceived 			= 0;
+	Com485ProtocolStateMachineControl.SlaveAddressValueReceived = 0;
+	Com485ProtocolStateMachineControl.CommandIDValueReceived 	= 0;
+	
+	Com485ProtocolStateMachineControl.DataLenExpected = COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE;
+	
+	// Initialization Process
+	Com485ProtocolControl->WaitDataPacketTimeOutLoopCntr = 0;
+   	Com485Protocol_RecvBufferReset(Com485ProtocolControl);
+   	Com485ProtocolStateMachineControl.SocketClientReceiveBufferLen = Com485ProtocolStateMachineControl.DataLenExpected;		
+	
+	Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_PACKET_LEN_PROCESSING;
+	
+	Timer_Reset(&Com485Timer);
+}
+
+int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl){
+	
+	//if(Com485ProtocolControl->DataPacketArrived == TRUE)	
+	
+	//! *********************** STATE MACHINE PROCESS *************************************
+		
+		
+		switch (Com485ProtocolStateMachineControl.Com485ProtocolStateMachine){
+			
+			case COM_485_PROTOCOL_STATE_MACHINE_PACKET_LEN_PROCESSING:
+				
+				// Processing DataPacketLen Field
+				if ((Com485ProtocolStateMachineControl.PacketLenReceived == FALSE) && 
+					(Com485ProtocolControl->TotalDataArrived >= COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE)) {
+					
+					Com485ProtocolStateMachineControl.RecvBufferIndexPtr = Com485ProtocolControl->RecvBuffer;
+					
+					memcpy( (char*) &Com485ProtocolStateMachineControl.DataLenReceived, 
+									Com485ProtocolStateMachineControl.RecvBufferIndexPtr, 
+									COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE);
+					
+					Com485ProtocolStateMachineControl.DataLenExpected = Com485ProtocolStateMachineControl.DataLenReceived + COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE;
+					
+					if(Com485ProtocolStateMachineControl.DataLenExpected >= COM_485_PROTOCOL_RX_WINDOW_SIZE)
+					{
+						Com485Protocol_RecvBufferReset(Com485ProtocolControl);					
+						Com485ProtocolStateMachineControl.DataLenExpected = COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE;
+						return COM_485_PROTOCOL_RX_WINDOW_SIZE;
+					}
+					
+					bsp_usart_write((char *) &Com485ProtocolStateMachineControl.DataLenReceived, COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE);
+					Com485ProtocolStateMachineControl.PacketLenReceived = TRUE;	
+					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_SLAVE_ADDRESS_PROCESSING;
+				}
+			
+				break;
+			
+			case COM_485_PROTOCOL_STATE_MACHINE_SLAVE_ADDRESS_PROCESSING:
+				
+				// Processing SlaveAddress Field
+				if ((Com485ProtocolStateMachineControl.SlaveAddressReceived == FALSE) && 
+					(Com485ProtocolControl->TotalDataArrived >= 
+					(COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE + COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE))) {
+					
+					Com485ProtocolStateMachineControl.RecvBufferIndexPtr += COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE;	
+					
+					memcpy( (char*) &Com485ProtocolStateMachineControl.SlaveAddressValueReceived, 
+					Com485ProtocolStateMachineControl.RecvBufferIndexPtr, 
+					COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE);				
+					
+					bsp_usart_write((char *) &Com485ProtocolStateMachineControl.SlaveAddressValueReceived, COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE);				
+					Com485ProtocolStateMachineControl.SlaveAddressReceived = TRUE;	
+					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_COMMAND_ID_PROCESSING;
+				}	
+				
+				break;
+			
+			case COM_485_PROTOCOL_STATE_MACHINE_COMMAND_ID_PROCESSING:
+
+				// Processing CommandID Field
+				if ((Com485ProtocolStateMachineControl.CommandIDReceived == FALSE) && 
+					(Com485ProtocolControl->TotalDataArrived >= COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE )) {
+					
+					Com485ProtocolStateMachineControl.RecvBufferIndexPtr += COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE;					                
+					
+					memcpy((char*)&Com485ProtocolStateMachineControl.CommandIDValueReceived, 
+					Com485ProtocolStateMachineControl.RecvBufferIndexPtr ,
+					COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE);
+					
+					bsp_usart_write((char *) &Com485ProtocolStateMachineControl.CommandIDValueReceived, COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE);				
+					Com485ProtocolStateMachineControl.CommandIDReceived = TRUE;
+					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_EOT_PROCESSING;
+				}
+				break;
+			
+			case COM_485_PROTOCOL_STATE_MACHINE_EOT_PROCESSING:
+			
+				// Processing EOT Field
+				if ((Com485ProtocolStateMachineControl.PacketLenReceived == TRUE) && 
+					(Com485ProtocolStateMachineControl.SlaveAddressReceived == TRUE) && 
+					(Com485ProtocolStateMachineControl.CommandIDReceived==TRUE) &&
+					(Com485ProtocolControl->TotalDataArrived >= Com485ProtocolStateMachineControl.DataLenExpected)) {
+						
+					 unsigned char * LastChar = (unsigned char *)(Com485ProtocolControl->RecvBuffer+(Com485ProtocolStateMachineControl.DataLenExpected - 1));
+					bsp_usart_write((char *) LastChar, 1);				
+					if(*LastChar == COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR)
+					{
+						Com485ProtocolStateMachineControl.DataPacketReceived = TRUE;					
+						Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_DATA_PACKET_RECEIVED_PROCESSING;
+						return COM_485_PROTOCOL_DATA_PACKET_RECEIVED_PROCESSING;
+					}	
+					else
+					{
+						//Com485Protocol_RecvBufferReset(Com485ProtocolControl);					
+						Com485ProtocolStateMachine_Reset(Com485ProtocolControl);	
+						Com485ProtocolStateMachineControl.DataLenExpected = COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE;						
+					}
+					
+				}
+				 
+				break;
+				
+			case COM_485_PROTOCOL_STATE_MACHINE_DATA_PACKET_RECEIVED_PROCESSING:
+				
+				if(Com485ProtocolStateMachineControl.DataPacketReceived == TRUE)
+				{
+					Com485ProtocolControl->PacketLength = Com485ProtocolStateMachineControl.DataLenExpected;
+					Com485ProtocolControl->SlaveAddressInPacketReceived = Com485ProtocolStateMachineControl.SlaveAddressValueReceived;
+					Com485ProtocolControl->CommandIdInPacketReceived = Com485ProtocolStateMachineControl.CommandIDValueReceived;
+					Com485ProtocolControl->DataInPacketReceived = Com485ProtocolControl->RecvBuffer + COM_485_PROTOCOL_CONFIG_DATA_PACKET_HEADER_SIZE;
+					Com485ProtocolControl->DataInPacketReceivedLen = Com485ProtocolStateMachineControl.DataLenExpected - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD;
+					//!ComInterfaceProtocolsDataPacketArrived(Com485ProtocolControl);
+					
+					bsp_usart_write((char *) Com485ProtocolControl->DataInPacketReceived, Com485ProtocolControl->DataInPacketReceivedLen);
+					Com485ProtocolControl->DataPacketArrived = TRUE;	
+					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_UNKNOW;	
+				
+								
+					
+					/*Com485Protocol_SendDataPacket(	Com485ProtocolControl, 
+													Com485ProtocolControl->SlaveAddressInPacketReceived,
+													Com485ProtocolControl->CommandIdInPacketReceived , /* CommandID*/
+													//Com485ProtocolControl->DataInPacketReceived, /* DataInPacketReceived*/ 
+													//Com485ProtocolControl->DataInPacketReceivedLen); /* DataInPacketReceivedLen*/ 	
+					return COM_485_PROTOCOL_DATA_PACKET_ARRIVED_PROCESSING;				
+				}				
+				break;
+			
+			case COM_485_PROTOCOL_STATE_MACHINE_UNKNOW:
+				
+				if(Com485ProtocolControl->DataPacketArrived == FALSE){
+					// Waiting for High Level State Machine Reset	
+					
+					Com485ProtocolStateMachine_Reset(Com485ProtocolControl);				
+				} else{
+					bsp_usart_putc(0x66);
+					return COM_485_PROTOCOL_DATA_PACKET_ARRIVED_PROCESSING;
+					}			
+				break;
+			
+			
+			default:
+				break;
+		}			
+		//! *********************** STATE MACHINE PROCESS *************************************
+	
+	if (Timer_GetOverflow(&Com485Timer) == TRUE){
+		
+		//Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_PACKET_LEN_PROCESSING;		
+		Com485Protocol_RecvBufferReset(Com485ProtocolControl);
+		Com485ProtocolStateMachine_Reset(Com485ProtocolControl);
+		Timer_Reset(&Com485Timer);
+		return COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_TIMEOUT_OCCURRED;		
+	}
+	
+	
+	Com485ProtocolStateMachineControl.SocketClientReceiveBufferLen = (int)Com485ProtocolControl->RecvBufferPtr - (int)Com485ProtocolControl->RecvBuffer;
+	Com485ProtocolStateMachineControl.SocketClientReceiveBufferLen = Com485ProtocolStateMachineControl.DataLenExpected - Com485ProtocolStateMachineControl.SocketClientReceiveBufferLen;
+	
+	// Validation
+	if(Com485ProtocolStateMachineControl.SocketClientReceiveBufferLen <= 0)
+	{
+		Com485Protocol_RecvBufferReset(Com485ProtocolControl);
+		Com485ProtocolStateMachineControl.DataLenExpected = COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE;
+		Com485ProtocolStateMachineControl.SocketClientReceiveBufferLen = Com485ProtocolStateMachineControl.DataLenExpected;
+	}	
+	
+	// Reading Process
+	Com485ProtocolStateMachineControl.SocketClientrecvRslt = Com485Protocol_ReceiveData(Com485ProtocolControl->ComHndlr, Com485ProtocolControl->RecvBufferPtr, Com485ProtocolStateMachineControl.SocketClientReceiveBufferLen);
+		
+	if (Com485ProtocolStateMachineControl.SocketClientrecvRslt < 0) {
+				
+		Com485ProtocolStateMachine_Reset(Com485ProtocolControl);
+		ErrorInCom485ProtocolCommunication(Com485ProtocolControl);
+		return Com485ProtocolStateMachineControl.SocketClientrecvRslt;
+	}
+	
+	// If exist Data Received
+	if(Com485ProtocolStateMachineControl.SocketClientrecvRslt > 0)
+	{			
+		Com485ProtocolControl->RecvBufferPtr += Com485ProtocolStateMachineControl.SocketClientrecvRslt;
+		Com485ProtocolControl->TotalDataArrived += Com485ProtocolStateMachineControl.SocketClientrecvRslt;
+		//Com485ProtocolControl->WaitDataPacketTimeOutLoopCntr = 0;		
+		Timer_Reset(&Com485Timer);
+	}	
+	
+	return Com485ProtocolStateMachineControl.Com485ProtocolStateMachine;
+}

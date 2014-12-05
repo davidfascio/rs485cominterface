@@ -201,8 +201,7 @@ int ScreenDotMatrix_SendTextWithCustomDelay(char *text, SCREEN_DOT_MATRIX_EFFECT
 	
 	//bsp_usart_write(ScreenDotMatrixBuffer, strlen(ScreenDotMatrixBuffer));
 	
-	Timer_SetOverflowValue_MS(&ScreenDotMatrixTimer, delay_in_ms);	
-	Timer_Reset(&ScreenDotMatrixTimer);
+	Timer_SetOverflowValue_MS(&ScreenDotMatrixTimer, delay_in_ms);		
 	
 	return SCREEN_DOT_MATRIX_NO_ERROR;	
 }

@@ -19,7 +19,7 @@ COM_485_PROTOCOL_STRUCT ScreenDisplayProtocolControl;
 
 void ScreenDisplayProtocol_Setup(void){
 	
-	Com485Protocol_Setup(&ScreenDisplayProtocolControl, BSP_USART_COM_HDLR, SCREEN_DISPLAY_PROTOCOL_DEFAULT_SLAVE_ADDRESS);
+	Com485Protocol_Setup(&ScreenDisplayProtocolControl, BSP_USART_COM_HDLR, SCREEN_DISPLAY_PROTOCOL_DEFAULT_SLAVE_ADDRESS, COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
 	ScreenDisplayCommands_Setup();
 }
 
@@ -44,14 +44,14 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 	volatile int 	CommandIdResponse;
 	volatile int 	CommandErrorCodeResponse;
 	
-	COMMAND_RESPONSE_STRUCT CommandResponseControl;	
-	int commandErrorCodeResponse;
+	volatile COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	volatile int commandErrorCodeResponse;
 	
 	if(Com485Protocol_GetDataPacketArrived(&ScreenDisplayProtocolControl)) 
 	{
 		ComAddress 		= Com485Protocol_GetComAddress(&ScreenDisplayProtocolControl);	
 		SlaveAddress 	= Com485Protocol_GetSlaveAddressInPacketReceived(&ScreenDisplayProtocolControl);	
-		
+					
 		// Verifying Slave Address with Device Address
 		if (ComAddress == SlaveAddress ||
 			SlaveAddress == SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS){
@@ -68,6 +68,7 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 			CommandResponseControl = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);		
 			CommandIdResponse = ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl);
 			
+				
 			// Answering to Master Request
 			if (CommandIdResponse != SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID &&
 				SlaveAddress!= SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS) {
@@ -87,3 +88,7 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 	}
 }
 
+void ScreenDisplayProtocol_StateMachineUpdate(void){
+	
+	Com485ProtocolStateMachine_Update(&ScreenDisplayProtocolControl);
+}
