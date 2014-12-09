@@ -13,6 +13,7 @@
 //**********************************************************************
 TIMER_STRUCT_PTR_ Timer_List[TIMER_MAX_SUPPORTED_NUMBER];
 int Timer_Number;
+boolean Timer_Interrupt_Event;
 
 //**********************************************************************
 // API Fucntions
@@ -64,9 +65,9 @@ void Timer_Setup(void){
 	// API Initialization
 	memset(Timer_List, 0, sizeof(Timer_List));
 	Timer_Number = 0;
-	
+	Timer_Interrupt_Event = FALSE;
 	//! bsp function
-	bsp_timer_setup(Timer_Update);
+	bsp_timer_setup(Timer_Event);
 }
 
 int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms){
@@ -109,24 +110,30 @@ void Timer_Update(void){
 	
 	volatile int index = 0;		
 	
-	
-	while(index < Timer_Number) {
-		
-		// Increase counter number if there isnt overflow status
-		if (Timer_List[index]->overflow == FALSE){
+	if(Timer_Interrupt_Event == TRUE){
+		while(index < Timer_Number) {
 			
-			Timer_List[index]->counter++;
-		}
-		
-		
-		// Turn overflow status on
-		if (Timer_List[index]->counter >= 
-			Timer_List[index]->overflow_value ){
+			// Increase counter number if there isnt overflow status
+			if (Timer_List[index]->overflow == FALSE){
+				
+				Timer_List[index]->counter++;
+			}			
 			
-			Timer_List[index]->overflow = TRUE;
+			// Turn overflow status on
+			if (Timer_List[index]->counter >= 
+				Timer_List[index]->overflow_value ){
+				
+				Timer_List[index]->overflow = TRUE;
+			}
+			
+			index++;
 		}
-		
-		index++;
+		Timer_Interrupt_Event = FALSE;
 	}	
 }
 
+void Timer_Event(void){
+	
+	Timer_Interrupt_Event = TRUE;
+	Timer_Update();
+}

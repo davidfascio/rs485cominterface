@@ -1,0 +1,1074 @@
+diff --git a/Source/Com485Protocol.c b/Source/Com485Protocol.c
+index 574e893..41511b6 100644
+--- a/Source/Com485Protocol.c
++++ b/Source/Com485Protocol.c
+@@ -507,7 +507,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
+ 						return COM_485_PROTOCOL_RX_WINDOW_SIZE;
+ 					}
+ 					
+-					bsp_usart_write((char *) &Com485ProtocolStateMachineControl.DataLenReceived, COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE);
++					//bsp_usart_write((char *) &Com485ProtocolStateMachineControl.DataLenReceived, COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE);
+ 					Com485ProtocolStateMachineControl.PacketLenReceived = TRUE;	
+ 					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_SLAVE_ADDRESS_PROCESSING;
+ 				}
+@@ -527,7 +527,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
+ 					Com485ProtocolStateMachineControl.RecvBufferIndexPtr, 
+ 					COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE);				
+ 					
+-					bsp_usart_write((char *) &Com485ProtocolStateMachineControl.SlaveAddressValueReceived, COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE);				
++					//bsp_usart_write((char *) &Com485ProtocolStateMachineControl.SlaveAddressValueReceived, COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE);				
+ 					Com485ProtocolStateMachineControl.SlaveAddressReceived = TRUE;	
+ 					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_COMMAND_ID_PROCESSING;
+ 				}	
+@@ -546,7 +546,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
+ 					Com485ProtocolStateMachineControl.RecvBufferIndexPtr ,
+ 					COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE);
+ 					
+-					bsp_usart_write((char *) &Com485ProtocolStateMachineControl.CommandIDValueReceived, COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE);				
++					//bsp_usart_write((char *) &Com485ProtocolStateMachineControl.CommandIDValueReceived, COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE);				
+ 					Com485ProtocolStateMachineControl.CommandIDReceived = TRUE;
+ 					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_EOT_PROCESSING;
+ 				}
+@@ -560,8 +560,8 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
+ 					(Com485ProtocolStateMachineControl.CommandIDReceived==TRUE) &&
+ 					(Com485ProtocolControl->TotalDataArrived >= Com485ProtocolStateMachineControl.DataLenExpected)) {
+ 						
+-					 unsigned char * LastChar = (unsigned char *)(Com485ProtocolControl->RecvBuffer+(Com485ProtocolStateMachineControl.DataLenExpected - 1));
+-					bsp_usart_write((char *) LastChar, 1);				
++					unsigned char * LastChar = (unsigned char *)(Com485ProtocolControl->RecvBuffer+(Com485ProtocolStateMachineControl.DataLenExpected - 1));
++					//bsp_usart_write((char *) LastChar, 1);				
+ 					if(*LastChar == COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR)
+ 					{
+ 						Com485ProtocolStateMachineControl.DataPacketReceived = TRUE;					
+@@ -590,7 +590,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
+ 					Com485ProtocolControl->DataInPacketReceivedLen = Com485ProtocolStateMachineControl.DataLenExpected - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD;
+ 					//!ComInterfaceProtocolsDataPacketArrived(Com485ProtocolControl);
+ 					
+-					bsp_usart_write((char *) Com485ProtocolControl->DataInPacketReceived, Com485ProtocolControl->DataInPacketReceivedLen);
++					//bsp_usart_write((char *) Com485ProtocolControl->DataInPacketReceived, Com485ProtocolControl->DataInPacketReceivedLen);
+ 					Com485ProtocolControl->DataPacketArrived = TRUE;	
+ 					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_UNKNOW;	
+ 				
+@@ -612,7 +612,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
+ 					
+ 					Com485ProtocolStateMachine_Reset(Com485ProtocolControl);				
+ 				} else{
+-					bsp_usart_putc(0x66);
++					//bsp_usart_putc(0x66);
+ 					return COM_485_PROTOCOL_DATA_PACKET_ARRIVED_PROCESSING;
+ 					}			
+ 				break;
+diff --git a/Source/ScreenDisplayCommands.c b/Source/ScreenDisplayCommands.c
+index 57552b8..64f1b44 100644
+--- a/Source/ScreenDisplayCommands.c
++++ b/Source/ScreenDisplayCommands.c
+@@ -65,9 +65,9 @@ int ScreenDisplayCommands_AddCommad(SCREEN_DISPLAY_COMMANDS_FUNCTION CommadFunct
+ 
+ COMMAND_RESPONSE_STRUCT  ScreenDisplayCommands_ExecCommand(int commandId, char * data, int dataSize){
+ 		
+-	int index = 0;
++	volatile int index = 0;
+ 	
+-	COMMAND_RESPONSE_STRUCT CommandResponseControl;	
++	volatile COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+ 	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);
+ 	
+ 	while(ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl) == SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID &&
+diff --git a/Source/ScreenDisplayDeviceCommandList.h b/Source/ScreenDisplayDeviceCommandList.h
+index a215015..554d150 100644
+--- a/Source/ScreenDisplayDeviceCommandList.h
++++ b/Source/ScreenDisplayDeviceCommandList.h
+@@ -8,12 +8,33 @@
+ #ifndef __SCREEN_DISPLAY_DEVICE_COMMAND_LIST_H__
+ #define __SCREEN_DISPLAY_DEVICE_COMMAND_LIST_H__
+ 
++//****************************************************************************************
++//* COMMAND ID LIST FOR SCREEN DISPLAY DEVICE 
++//****************************************************************************************
++#define SCREEN_DISPLAY_DEVICE_MASTER_BASE											(1000)
++#define SCREEN_DISPLAY_DEVICE_SLAVE_BASE											(2000)
+ 
+-#define SCREEN_DISPLAY_DEVICE_MASTER_COMMAND_ID_LED_STATUS			 	(1001)
+-#define SCREEN_DISPLAY_DEVICE_SLAVE_COMMAND_ID_LED_STATUS			 	(2001)
++#define SCREEN_DISPLAY_DEVICE_MASTER_COMMAND_ID_LED_STATUS			 				(SCREEN_DISPLAY_DEVICE_MASTER_BASE 	| 1)
++#define SCREEN_DISPLAY_DEVICE_SLAVE_COMMAND_ID_LED_STATUS			 				(SCREEN_DISPLAY_DEVICE_SLAVE_BASE 	| 1)
+ 
+-#define SCREEN_DISPLAY_DEVICE_MASTER_COMMAND_ID_FLOAT_VALUE_UPDATE		(1002)
+-#define SCREEN_DISPLAY_DEVICE_SLAVE_COMMAND_ID_FLOAT_VALUE_UPDATE		(2002)
++#define SCREEN_DISPLAY_DEVICE_MASTER_COMMAND_ID_FLOAT_VALUE_UPDATE					(SCREEN_DISPLAY_DEVICE_MASTER_BASE 	| 2)
++#define SCREEN_DISPLAY_DEVICE_SLAVE_COMMAND_ID_FLOAT_VALUE_UPDATE					(SCREEN_DISPLAY_DEVICE_SLAVE_BASE 	| 2)
+ 
+ 
++
++//****************************************************************************************
++//* COMMAND ID LIST FOR SCREEN DOT MATRIX DEVICE
++//****************************************************************************************
++#define SCREEN_DOT_MATRIX_DEVICE_MASTER_BASE										(3000)
++#define SCREEN_DOT_MATRIX_DEVICE_SLAVE_BASE											(4000)
++
++#define SCREEN_DOT_MATRIX_DEVICE_MASTER_COMMAND_ID_LED_STATUS			 			(SCREEN_DOT_MATRIX_DEVICE_MASTER_BASE 	| 1)
++#define SCREEN_DOT_MATRIX_DEVICE_SLAVE_COMMAND_ID_LED_STATUS			 			(SCREEN_DOT_MATRIX_DEVICE_SLAVE_BASE 	| 1)
++
++#define SCREEN_DOT_MATRIX_DEVICE_MASTER_COMMAND_ID_SEND_TEXT						(SCREEN_DOT_MATRIX_DEVICE_MASTER_BASE 	| 2)
++#define SCREEN_DOT_MATRIX_DEVICE_SLAVE_COMMAND_ID_SEND_TEXT							(SCREEN_DOT_MATRIX_DEVICE_SLAVE_BASE 	| 2)
++
++#define SCREEN_DOT_MATRIX_DEVICE_MASTER_COMMAND_ID_SEND_TEXT_DELAY					(SCREEN_DOT_MATRIX_DEVICE_MASTER_BASE 	| 3)
++#define SCREEN_DOT_MATRIX_DEVICE_SLAVE_COMMAND_ID_SEND_TEXT_DELAY					(SCREEN_DOT_MATRIX_DEVICE_SLAVE_BASE 	| 3)
++
+ #endif /* __SCREEN_DISPLAY_DEVICE_COMMAND_LIST_H__ */
+diff --git a/Source/ScreenDisplayProtocol.c b/Source/ScreenDisplayProtocol.c
+index f54cf98..9f26e23 100644
+--- a/Source/ScreenDisplayProtocol.c
++++ b/Source/ScreenDisplayProtocol.c
+@@ -47,11 +47,12 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
+ 	volatile COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+ 	volatile int commandErrorCodeResponse;
+ 	
++	//!bsp_usart_write("AQUI", strlen("AQUI"));
+ 	if(Com485Protocol_GetDataPacketArrived(&ScreenDisplayProtocolControl)) 
+ 	{
+ 		ComAddress 		= Com485Protocol_GetComAddress(&ScreenDisplayProtocolControl);	
+ 		SlaveAddress 	= Com485Protocol_GetSlaveAddressInPacketReceived(&ScreenDisplayProtocolControl);	
+-					
++		
+ 		// Verifying Slave Address with Device Address
+ 		if (ComAddress == SlaveAddress ||
+ 			SlaveAddress == SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS){
+@@ -64,7 +65,9 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
+ 			DataPacketSize 	= Com485Protocol_GetDataInPacketReceivedLen(&ScreenDisplayProtocolControl);		
+ 			
+ 			ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);		
+-					
++			bsp_usart_write("PDPA", strlen("PDPA"));
++			//!bsp_pin_mode(BSP_PIN_A2, OUTPUT);
++			//!bsp_io_write(BSP_PIN_A2, HIGH);
+ 			CommandResponseControl = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);		
+ 			CommandIdResponse = ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl);
+ 			
+@@ -88,7 +91,7 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
+ 	}
+ }
+ 
+-void ScreenDisplayProtocol_StateMachineUpdate(void){
++int ScreenDisplayProtocol_StateMachineUpdate(void){
+ 	
+-	Com485ProtocolStateMachine_Update(&ScreenDisplayProtocolControl);
++	return Com485ProtocolStateMachine_Update(&ScreenDisplayProtocolControl);
+ }
+diff --git a/Source/ScreenDisplayProtocol.h b/Source/ScreenDisplayProtocol.h
+index 3880a70..8733d20 100644
+--- a/Source/ScreenDisplayProtocol.h
++++ b/Source/ScreenDisplayProtocol.h
+@@ -31,6 +31,6 @@
+ void ScreenDisplayProtocol_Setup(void);
+ void ScreenDisplayProtocol_WaitDataPacketCheck(void);
+ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void);
+-void ScreenDisplayProtocol_StateMachineUpdate(void);
++int ScreenDisplayProtocol_StateMachineUpdate(void);
+ 
+ #endif /* __SCREEN_DISPLAY_PROTOCOL_H__ */
+diff --git a/Source/ScreenDotMatrix.c b/Source/ScreenDotMatrix.c
+index 20f8fee..c4606c7 100644
+--- a/Source/ScreenDotMatrix.c
++++ b/Source/ScreenDotMatrix.c
+@@ -43,7 +43,7 @@ void ScreenDotMatrix_Setup(void){
+ 	bsp_pin_mode(BSP_PIN_A1, OUTPUT);		
+ 	bsp_io_write(BSP_PIN_A1, estado);	
+ 	
+-	bsp_usart_setup();			
++	
+ }
+ 
+ void ScreenDotMatrix_Render(void){
+diff --git a/Source/ScreenDotMatrix.h b/Source/ScreenDotMatrix.h
+index 5d57253..04aa09f 100644
+--- a/Source/ScreenDotMatrix.h
++++ b/Source/ScreenDotMatrix.h
+@@ -33,6 +33,7 @@
+ #define SCREEN_DOT_MATRIX_MINIMUM_POS_LIMIT_ON_X(x)					((FONT_7x6_WIDTH - 1) * (int) (x -1) * (-1)) //+ SCREEN_DOT_MATRIX_DEFAULT_OFFSET_ON_X
+ 
+ typedef enum screendotmatrixeffect{
++	NO_EFFECT,
+ 	STATIC_TEXT,
+ 	DYNAMIC_LEFT,
+ 	DYNAMIC_RIGHT
+diff --git a/Source/Timer.c b/Source/Timer.c
+index f6dcbc0..1ca5e6a 100644
+--- a/Source/Timer.c
++++ b/Source/Timer.c
+@@ -13,6 +13,7 @@
+ //**********************************************************************
+ TIMER_STRUCT_PTR_ Timer_List[TIMER_MAX_SUPPORTED_NUMBER];
+ int Timer_Number;
++boolean Timer_Interrupt_Event;
+ 
+ //**********************************************************************
+ // API Fucntions
+@@ -64,9 +65,9 @@ void Timer_Setup(void){
+ 	// API Initialization
+ 	memset(Timer_List, 0, sizeof(Timer_List));
+ 	Timer_Number = 0;
+-	
++	Timer_Interrupt_Event = FALSE;
+ 	//! bsp function
+-	bsp_timer_setup(Timer_Update);
++	bsp_timer_setup(Timer_Event);
+ }
+ 
+ int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms){
+@@ -109,24 +110,30 @@ void Timer_Update(void){
+ 	
+ 	volatile int index = 0;		
+ 	
+-	
+-	while(index < Timer_Number) {
+-		
+-		// Increase counter number if there isnt overflow status
+-		if (Timer_List[index]->overflow == FALSE){
++	if(Timer_Interrupt_Event == TRUE){
++		while(index < Timer_Number) {
+ 			
+-			Timer_List[index]->counter++;
+-		}
+-		
+-		
+-		// Turn overflow status on
+-		if (Timer_List[index]->counter >= 
+-			Timer_List[index]->overflow_value ){
++			// Increase counter number if there isnt overflow status
++			if (Timer_List[index]->overflow == FALSE){
++				
++				Timer_List[index]->counter++;
++			}			
++			
++			// Turn overflow status on
++			if (Timer_List[index]->counter >= 
++				Timer_List[index]->overflow_value ){
++				
++				Timer_List[index]->overflow = TRUE;
++			}
+ 			
+-			Timer_List[index]->overflow = TRUE;
++			index++;
+ 		}
+-		
+-		index++;
++		Timer_Interrupt_Event = FALSE;
+ 	}	
+ }
+ 
++void Timer_Event(void){
++	
++	Timer_Interrupt_Event = TRUE;
++	Timer_Update();
++}
+diff --git a/Source/Timer.h b/Source/Timer.h
+index 729f385..fdf30d6 100644
+--- a/Source/Timer.h
++++ b/Source/Timer.h
+@@ -17,7 +17,7 @@
+ // Defines
+ //**********************************************************************
+ 
+-#define TIMER_MAX_SUPPORTED_NUMBER						  	(4)
++#define TIMER_MAX_SUPPORTED_NUMBER						  	(5)
+ 
+ #define TIMER_MIN_VALUE_SUPPORT_IN_MS						(1)
+ 
+@@ -57,5 +57,6 @@ void Timer_Setup(void);
+ int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms);
+ int Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms);
+ void Timer_Update(void);
++void Timer_Event(void);
+ 
+ #endif /* #ifndef __TIMER_H__ */
+diff --git a/atmega1284p/DivisasScreenDisplay.c b/atmega1284p/DivisasScreenDisplay.c
+index 984e7f1..5c3d350 100644
+--- a/atmega1284p/DivisasScreenDisplay.c
++++ b/atmega1284p/DivisasScreenDisplay.c
+@@ -8,7 +8,7 @@
+ //**********************************************************************
+ // Includes
+ //**********************************************************************
+-#include "ScreenDisplayDevice.h"
++//#include "ScreenDisplayDevice.h"
+ #include "ScreenDisplayProtocol.h"
+ #include "Timer.h"
+ 
+@@ -26,13 +26,13 @@ void main(void)
+ 	ScreenDisplayProtocol_Setup();	
+ 	
+ 	//! AFTER SETUP
+-	ScreenDisplayDevice_Setup();
++	//ScreenDisplayDevice_Setup();
+ 	AddTimer(&myTimer, 1000);
+ 	//! LOOP
+ 	while(TRUE){
+-		
+-		//ScreenDisplayProtocol_WaitDataPacketCheck();
+-		ScreenDisplayProtocol_StateMachineUpdate();
++		//Timer_Update();
++		ScreenDisplayProtocol_WaitDataPacketCheck();
++		//ScreenDisplayProtocol_StateMachineUpdate();
+ 		ScreenDisplayProtocol_ProcessingDataPacketArrived();		
+ 		
+ 		if(Timer_GetOverflow(&myTimer) == TRUE){
+diff --git a/atmega1284p/DivisasScreenDisplay.prj b/atmega1284p/DivisasScreenDisplay.prj
+index e5c6016..f8ff227 100644
+--- a/atmega1284p/DivisasScreenDisplay.prj
++++ b/atmega1284p/DivisasScreenDisplay.prj
+@@ -6,9 +6,9 @@ A=Grupo Elektra SA de CV
+ C=DSI Grupo Salinas
+ D=24/11/2014 12:43:08 p.m.
+ Files=11
+-OpenedFiles=2
++OpenedFiles=3
+ OF1=DivisasScreenDisplay.c
+-Active1=0
++Active1=1
+ OutputListFilesDirectory=List
+ OutputObjectFilesDirectory=Obj
+ OutputExecutableFilesDirectory=Exe
+@@ -17,21 +17,21 @@ AllowDisplayFunctionCallTree=1
+ CleanUp=2
+ EditorPanelMode=0
+ ActiveEditorPanel=0
+-Active0=1
++Active0=0
+ EditorPanel0=0
+ PageIndex0=0
+ EditorPanel1=0
+-TimeStamp1=1166247314
++TimeStamp1=1166636652
+ PageIndex1=1
+-OF2=..\Source\Display7Seg.c
++OF2=..\Source\Com485Protocol.h
+ Active2=0
+ EditorPanel2=0
+-TimeStamp2=1166248960
++TimeStamp2=1166376591
+ PageIndex2=2
+-OF3=..\Source\Display7Seg.c
++OF3=..\Source\Com485Protocol.c
+ Active3=0
+ EditorPanel3=0
+-TimeStamp3=1165595249
++TimeStamp3=1166578280
+ PageIndex3=3
+ OF4=..\Source\ScreenDisplay7Seg.c
+ Active4=0
+@@ -197,7 +197,7 @@ WarningExternalDeclaredNeverDefined=1
+ WarningUnknownPragma=1
+ DebugBootLoader=0
+ WatchAVR8LAutoVariables=0
+-Build=172
++Build=177
+ UseEEPROMLocation0=1
+ ExternalInterruptVectors=0
+ IncludePath0=E:\development\DivisasDisplay\CodeVisionAVR\Source
+@@ -444,11 +444,11 @@ BK7=-1
+ BK8=-1
+ BK9=-1
+ [Bookmarks5]
+-TimeStamp=1165583708
+-Row=336
++TimeStamp=1166376591
++Row=205
+ Column=0
+ ScrollPosX=0
+-ScrollPosY=153
++ScrollPosY=194
+ BK0=-1
+ BK1=-1
+ BK2=-1
+@@ -460,11 +460,11 @@ BK7=-1
+ BK8=-1
+ BK9=-1
+ [Bookmarks6]
+-TimeStamp=1166373352
+-Row=0
+-Column=0
++TimeStamp=1166636652
++Row=30
++Column=27
+ ScrollPosX=0
+-ScrollPosY=0
++ScrollPosY=21
+ BK0=-1
+ BK1=-1
+ BK2=-1
+@@ -480,7 +480,7 @@ Row=0
+ Column=0
+ ScrollPosX=0
+ ScrollPosY=0
+-TimeStamp=1166302107
++TimeStamp=1166637333
+ [Bookmarks7]
+ TimeStamp=1165587673
+ Row=67
+@@ -529,8 +529,6 @@ BK6=-1
+ BK7=-1
+ BK8=-1
+ BK9=-1
+-[FoldedCode5]
+-Blocks=0
+ [FoldedCode4]
+ Blocks=0
+ [FoldedCode7]
+@@ -638,7 +636,7 @@ BK7=-1
+ BK8=-1
+ BK9=-1
+ [Bookmarks16]
+-TimeStamp=1165781562
++TimeStamp=1166578280
+ Row=0
+ Column=0
+ ScrollPosX=0
+@@ -777,8 +775,6 @@ Blocks=0
+ Blocks=0
+ [FoldedCode11]
+ Blocks=0
+-[FoldedCode16]
+-Blocks=0
+ [FoldedCode17]
+ Blocks=0
+ [FoldedCode18]
+@@ -793,8 +789,6 @@ Blocks=0
+ Blocks=0
+ [FoldedCode14]
+ Blocks=0
+-[FoldedCode6]
+-Blocks=0
+ [HeadersList]
+ Files=11
+ F1=E:\development\DivisasDisplay\CodeVisionAVR\atmega1284p\DivisasScreenDisplay.c
+@@ -810,25 +804,25 @@ F10=E:\development\DivisasDisplay\CodeVisionAVR\Source\ScreenDisplayProtocol.c
+ F11=E:\development\DivisasDisplay\CodeVisionAVR\Source\Timer.c
+ [Header1]
+ Files=19
+-F1=..\Source\ScreenDisplayDevice.h
+-F2=..\Source\ScreenDisplay7Seg.h
+-F3=..\Source\Display7Seg.h
+-F4=..\Source\TPIC6B595.h
+-F5=..\Source\CommonSystemLibraries.h
+-F6=E:\cvavr2\inc\stdio.h
+-F7=E:\cvavr2\inc\stdarg.h
+-F8=E:\cvavr2\inc\string.h
+-F9=psp.h
+-F10=E:\cvavr2\inc\mega1284p.h
+-F11=E:\cvavr2\inc\mega1284p_bits.h
+-F12=bsp.h
+-F13=E:\cvavr2\inc\SPI.h
+-F14=E:\cvavr2\inc\delay.h
+-F15=..\Source\ScreenDisplayCommands.h
+-F16=..\Source\ScreenDisplayDeviceCommandList.h
+-F17=..\Source\ScreenDisplayProtocol.h
+-F18=..\Source\Com485Protocol.h
+-F19=..\Source\Timer.h
++F1=..\Source\ScreenDisplayProtocol.h
++F2=..\Source\Com485Protocol.h
++F3=..\Source\CommonSystemLibraries.h
++F4=E:\cvavr2\inc\stdio.h
++F5=E:\cvavr2\inc\stdarg.h
++F6=E:\cvavr2\inc\string.h
++F7=psp.h
++F8=E:\cvavr2\inc\mega1284p.h
++F9=E:\cvavr2\inc\mega1284p_bits.h
++F10=bsp.h
++F11=E:\cvavr2\inc\SPI.h
++F12=E:\cvavr2\inc\delay.h
++F13=..\Source\Timer.h
++F14=..\Source\ScreenDisplayCommands.h
++F15=..\Source\ScreenDisplayDevice.h
++F16=..\Source\ScreenDisplay7Seg.h
++F17=..\Source\Display7Seg.h
++F18=..\Source\TPIC6B595.h
++F19=..\Source\ScreenDisplayDeviceCommandList.h
+ [Header2]
+ Files=11
+ F1=..\Source\TPIC6B595.h
+@@ -962,3 +956,9 @@ F8=E:\cvavr2\inc\mega1284p_bits.h
+ F9=bsp.h
+ F10=E:\cvavr2\inc\SPI.h
+ F11=E:\cvavr2\inc\delay.h
++[FoldedCode6]
++Blocks=0
++[FoldedCode16]
++Blocks=0
++[FoldedCode5]
++Blocks=0
+diff --git a/atmega1284p/DivisasScreenDotMatrix.c b/atmega1284p/DivisasScreenDotMatrix.c
+index 518827b..72af00e 100644
+--- a/atmega1284p/DivisasScreenDotMatrix.c
++++ b/atmega1284p/DivisasScreenDotMatrix.c
+@@ -8,57 +8,41 @@
+ //**********************************************************************
+ // Includes
+ //**********************************************************************
+-#include "CommonSystemLibraries.h"
+-#include "ScreenDotMatrix.h"
+ 
+-TIMER_STRUCT myTimer;
++#include "ScreenDotMatrixDevice.h"
++#include "ScreenDisplayProtocol.h"
++#include "Timer.h"
+ 
++
++//TIMER_STRUCT myTimer;
+ //**********************************************************************
+ // API Fucntions
+ //**********************************************************************
+-
+-char * messages [] = {"EUR",					  
+-					  "EURO",
+-					  "USD",
+-					  "DOLAR",
+-					  "COMPRA", 
+-					  "VENTA"};
+-
+-SCREEN_DOT_MATRIX_EFFECT	message_types[]	= {	STATIC_TEXT, 
+-												DYNAMIC_LEFT,
+-												STATIC_TEXT, 
+-												DYNAMIC_LEFT,
+-												DYNAMIC_LEFT,
+-												DYNAMIC_LEFT
+-												};
+-int message_len = 6;
+-
+ void main(void)
+-{   	
+-	char texto []=  "TEXTO";
+-	int index = 0; 
++{
++	 int estado = LOW;    	
+ 	//! SETUP
+-	bsp_setup();    	
+-	Timer_Setup();
+-	
++	bsp_setup();    
++	Timer_Setup();	
++	ScreenDisplayProtocol_Setup();	
+ 	
++	//! AFTER SETUP
++	//AddTimer(&myTimer, 3000);		
++	ScreenDotMatrixDevice_Setup();
++	//bsp_pin_mode(BSP_PIN_A1, OUTPUT);
+ 	
+-	ScreenDotMatrix_Setup();
+-	
+-	//! AFTER SETUP	
+-	AddTimer(&myTimer, 10000);		
+-	
+-	ScreenDotMatrix_SendText(texto,  DYNAMIC_LEFT);	
++	ScreenDotMatrix_SendText("GRUPO ELEKTRA",  DYNAMIC_LEFT);	
+ 	//! LOOP
+-	while(TRUE){			
++	while(TRUE){
++		//Timer_Update();
++		// Render
++		ScreenDotMatrixDevice_Update();		
++		//bsp_io_write(BSP_PIN_A1, HIGH);
++		//ScreenDisplayProtocol_WaitDataPacketCheck();
++		ScreenDisplayProtocol_StateMachineUpdate();
++		//bsp_io_write(BSP_PIN_A1, LOW);
++		ScreenDisplayProtocol_ProcessingDataPacketArrived();					
+ 		
+-		ScreenDotMatrix_Render();		
+-		
+-		if(Timer_GetOverflow(&myTimer) == TRUE){		
+-			
+-			ScreenDotMatrix_SendText(messages[index], message_types[index]);	
+-			index = (index < (message_len - 1)) ? index + 1 : 0;
+-			Timer_Reset(&myTimer);
+-		}
+ 	}
+ }
++
+diff --git a/atmega1284p/DivisasScreenDotMatrix.prj b/atmega1284p/DivisasScreenDotMatrix.prj
+index 04e9444..a6194b9 100644
+--- a/atmega1284p/DivisasScreenDotMatrix.prj
++++ b/atmega1284p/DivisasScreenDotMatrix.prj
+@@ -5,8 +5,8 @@ CV=2.05.3 Standard
+ A=Grupo Elektra SA de CV
+ C=DSI Grupo Salinas
+ D=04/12/2014 11:28:54 a.m.
+-Files=9
+-OpenedFiles=4
++Files=13
++OpenedFiles=8
+ OF1=DivisasScreenDotMatrix.c
+ Active1=1
+ OutputListFilesDirectory=List
+@@ -15,55 +15,79 @@ OutputExecutableFilesDirectory=Exe
+ OutputLinkerFilesDirectory=Linker
+ AllowDisplayFunctionCallTree=1
+ CleanUp=2
+-F1=DivisasScreenDotMatrix.c
+-F2=..\Source\TPIC6B595.c
+-F3=..\Source\DotMatrix.c
+-F4=..\Source\Fonts.c
+-F5=..\Source\ScreenDotMatrix.c
+-F6=..\Source\SN54LS145N.c
+-F7=..\Source\Timer.c
+-F8=psp.c
+-F9=bsp.c
+ EditorPanelMode=0
+ ActiveEditorPanel=0
+ Active0=0
+ EditorPanel0=0
+ PageIndex0=0
+ EditorPanel1=0
+-TimeStamp1=1166313600
++TimeStamp1=1166635826
+ PageIndex1=1
+ OF2=..\Source\ScreenDotMatrix.c
+ Active2=0
+ EditorPanel2=0
+-TimeStamp2=1166315884
++TimeStamp2=1166580267
+ PageIndex2=2
+ OF3=bsp.c
+ Active3=0
+ EditorPanel3=0
+-TimeStamp3=1166313600
++TimeStamp3=1166578464
+ PageIndex3=3
+ OF4=..\Source\DotMatrix.c
+ Active4=0
+ EditorPanel4=0
+ TimeStamp4=1166313554
+ PageIndex4=4
++OF5=..\Source\ScreenDisplayDeviceCommandList.h
++Active5=0
++EditorPanel5=0
++TimeStamp5=1166559494
++PageIndex5=5
++OF6=..\Source\ScreenDisplayCommands.h
++Active6=0
++EditorPanel6=0
++TimeStamp6=1165593722
++PageIndex6=6
++OF7=..\Source\ScreenDotMatrixDevice.c
++Active7=0
++EditorPanel7=0
++TimeStamp7=1166625079
++PageIndex7=7
++OF8=..\Source\ScreenDisplayProtocol.c
++Active8=0
++EditorPanel8=0
++TimeStamp8=1166625219
++PageIndex8=8
++F1=DivisasScreenDotMatrix.c
++F2=..\Source\TPIC6B595.c
++F3=..\Source\DotMatrix.c
++F4=..\Source\Fonts.c
++F5=..\Source\ScreenDotMatrix.c
++F6=..\Source\SN54LS145N.c
++F7=..\Source\Timer.c
++F8=psp.c
++F9=bsp.c
++F10=..\Source\ScreenDotMatrixDevice.c
++F11=..\Source\Com485Protocol.c
++F12=..\Source\ScreenDisplayCommands.c
++F13=..\Source\ScreenDisplayProtocol.c
+ [Compiler]
+ RebuildAll=0
+ LinkageInformationPresent=1
+ Chip=ATmega1284P
+ CPUClock=8000000
+-MemoryModel=1
+-OptimizeSize=1
+-OptimizationLevel=2
++MemoryModel=2
++OptimizeSize=0
++OptimizationLevel=0
+ PrintfFeatures=1
+ ScanfFeatures=0
+-DataStackSize=4096
++DataStackSize=8192
+ RAMStart=256
+ RAMEnd=16639
+ PgmMemSize=131072
+ XRAMSize=0
+ XRAMWaitState=0
+-HeapSize=0
++HeapSize=1024
+ AVR8LHardwareStackSize=16
+ InterruptVectorsNumber=35
+ InterruptVectorJump=1
+@@ -82,7 +106,7 @@ AutomaticRegisterAllocation=1
+ SmartRegisterAllocation=1
+ PreprocessorOutput=0
+ IOBitDefinitions=1
+-StackEndMarkers=0
++StackEndMarkers=1
+ Warnings=1
+ WarningConstantRange=0
+ WarningPossibleLossOfPrecision=0
+@@ -140,7 +164,7 @@ WarningExternalDeclaredNeverDefined=1
+ WarningUnknownPragma=1
+ DebugBootLoader=0
+ WatchAVR8LAutoVariables=0
+-Build=36
++Build=86
+ UseEEPROMLocation0=1
+ ExternalInterruptVectors=0
+ IncludePath0=E:\development\DivisasDisplay\CodeVisionAVR\Source
+@@ -298,19 +322,23 @@ Row=0
+ Column=0
+ ScrollPosX=0
+ ScrollPosY=0
+-TimeStamp=1166373363
++TimeStamp=1166636404
+ [BookmarksFoldedCode]
+-Files=4
++Files=8
+ F1=DivisasScreenDotMatrix.c
+ F2=..\Source\DotMatrix.c
+ F3=..\Source\ScreenDotMatrix.c
+ F4=bsp.c
++F5=..\Source\ScreenDotMatrixDevice.c
++F6=..\Source\ScreenDisplayCommands.h
++F7=..\Source\ScreenDisplayDeviceCommandList.h
++F8=..\Source\ScreenDisplayProtocol.c
+ [Bookmarks1]
+-TimeStamp=1166313600
+-Row=0
+-Column=0
++TimeStamp=1166635826
++Row=35
++Column=74
+ ScrollPosX=0
+-ScrollPosY=0
++ScrollPosY=24
+ BK0=-1
+ BK1=-1
+ BK2=-1
+@@ -338,7 +366,7 @@ BK7=-1
+ BK8=-1
+ BK9=-1
+ [Bookmarks3]
+-TimeStamp=1166315884
++TimeStamp=1166580267
+ Row=12
+ Column=39
+ ScrollPosX=0
+@@ -354,11 +382,75 @@ BK7=-1
+ BK8=-1
+ BK9=-1
+ [Bookmarks4]
+-TimeStamp=1166313600
+-Row=138
+-Column=96
++TimeStamp=1166578464
++Row=4
++Column=58
++ScrollPosX=0
++ScrollPosY=15
++BK0=-1
++BK1=-1
++BK2=-1
++BK3=-1
++BK4=-1
++BK5=-1
++BK6=-1
++BK7=-1
++BK8=-1
++BK9=-1
++[Bookmarks5]
++TimeStamp=1166627041
++Row=0
++Column=0
++ScrollPosX=0
++ScrollPosY=0
++BK0=-1
++BK1=-1
++BK2=-1
++BK3=-1
++BK4=-1
++BK5=-1
++BK6=-1
++BK7=-1
++BK8=-1
++BK9=-1
++[Bookmarks6]
++TimeStamp=1165593722
++Row=40
++Column=0
++ScrollPosX=0
++ScrollPosY=26
++BK0=-1
++BK1=-1
++BK2=-1
++BK3=-1
++BK4=-1
++BK5=-1
++BK6=-1
++BK7=-1
++BK8=-1
++BK9=-1
++[Bookmarks7]
++TimeStamp=1166559494
++Row=0
++Column=0
++ScrollPosX=0
++ScrollPosY=0
++BK0=-1
++BK1=-1
++BK2=-1
++BK3=-1
++BK4=-1
++BK5=-1
++BK6=-1
++BK7=-1
++BK8=-1
++BK9=-1
++[Bookmarks8]
++TimeStamp=1166630937
++Row=66
++Column=5
+ ScrollPosX=0
+-ScrollPosY=136
++ScrollPosY=76
+ BK0=-1
+ BK1=-1
+ BK2=-1
+@@ -369,8 +461,24 @@ BK6=-1
+ BK7=-1
+ BK8=-1
+ BK9=-1
++[FoldedCode1]
++Blocks=0
++[FoldedCode2]
++Blocks=0
++[FoldedCode3]
++Blocks=0
++[FoldedCode4]
++Blocks=0
++[FoldedCode5]
++Blocks=0
++[FoldedCode8]
++Blocks=0
++[FoldedCode6]
++Blocks=0
++[FoldedCode7]
++Blocks=0
+ [HeadersList]
+-Files=9
++Files=13
+ F1=E:\development\DivisasDisplay\CodeVisionAVR\atmega1284p\DivisasScreenDotMatrix.c
+ F2=E:\development\DivisasDisplay\CodeVisionAVR\Source\TPIC6B595.c
+ F3=E:\development\DivisasDisplay\CodeVisionAVR\Source\DotMatrix.c
+@@ -380,24 +488,36 @@ F6=E:\development\DivisasDisplay\CodeVisionAVR\Source\SN54LS145N.c
+ F7=E:\development\DivisasDisplay\CodeVisionAVR\Source\Timer.c
+ F8=E:\development\DivisasDisplay\CodeVisionAVR\atmega1284p\psp.c
+ F9=E:\development\DivisasDisplay\CodeVisionAVR\atmega1284p\bsp.c
++F10=E:\development\DivisasDisplay\CodeVisionAVR\Source\ScreenDotMatrixDevice.c
++F11=E:\development\DivisasDisplay\CodeVisionAVR\Source\Com485Protocol.c
++F12=E:\development\DivisasDisplay\CodeVisionAVR\Source\ScreenDisplayCommands.c
++F13=E:\development\DivisasDisplay\CodeVisionAVR\Source\ScreenDisplayProtocol.c
+ [Header1]
+-Files=16
+-F1=..\Source\CommonSystemLibraries.h
+-F2=E:\cvavr2\inc\stdio.h
+-F3=E:\cvavr2\inc\stdarg.h
+-F4=E:\cvavr2\inc\string.h
+-F5=psp.h
+-F6=E:\cvavr2\inc\mega1284p.h
+-F7=E:\cvavr2\inc\mega1284p_bits.h
+-F8=bsp.h
+-F9=E:\cvavr2\inc\SPI.h
+-F10=E:\cvavr2\inc\delay.h
+-F11=..\Source\ScreenDotMatrix.h
+-F12=..\Source\DotMatrix.h
+-F13=..\Source\TPIC6B595.h
+-F14=..\Source\SN54LS145N.h
+-F15=..\Source\Timer.h
+-F16=..\Source\Fonts.h
++Files=24
++F1=..\Source\ScreenDotMatrixDevice.h
++F2=..\Source\ScreenDotMatrix.h
++F3=..\Source\DotMatrix.h
++F4=..\Source\TPIC6B595.h
++F5=..\Source\CommonSystemLibraries.h
++F6=E:\cvavr2\inc\stdio.h
++F7=E:\cvavr2\inc\stdarg.h
++F8=E:\cvavr2\inc\string.h
++F9=psp.h
++F10=E:\cvavr2\inc\mega1284p.h
++F11=E:\cvavr2\inc\mega1284p_bits.h
++F12=bsp.h
++F13=E:\cvavr2\inc\SPI.h
++F14=E:\cvavr2\inc\delay.h
++F15=..\Source\SN54LS145N.h
++F16=..\Source\Timer.h
++F17=..\Source\Fonts.h
++F18=..\Source\ScreenDisplayCommands.h
++F19=..\Source\ScreenDisplayDeviceCommandList.h
++F20=..\Source\ScreenDisplayProtocol.h
++F21=..\Source\Com485Protocol.h
++F22=..\Source\ScreenDisplayDevice.h
++F23=..\Source\ScreenDisplay7Seg.h
++F24=..\Source\Display7Seg.h
+ [Header2]
+ Files=11
+ F1=..\Source\TPIC6B595.h
+@@ -486,11 +606,72 @@ F2=E:\cvavr2\inc\mega1284p.h
+ F3=E:\cvavr2\inc\mega1284p_bits.h
+ F4=E:\cvavr2\inc\SPI.h
+ F5=E:\cvavr2\inc\delay.h
+-[FoldedCode1]
+-Blocks=0
+-[FoldedCode2]
+-Blocks=0
+-[FoldedCode3]
+-Blocks=0
+-[FoldedCode4]
+-Blocks=0
++[Header10]
++Files=19
++F1=..\Source\ScreenDotMatrixDevice.h
++F2=..\Source\ScreenDotMatrix.h
++F3=..\Source\DotMatrix.h
++F4=..\Source\TPIC6B595.h
++F5=..\Source\CommonSystemLibraries.h
++F6=E:\cvavr2\inc\stdio.h
++F7=E:\cvavr2\inc\stdarg.h
++F8=E:\cvavr2\inc\string.h
++F9=psp.h
++F10=E:\cvavr2\inc\mega1284p.h
++F11=E:\cvavr2\inc\mega1284p_bits.h
++F12=bsp.h
++F13=E:\cvavr2\inc\SPI.h
++F14=E:\cvavr2\inc\delay.h
++F15=..\Source\SN54LS145N.h
++F16=..\Source\Timer.h
++F17=..\Source\Fonts.h
++F18=..\Source\ScreenDisplayCommands.h
++F19=..\Source\ScreenDisplayDeviceCommandList.h
++[Header11]
++Files=12
++F1=..\Source\Com485Protocol.h
++F2=..\Source\CommonSystemLibraries.h
++F3=E:\cvavr2\inc\stdio.h
++F4=E:\cvavr2\inc\stdarg.h
++F5=E:\cvavr2\inc\string.h
++F6=psp.h
++F7=E:\cvavr2\inc\mega1284p.h
++F8=E:\cvavr2\inc\mega1284p_bits.h
++F9=bsp.h
++F10=E:\cvavr2\inc\SPI.h
++F11=E:\cvavr2\inc\delay.h
++F12=..\Source\Timer.h
++[Header12]
++Files=11
++F1=..\Source\ScreenDisplayCommands.h
++F2=..\Source\CommonSystemLibraries.h
++F3=E:\cvavr2\inc\stdio.h
++F4=E:\cvavr2\inc\stdarg.h
++F5=E:\cvavr2\inc\string.h
++F6=psp.h
++F7=E:\cvavr2\inc\mega1284p.h
++F8=E:\cvavr2\inc\mega1284p_bits.h
++F9=bsp.h
++F10=E:\cvavr2\inc\SPI.h
++F11=E:\cvavr2\inc\delay.h
++[Header13]
++Files=19
++F1=..\Source\ScreenDisplayProtocol.h
++F2=..\Source\Com485Protocol.h
++F3=..\Source\CommonSystemLibraries.h
++F4=E:\cvavr2\inc\stdio.h
++F5=E:\cvavr2\inc\stdarg.h
++F6=E:\cvavr2\inc\string.h
++F7=psp.h
++F8=E:\cvavr2\inc\mega1284p.h
++F9=E:\cvavr2\inc\mega1284p_bits.h
++F10=bsp.h
++F11=E:\cvavr2\inc\SPI.h
++F12=E:\cvavr2\inc\delay.h
++F13=..\Source\Timer.h
++F14=..\Source\ScreenDisplayCommands.h
++F15=..\Source\ScreenDisplayDevice.h
++F16=..\Source\ScreenDisplay7Seg.h
++F17=..\Source\Display7Seg.h
++F18=..\Source\TPIC6B595.h
++F19=..\Source\ScreenDisplayDeviceCommandList.h
+diff --git a/atmega1284p/bsp.c b/atmega1284p/bsp.c
+index c080fd1..2bfcb03 100644
+--- a/atmega1284p/bsp.c
++++ b/atmega1284p/bsp.c
+@@ -338,7 +338,11 @@ bit rx_buffer_overflow0 = 0;
+ // USART0 Receiver interrupt service routine
+ interrupt [USART0_RXC] void usart0_rx_isr(void)
+ {
+-	char status,data;
++	
++		
++	char status,data; 
++    
++       
+ 	status=UCSR0A;
+ 	data=UDR0;
+ 	if ((status & (FRAMING_ERROR | PARITY_ERROR | DATA_OVERRUN))==0)
+@@ -363,6 +367,8 @@ interrupt [USART0_RXC] void usart0_rx_isr(void)
+ 			
+ 		#endif
+    }
++   
++   
+ }
+ 
+ #ifndef _DEBUG_TERMINAL_IO_
+@@ -375,7 +381,9 @@ interrupt [USART0_RXC] void usart0_rx_isr(void)
+ 	{
+ 		char data;
+ 
+-		while (rx_counter0==0);
++		while (rx_counter0==0){
++			bsp_io_write(BSP_PIN_A2, HIGH);
++		}
+ 
+ 		data=rx_buffer0[rx_rd_index0++];
+ 
+@@ -417,6 +425,7 @@ unsigned int tx_counter0 = 0;
+ // USART0 Transmitter interrupt service routine
+ interrupt [USART0_TXC] void usart0_tx_isr(void)
+ {
++	
+ 	if (tx_counter0)
+ 	{
+ 		--tx_counter0;
+@@ -429,6 +438,8 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
+ 	}
+ 	
+ 	tx_buffer_flush = 1;
++	
++		
+ }
+ 
+ #ifndef _DEBUG_TERMINAL_IO_
+@@ -439,7 +450,9 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
+ 
+ 	void putchar(char c)
+ 	{
+-		while (tx_counter0 == TX_BUFFER_SIZE0);
++		while (tx_counter0 == TX_BUFFER_SIZE0){
++			bsp_io_write(BSP_PIN_A2, HIGH);
++		}
+ 		
+ 		tx_buffer_flush = 0;
+ 		
+@@ -556,8 +569,12 @@ BSP_TIMER_UPDATE_FUNCTION bsp_timer_update;
+ // Timer1 output compare A interrupt service routine every 100 ms
+ interrupt [TIM1_COMPA] void timer1_compa_isr(void)
+ {
++	// Global disable interrupts
++	//#asm("cli")
+ 	// Place your code here	
+ 	bsp_timer_update();
++	// Global enable interrupts
++	//#asm("sei")	
+ }
+ 
+ // API

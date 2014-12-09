@@ -43,7 +43,7 @@ void ScreenDotMatrix_Setup(void){
 	bsp_pin_mode(BSP_PIN_A1, OUTPUT);		
 	bsp_io_write(BSP_PIN_A1, estado);	
 	
-	bsp_usart_setup();			
+	
 }
 
 void ScreenDotMatrix_Render(void){

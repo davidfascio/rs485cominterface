@@ -51,10 +51,10 @@ int ScreenDisplayDevice_Update(float data){
 // DEMO
 int LEDStatus(int status){
 		
-	bsp_pin_mode(BSP_PIN_A1, OUTPUT);	
+	bsp_pin_mode(BSP_PIN_A2, OUTPUT);	
 	
 	if( status == LOW || status == HIGH ){
-		bsp_io_write(BSP_PIN_A1, status);  		 	
+		bsp_io_write(BSP_PIN_A2, status);  		 	
 	}
 		
 	return status;

@@ -65,9 +65,9 @@ int ScreenDisplayCommands_AddCommad(SCREEN_DISPLAY_COMMANDS_FUNCTION CommadFunct
 
 COMMAND_RESPONSE_STRUCT  ScreenDisplayCommands_ExecCommand(int commandId, char * data, int dataSize){
 		
-	int index = 0;
+	volatile int index = 0;
 	
-	COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	volatile COMMAND_RESPONSE_STRUCT CommandResponseControl;	
 	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);
 	
 	while(ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl) == SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID &&

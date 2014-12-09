@@ -17,7 +17,7 @@
 // Defines
 //**********************************************************************
 
-#define TIMER_MAX_SUPPORTED_NUMBER						  	(4)
+#define TIMER_MAX_SUPPORTED_NUMBER						  	(5)
 
 #define TIMER_MIN_VALUE_SUPPORT_IN_MS						(1)
 
@@ -57,5 +57,6 @@ void Timer_Setup(void);
 int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms);
 int Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms);
 void Timer_Update(void);
+void Timer_Event(void);
 
 #endif /* #ifndef __TIMER_H__ */

@@ -117,10 +117,10 @@ void bsp_spi_send(int data);
 #define RX_COMPLETE 											(1<<RXC)
 
 // USART0 Receiver buffer
-#define RX_BUFFER_SIZE0 											(128)
+#define RX_BUFFER_SIZE0 											(100)
 
 // USART0 Transmitter buffer
-#define TX_BUFFER_SIZE0 											(512)
+#define TX_BUFFER_SIZE0 											(100)
 
 ////////////////////////////////////////////////////////////////////////
 

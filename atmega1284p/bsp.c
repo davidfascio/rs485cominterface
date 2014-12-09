@@ -338,7 +338,11 @@ bit rx_buffer_overflow0 = 0;
 // USART0 Receiver interrupt service routine
 interrupt [USART0_RXC] void usart0_rx_isr(void)
 {
-	char status,data;
+	
+		
+	char status,data; 
+    
+       
 	status=UCSR0A;
 	data=UDR0;
 	if ((status & (FRAMING_ERROR | PARITY_ERROR | DATA_OVERRUN))==0)
@@ -363,6 +367,8 @@ interrupt [USART0_RXC] void usart0_rx_isr(void)
 			
 		#endif
    }
+   
+   
 }
 
 #ifndef _DEBUG_TERMINAL_IO_
@@ -375,7 +381,9 @@ interrupt [USART0_RXC] void usart0_rx_isr(void)
 	{
 		char data;
 
-		while (rx_counter0==0);
+		while (rx_counter0==0){
+			bsp_io_write(BSP_PIN_A2, HIGH);
+		}
 
 		data=rx_buffer0[rx_rd_index0++];
 
@@ -417,6 +425,7 @@ unsigned int tx_counter0 = 0;
 // USART0 Transmitter interrupt service routine
 interrupt [USART0_TXC] void usart0_tx_isr(void)
 {
+	
 	if (tx_counter0)
 	{
 		--tx_counter0;
@@ -429,6 +438,8 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
 	}
 	
 	tx_buffer_flush = 1;
+	
+		
 }
 
 #ifndef _DEBUG_TERMINAL_IO_
@@ -439,7 +450,9 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
 
 	void putchar(char c)
 	{
-		while (tx_counter0 == TX_BUFFER_SIZE0);
+		while (tx_counter0 == TX_BUFFER_SIZE0){
+			bsp_io_write(BSP_PIN_A2, HIGH);
+		}
 		
 		tx_buffer_flush = 0;
 		
@@ -556,8 +569,12 @@ BSP_TIMER_UPDATE_FUNCTION bsp_timer_update;
 // Timer1 output compare A interrupt service routine every 100 ms
 interrupt [TIM1_COMPA] void timer1_compa_isr(void)
 {
+	// Global disable interrupts
+	//#asm("cli")
 	// Place your code here	
 	bsp_timer_update();
+	// Global enable interrupts
+	//#asm("sei")	
 }
 
 // API

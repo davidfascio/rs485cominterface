@@ -47,11 +47,12 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 	volatile COMMAND_RESPONSE_STRUCT CommandResponseControl;	
 	volatile int commandErrorCodeResponse;
 	
+	//!bsp_usart_write("AQUI", strlen("AQUI"));
 	if(Com485Protocol_GetDataPacketArrived(&ScreenDisplayProtocolControl)) 
 	{
 		ComAddress 		= Com485Protocol_GetComAddress(&ScreenDisplayProtocolControl);	
 		SlaveAddress 	= Com485Protocol_GetSlaveAddressInPacketReceived(&ScreenDisplayProtocolControl);	
-					
+		
 		// Verifying Slave Address with Device Address
 		if (ComAddress == SlaveAddress ||
 			SlaveAddress == SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS){
@@ -64,7 +65,9 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 			DataPacketSize 	= Com485Protocol_GetDataInPacketReceivedLen(&ScreenDisplayProtocolControl);		
 			
 			ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);		
-					
+			//!bsp_usart_write("PDPA", strlen("PDPA"));
+			//!bsp_pin_mode(BSP_PIN_A2, OUTPUT);
+			//!bsp_io_write(BSP_PIN_A2, HIGH);
 			CommandResponseControl = ScreenDisplayCommands_ExecCommand(CommandID, cpPacketData, DataPacketSize);		
 			CommandIdResponse = ScreenDisplayCommands_GetCommandIdResponse(&CommandResponseControl);
 			
@@ -88,7 +91,7 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 	}
 }
 
-void ScreenDisplayProtocol_StateMachineUpdate(void){
+int ScreenDisplayProtocol_StateMachineUpdate(void){
 	
-	Com485ProtocolStateMachine_Update(&ScreenDisplayProtocolControl);
+	return Com485ProtocolStateMachine_Update(&ScreenDisplayProtocolControl);
 }

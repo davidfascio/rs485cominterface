@@ -31,6 +31,6 @@
 void ScreenDisplayProtocol_Setup(void);
 void ScreenDisplayProtocol_WaitDataPacketCheck(void);
 void ScreenDisplayProtocol_ProcessingDataPacketArrived(void);
-void ScreenDisplayProtocol_StateMachineUpdate(void);
+int ScreenDisplayProtocol_StateMachineUpdate(void);
 
 #endif /* __SCREEN_DISPLAY_PROTOCOL_H__ */
