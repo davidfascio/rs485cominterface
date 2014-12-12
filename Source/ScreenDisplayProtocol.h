@@ -33,4 +33,7 @@ void ScreenDisplayProtocol_WaitDataPacketCheck(void);
 void ScreenDisplayProtocol_ProcessingDataPacketArrived(void);
 int ScreenDisplayProtocol_StateMachineUpdate(void);
 
+int ScreenDisplayProtocol_SendDataPackWaitForResponse(char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen, 
+														int ResponseCommandId, int WaitTimeOutSec, int Retries);
+int ScreenDisplayProtocol_SendDataPacket(char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen);
 #endif /* __SCREEN_DISPLAY_PROTOCOL_H__ */

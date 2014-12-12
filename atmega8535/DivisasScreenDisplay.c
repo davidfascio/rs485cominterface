@@ -11,44 +11,64 @@
 //#include "ScreenDisplayDevice.h"
 //#include "ScreenDisplayProtocol.h"
 #include "CommonSystemLibraries.h"
-#include "ScreenDotMatrix.h"
+#include "ScreenDisplayProtocol.h"
+//#include "ScreenDotMatrix.h"
+#include "Timer.h"
+
+//#include "ScreenDotMatrix.h"
+
+char * messages [] = {"EUR",					  
+					  "EURO",
+					  "USD",
+					  "DOLAR",
+					  "COMPRA", 
+					  "VENTA"};
+
+int	message_types[]	= {	0, 
+						1,
+						0, 
+						1,
+						1,
+						1
+												};
+												
+typedef struct dotmatrixdatastruct{
+int 	dotMatrixEffect;
+char 	dotMatrixMessage[10];
+} DOT_MATRIX_DATA_STRUCT, *DOT_MATRIX_DATA_STRUCT_PTR_;
 
 TIMER_STRUCT myTimer;
-
+DOT_MATRIX_DATA_STRUCT myDotMatrix;
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
 
 void main(void)
 {   
-	int index = 24;
+	int index = 0;
+	
 	//! SETUP
-	bsp_setup();    
-	//bsp_usart_setup();
+	bsp_setup();    	
 	Timer_Setup();
-	/*bsp_pin_mode(BSP_PIN_A1, OUTPUT);
-	bsp_pin_mode(BSP_PIN_A2, OUTPUT);	
-	bsp_pin_mode(BSP_PIN_A3, OUTPUT);*/
-		
-	ScreenDotMatrix_Setup();
+	ScreenDisplayProtocol_Setup();
 	
 	//! AFTER SETUP	
-	AddTimer(&myTimer, 200);		
+	AddTimer(&myTimer, 1000);		
 	
 	//! LOOP
 	while(TRUE){			
 		
-		ScreenDotMatrix_Render();
+		
 				
 		if(Timer_GetOverflow(&myTimer) == TRUE){				
 			
-			ScreenDotMatrix_Clear();		
-			ScreenDotMatrix_DrawText("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",index,0,FONT_7x6, FONT_7x6_WIDTH, FONT_7x6_HEIGHT);
+			myDotMatrix.dotMatrixEffect = message_types[index];
+			memset(myDotMatrix.dotMatrixMessage, 0, 10);
+			memcpy(myDotMatrix.dotMatrixMessage, messages[index], strlen(messages[index]));			
 			
-			index --;
-
-			if(index < -8*36)
-				index = 24;
+			ScreenDisplayProtocol_SendDataPacket(0x11, 3002, (char *) &myDotMatrix, sizeof(DOT_MATRIX_DATA_STRUCT));
+			
+			index = (index >= 5 ) ? 0 : index + 1;
 			Timer_Reset(&myTimer);
 		}
 		

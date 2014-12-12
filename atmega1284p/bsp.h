@@ -122,6 +122,8 @@ void bsp_spi_send(int data);
 // USART0 Transmitter buffer
 #define TX_BUFFER_SIZE0 											(100)
 
+#define BSP_TX_BUFFER_SIZE 								(TX_BUFFER_SIZE0)
+
 ////////////////////////////////////////////////////////////////////////
 
 //**********************************************************************

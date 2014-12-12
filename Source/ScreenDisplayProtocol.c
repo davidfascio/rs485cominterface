@@ -78,11 +78,10 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 				
 				CommandErrorCodeResponse = ScreenDisplayCommands_GetCommandErrorCodeResponse(&CommandResponseControl);			
 				
-				Com485Protocol_SendDataPacket(	&ScreenDisplayProtocolControl, 
-												SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS,
-												CommandIdResponse, 
-												(char *) & CommandErrorCodeResponse, 
-												sizeof(CommandErrorCodeResponse));
+				ScreenDisplayProtocol_SendDataPacket(	SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS,
+														CommandIdResponse, 
+														(char *) & CommandErrorCodeResponse, 
+														sizeof(CommandErrorCodeResponse));
 			}
 		}
 		
@@ -94,4 +93,17 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 int ScreenDisplayProtocol_StateMachineUpdate(void){
 	
 	return Com485ProtocolStateMachine_Update(&ScreenDisplayProtocolControl);
+}
+
+int ScreenDisplayProtocol_SendDataPackWaitForResponse(char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen, 
+														int ResponseCommandId, int WaitTimeOutSec, int Retries){
+	
+	return Com485Protocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, SlaveAddress, CommandId,  PacketData, PacketDataLen, 
+														ResponseCommandId, WaitTimeOutSec, Retries);
+														
+}
+
+int ScreenDisplayProtocol_SendDataPacket(char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen){
+	
+	return Com485Protocol_SendDataPacket(&ScreenDisplayProtocolControl, SlaveAddress, CommandId,  PacketData, PacketDataLen);
 }

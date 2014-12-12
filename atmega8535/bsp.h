@@ -97,6 +97,10 @@ void bsp_spi_send(int data);
 // USART Transmitter buffer
 #define TX_BUFFER_SIZE 												(128)
 
+// COM
+
+#define BSP_TX_BUFFER_SIZE								(TX_BUFFER_SIZE)
+
 void bsp_usart_setup(void);
 void bsp_usart_putc(char data);
 char bsp_usart_getc(void);
