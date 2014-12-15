@@ -38,6 +38,7 @@ typedef enum bsp_ports{
 	BSP_PIN_B1,
 	BSP_PIN_B2,
 	BSP_PIN_B3,
+	BSP_PIN_D2,
 	BSP_PIN_D3,
 	BSP_PIN_D4,
 	BSP_PIN_D5,
@@ -129,7 +130,10 @@ void bsp_spi_send(int data);
 //**********************************************************************
 // BSP USART Functions
 //**********************************************************************
-void bsp_usart_setup(void);
+// Vartypes
+typedef void (*BSP_USART_UPDATE_FUNCTION)(void);
+
+void bsp_usart_setup(BSP_USART_UPDATE_FUNCTION update_function);
 void bsp_usart_putc(char data);
 char bsp_usart_getc(void);
 int  bsp_usart_status(void);

@@ -17,9 +17,9 @@ COM_485_PROTOCOL_STRUCT ScreenDisplayProtocolControl;
 // API Fucntions
 //**********************************************************************
 
-void ScreenDisplayProtocol_Setup(void){
+void ScreenDisplayProtocol_Setup(char ComAddress ){
 	
-	Com485Protocol_Setup(&ScreenDisplayProtocolControl, BSP_USART_COM_HDLR, SCREEN_DISPLAY_PROTOCOL_DEFAULT_SLAVE_ADDRESS, COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
+	Com485Protocol_Setup(&ScreenDisplayProtocolControl, BSP_USART_COM_HDLR, ComAddress, COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
 	ScreenDisplayCommands_Setup();
 }
 
@@ -97,10 +97,17 @@ int ScreenDisplayProtocol_StateMachineUpdate(void){
 
 int ScreenDisplayProtocol_SendDataPackWaitForResponse(char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen, 
 														int ResponseCommandId, int WaitTimeOutSec, int Retries){
+	int protocol_status;
 	
-	return Com485Protocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, SlaveAddress, CommandId,  PacketData, PacketDataLen, 
+	protocol_status = Com485Protocol_SendDataPackWaitForResponse(&ScreenDisplayProtocolControl, SlaveAddress, CommandId,  PacketData, PacketDataLen, 
 														ResponseCommandId, WaitTimeOutSec, Retries);
-														
+	
+	if (protocol_status == COM_485_PROTOCOL_PACKET_RECEIVED)													
+		ScreenDisplayProtocol_ProcessingDataPacketArrived();
+	else
+		Com485Protocol_SetDataPacketArrived(&ScreenDisplayProtocolControl, FALSE);	
+		
+	return protocol_status;														
 }
 
 int ScreenDisplayProtocol_SendDataPacket(char SlaveAddress, int CommandId, char * PacketData, int PacketDataLen){

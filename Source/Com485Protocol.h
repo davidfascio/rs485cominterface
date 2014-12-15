@@ -11,7 +11,7 @@
 //**********************************************************************
 // Includes
 //**********************************************************************
-#include "CommonSystemLibraries.h"
+#include "Com485Interface.h"
 #include "Timer.h"
 
 //**********************************************************************
@@ -71,7 +71,7 @@
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR					0XFF
 #define COM_485_PROTOCOL_CONFIG_DATA_PACKET_MAX_DATA_LEN				(BSP_TX_BUFFER_SIZE - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD)
 
-#define COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS							(1000)
+#define COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS							(100)
 //**********************************************************************
 // Structures 
 //**********************************************************************

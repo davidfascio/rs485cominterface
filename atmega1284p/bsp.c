@@ -196,10 +196,14 @@ void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin){
 			
 		case BSP_PIN_B3:
 			DDRB.3 = dir_pin ; 
-			break;			
-		
+			break;
+						
+		case BSP_PIN_D2:
+			DDRD.2 = dir_pin;
+			break;
+			
 		case BSP_PIN_D3:
-			DDRD.3 = dir_pin ; 
+			DDRD.3 = dir_pin; 
 			break;
 		
 		case BSP_PIN_D4:
@@ -252,6 +256,10 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 			
 		case BSP_PIN_B3:
 			PORTB.3 = state_pin;
+			break;
+		
+		case BSP_PIN_D2:
+			PORTD.2 = state_pin;
 			break;
 			
 		case BSP_PIN_D3:
@@ -317,6 +325,7 @@ void bsp_spi_send(int data){
 // BSP USART Functions
 //**********************************************************************
 
+BSP_USART_UPDATE_FUNCTION bsp_usart_update;
 
 // USART0 Receiver buffer
 
@@ -437,7 +446,10 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
 	#endif
 	}
 	
-	tx_buffer_flush = 1;
+	else{
+		tx_buffer_flush = 1;
+		bsp_usart_update();
+	}
 	
 		
 }
@@ -478,7 +490,7 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
 
 #endif
 
-void bsp_usart_setup(void){
+void bsp_usart_setup(BSP_USART_UPDATE_FUNCTION update_function){
 	
 	// Global disable interrupts
 	#asm("cli")
@@ -499,6 +511,7 @@ void bsp_usart_setup(void){
 	// USART1 disabled
 	UCSR1B=0x00;
 	
+	bsp_usart_update = update_function;
 	// Global enable interrupts
 	#asm("sei")
 

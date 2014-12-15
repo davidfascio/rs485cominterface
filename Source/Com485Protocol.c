@@ -156,8 +156,7 @@ void Com485Protocol_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, in
 	AddTimer(&Com485Timer, WaitTimeOutInMS);
 	Com485ProtocolStateMachine_Setup(Com485ProtocolControl, WaitTimeOutInMS);
 
-	//! Com485Interface_setup();
-	bsp_usart_setup();
+	Com485Interface_Setup();	
 }
 
 void Com485Protocol_RecvBufferReset(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl){
@@ -177,15 +176,13 @@ void ErrorInCom485ProtocolCommunication(COM_485_PROTOCOL_STRUCT_PTR_ Com485Proto
 }
 
 int Com485Protocol_ReceiveData(int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen){
-
-	//! recvrslt = Com485Interface_read();	
-	return bsp_usart_read(DataReceiveBuffer, DataLen);
+	
+	return Com485Interface_Read(DataReceiveBuffer, DataLen);
 }
 
 int Com485Protocol_SendData(int Com485InterfaceHandler, char * DataToSend, int DataLen){
-
-	//! sendrslt = Com485Interface_write(DataToSend, DataLen);
-	return bsp_usart_write(DataToSend, DataLen);	
+	
+	return Com485Interface_Write(DataToSend, DataLen);
 }
 
 int Com485Protocol_SendHeaderPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, int DataLen, char SlaveAddress, int CommandID){
@@ -304,6 +301,7 @@ int Com485Protocol_WaitDataPacket(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolCon
 			Com485ProtocolControl->RecvBufferPtr += SocketClientrecvRslt;
 			Com485ProtocolControl->TotalDataArrived += SocketClientrecvRslt;
 			//Com485ProtocolControl->WaitDataPacketTimeOutLoopCntr = 0;		
+			Timer_Reset(&Com485Timer);
 			
 			// Processing DataPacketLen Field
 			if ((PacketLenReceived == FALSE) && 
@@ -420,12 +418,12 @@ int Com485Protocol_SendDataPackWaitForResponse(COM_485_PROTOCOL_STRUCT_PTR_ Com4
 				if(WaitTimeOutSec == 0)
 					return COM_485_PROTOCOL_CONFIG_DATA_PACKET_RECEIVED_BAD_PARAMETERS;
 				
-				SendRslt = Com485Protocol_WaitDataPacket(Com485ProtocolControl, WaitTimeOutSec);
-				
+				SendRslt = Com485Protocol_WaitDataPacket(Com485ProtocolControl, WaitTimeOutSec);				
 				if(SendRslt == COM_485_PROTOCOL_PACKET_RECEIVED)
 				{
-					if(Com485Protocol_GetCommandIdInPacketReceived(Com485ProtocolControl) == ResponseCommandId)
+					if(Com485Protocol_GetCommandIdInPacketReceived(Com485ProtocolControl) == ResponseCommandId){						
 						return SendRslt;
+					}
 				}
 			}
 			else 

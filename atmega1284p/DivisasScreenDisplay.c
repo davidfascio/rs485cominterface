@@ -25,7 +25,7 @@ void main(void)
 	//! SETUP
 	bsp_setup();    
 	Timer_Setup();	
-	ScreenDisplayProtocol_Setup();		
+	ScreenDisplayProtocol_Setup(0x12);		
 	
 	//! AFTER SETUP
 	ScreenDisplayDevice_Setup();

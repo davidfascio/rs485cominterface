@@ -22,7 +22,7 @@ void main(void)
 	//! SETUP
 	bsp_setup();    
 	Timer_Setup();	
-	ScreenDisplayProtocol_Setup();	
+	ScreenDisplayProtocol_Setup(0x11);	
 	
 	//! AFTER SETUP	
 	ScreenDotMatrixDevice_Setup();	

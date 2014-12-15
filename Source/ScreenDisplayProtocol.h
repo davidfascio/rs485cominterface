@@ -22,13 +22,13 @@
 #define SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS			   	(0x01)
 #define SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS		   	(0x00)
 
-#define SCREEN_DISPLAY_PROTOCOL_WAIT_TIME_OUT					   (1000)
+#define SCREEN_DISPLAY_PROTOCOL_WAIT_TIME_OUT					   (100)
 
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
 
-void ScreenDisplayProtocol_Setup(void);
+void ScreenDisplayProtocol_Setup(char ComAddress );
 void ScreenDisplayProtocol_WaitDataPacketCheck(void);
 void ScreenDisplayProtocol_ProcessingDataPacketArrived(void);
 int ScreenDisplayProtocol_StateMachineUpdate(void);

@@ -24,6 +24,13 @@ char * messages [] = {"EUR",
 					  "COMPRA", 
 					  "VENTA"};
 
+float values [] = {	13.00,
+					0.001,
+					123.0,
+					45.67,
+					1.001,
+					98.76};
+					
 int	message_types[]	= {	0, 
 						1,
 						0, 
@@ -39,6 +46,7 @@ char     dotMatrixMessage[10];
 
 TIMER_STRUCT myTimer;
 DOT_MATRIX_DATA_STRUCT myDotMatrix;
+float datafloat;
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
@@ -47,10 +55,11 @@ void main(void)
 {   
     int index = 0;
     int status_pin = LOW;
+    
     //! SETUP
     bsp_setup();        
     Timer_Setup();
-    ScreenDisplayProtocol_Setup();
+    ScreenDisplayProtocol_Setup(0x01);
     
     
     //! AFTER SETUP    
@@ -65,8 +74,8 @@ void main(void)
         
         
         
-        ScreenDisplayProtocol_StateMachineUpdate();
-        ScreenDisplayProtocol_ProcessingDataPacketArrived();
+        //ScreenDisplayProtocol_StateMachineUpdate();
+        //ScreenDisplayProtocol_ProcessingDataPacketArrived();
                 
         if(Timer_GetOverflow(&myTimer) == TRUE){                
             
@@ -75,13 +84,35 @@ void main(void)
 			
             myDotMatrix.dotMatrixEffect = message_types[index];
             memset(myDotMatrix.dotMatrixMessage, 0, 10);
-            memcpy(myDotMatrix.dotMatrixMessage, messages[index], strlen(messages[index]));            
+            memcpy(myDotMatrix.dotMatrixMessage, messages[index], strlen(messages[index]));     
+            
+            datafloat = values[index];
             
             /*ScreenDisplayProtocol_SendDataPacket(0x11, 3002, (char *) &myDotMatrix, sizeof(DOT_MATRIX_DATA_STRUCT));*/
             
-            ScreenDisplayProtocol_SendDataPackWaitForResponse(0x11, 3002, (char *) &myDotMatrix, sizeof(DOT_MATRIX_DATA_STRUCT), 
-														4002, 1000, 3);
             
+            
+			
+			
+			
+			/* dot Matrix -- Tipo de cambio */
+            ScreenDisplayProtocol_SendDataPackWaitForResponse(0x11, 3002, (char *) &myDotMatrix, sizeof(DOT_MATRIX_DATA_STRUCT), 
+														4002, 200, 2);
+			
+			/* Display -- Venta */
+			ScreenDisplayProtocol_SendDataPackWaitForResponse(0x12, 1002, (char *) &datafloat, sizeof(datafloat), 
+														2002, 200, 2);
+            
+            /* Display -- Compra */
+            ScreenDisplayProtocol_SendDataPackWaitForResponse(0x13, 1002, (char *) &datafloat, sizeof(datafloat), 
+														2002, 200, 2);
+
+			/* Display -- Tasa */
+			ScreenDisplayProtocol_SendDataPackWaitForResponse(0x14, 1002, (char *) &datafloat, sizeof(datafloat), 
+														2002, 200, 2);    
+            
+            
+														
             index = (index >= 5 ) ? 0 : index + 1;
             Timer_Reset(&myTimer);
         }
