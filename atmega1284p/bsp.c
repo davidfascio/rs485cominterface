@@ -447,8 +447,10 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
 	}
 	
 	else{
-		tx_buffer_flush = 1;
-		bsp_usart_update();
+		tx_buffer_flush = 1;		
+		
+		//if(bsp_usart_update != NULL)
+			bsp_usart_update();
 	}
 	
 		
