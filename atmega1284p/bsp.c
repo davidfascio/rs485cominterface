@@ -322,7 +322,7 @@ void bsp_spi_send(int data){
 
 
 //**********************************************************************
-// BSP USART Functions
+// BSP USART0 Functions
 //**********************************************************************
 
 BSP_USART_UPDATE_FUNCTION bsp_usart_update;
@@ -449,8 +449,7 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
 	else{
 		tx_buffer_flush = 1;		
 		
-		//if(bsp_usart_update != NULL)
-			bsp_usart_update();
+		bsp_usart_update();
 	}
 	
 		
@@ -465,7 +464,7 @@ interrupt [USART0_TXC] void usart0_tx_isr(void)
 	void putchar(char c)
 	{
 		while (tx_counter0 == TX_BUFFER_SIZE0){
-			bsp_io_write(BSP_PIN_A2, HIGH);
+						
 		}
 		
 		tx_buffer_flush = 0;
@@ -508,10 +507,6 @@ void bsp_usart_setup(BSP_USART_UPDATE_FUNCTION update_function){
 	UCSR0C=0x06;
 	UBRR0H=0x00;
 	UBRR0L=0x33;
-
-	// USART1 initialization
-	// USART1 disabled
-	UCSR1B=0x00;
 	
 	bsp_usart_update = update_function;
 	// Global enable interrupts
@@ -569,6 +564,225 @@ int bsp_usart_read(char * data, int data_lenght){
 			
 		for(usart_index = 0; usart_index < local_data_lenght; usart_index++)
 			data[usart_index] = bsp_usart_getc();
+			
+		return local_data_lenght;
+	} 
+	
+	return 0;
+}
+
+//**********************************************************************
+// BSP USART1 Functions
+//**********************************************************************
+
+BSP_USART_UPDATE_FUNCTION bsp_usart1_update;
+
+
+// USART1 Receiver buffer
+
+char rx_buffer1[RX_BUFFER_SIZE1];
+
+#if RX_BUFFER_SIZE1 <= 256
+unsigned char rx_wr_index1,rx_rd_index1,rx_counter1;
+#else
+unsigned int rx_wr_index1,rx_rd_index1,rx_counter1;
+#endif
+
+// This flag is set on USART1 Receiver buffer overflow
+bit rx_buffer_overflow1;
+
+// USART1 Receiver interrupt service routine
+interrupt [USART1_RXC] void usart1_rx_isr(void)
+{
+	char status, data;
+	
+	status = UCSR1A;
+	data = UDR1;
+	
+	if ((status & (FRAMING_ERROR | PARITY_ERROR | DATA_OVERRUN)) == 0)
+	{
+		rx_buffer1[rx_wr_index1++] = data;
+		
+		#if RX_BUFFER_SIZE1 == 256
+			// special case for receiver buffer size=256
+			if (++rx_counter1 == 0) 
+				rx_buffer_overflow1 = 1;
+		#else
+			if (rx_wr_index1 == RX_BUFFER_SIZE1) 
+				rx_wr_index1 = 0;
+			
+			if (++rx_counter1 == RX_BUFFER_SIZE1)
+			{
+				rx_counter1 = 0;
+				rx_buffer_overflow1 = 1;
+			}
+		#endif
+	}
+}
+
+// Get a character from the USART1 Receiver buffer
+#pragma used+
+char getchar1(void)
+{
+	char data;
+
+	while (rx_counter1==0);
+	
+	data = rx_buffer1[rx_rd_index1++];
+	
+	#if RX_BUFFER_SIZE1 != 256
+		if (rx_rd_index1 == RX_BUFFER_SIZE1) 
+			rx_rd_index1 = 0;
+	#endif
+	
+	#asm("cli")
+		--rx_counter1;
+	#asm("sei")
+	
+	return data;
+}
+#pragma used-
+
+// This flag is set on USART Transmitter buffer 
+bit tx_buffer1_flush = 0;
+
+// USART1 Transmitter buffer
+
+char tx_buffer1[TX_BUFFER_SIZE1];
+
+#if TX_BUFFER_SIZE1 <= 256
+unsigned char tx_wr_index1,tx_rd_index1,tx_counter1;
+#else
+unsigned int tx_wr_index1,tx_rd_index1,tx_counter1;
+#endif
+
+// USART1 Transmitter interrupt service routine
+interrupt [USART1_TXC] void usart1_tx_isr(void)
+{
+	if (tx_counter1)
+	{
+		--tx_counter1;
+		UDR1=tx_buffer1[tx_rd_index1++];
+	
+		#if TX_BUFFER_SIZE1 != 256
+		
+			if (tx_rd_index1 == TX_BUFFER_SIZE1) 
+				tx_rd_index1=0;
+				
+		#endif	
+	} 
+	else{
+		tx_buffer1_flush = 1;		
+		
+		bsp_usart1_update();
+	}
+}
+
+// Write a character to the USART1 Transmitter buffer
+#pragma used+
+void putchar1(char c)
+{
+	while (tx_counter1 == TX_BUFFER_SIZE1);
+	
+	tx_buffer1_flush = 0;	
+		
+	#asm("cli")
+	if (tx_counter1 || ((UCSR1A & DATA_REGISTER_EMPTY)==0))
+	{
+		tx_buffer1[tx_wr_index1++]=c;
+		
+		#if TX_BUFFER_SIZE1 != 256
+		
+		if (tx_wr_index1 == TX_BUFFER_SIZE1) 
+			tx_wr_index1=0;
+			
+		#endif
+	   
+		++tx_counter1;
+	}
+	
+	else
+		UDR1=c;
+		
+	#asm("sei")
+}
+#pragma used-
+
+
+void bsp_usart1_setup(BSP_USART_UPDATE_FUNCTION update_function){
+	
+	// Global disable interrupts
+	#asm("cli")
+	
+	// USART1 initialization
+	// Communication Parameters: 8 Data, 1 Stop, No Parity
+	// USART1 Receiver: On
+	// USART1 Transmitter: On
+	// USART1 Mode: Asynchronous
+	// USART1 Baud Rate: 9600
+	UCSR1A=0x00;
+	UCSR1B=0xD8;
+	UCSR1C=0x06;
+	UBRR1H=0x00;
+	UBRR1L=0x33;
+	
+	bsp_usart1_update = update_function;
+	
+	// Global enable interrupts
+	#asm("sei")
+
+}
+
+void bsp_usart1_putc(char data){
+	
+	putchar1(data);
+}
+
+char bsp_usart1_getc(void){
+	
+	return getchar1();	
+}
+
+int  bsp_usart1_status(void){
+	
+	return rx_counter1;
+}
+
+int bsp_usart1_fstatus(void){
+	
+	return tx_buffer1_flush;
+}
+
+void bsp_usart1_flush(void){
+	
+	// Do nothing
+}
+
+int bsp_usart1_write(char * data, int data_lenght){
+	
+	int usart_index;
+
+	if(data_lenght > (TX_BUFFER_SIZE1 - tx_counter1))
+		return BSP_USART_WRITE_DATA_LENGHT_ERROR_CODE;
+		
+	for(usart_index = 0; usart_index < data_lenght; usart_index++)
+		bsp_usart1_putc(data[usart_index]);
+		
+	return BSP_NO_ERROR_CODE;	
+}
+
+int bsp_usart1_read(char * data, int data_lenght){
+	
+	int usart_index;
+	volatile int local_data_lenght = bsp_usart1_status();
+	
+	if(local_data_lenght > 0){
+	
+		if(local_data_lenght > data_lenght)
+			local_data_lenght = data_lenght;
+			
+		for(usart_index = 0; usart_index < local_data_lenght; usart_index++)
+			data[usart_index] = bsp_usart1_getc();
 			
 		return local_data_lenght;
 	} 

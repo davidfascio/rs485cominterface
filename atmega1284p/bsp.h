@@ -123,6 +123,13 @@ void bsp_spi_send(int data);
 // USART0 Transmitter buffer
 #define TX_BUFFER_SIZE0 											(100)
 
+// USART1 Receiver buffer
+#define RX_BUFFER_SIZE1 											(100)
+
+// USART1 Transmitter buffer
+#define TX_BUFFER_SIZE1 											(100)
+
+
 #define BSP_TX_BUFFER_SIZE 								(TX_BUFFER_SIZE0)
 
 ////////////////////////////////////////////////////////////////////////
@@ -142,6 +149,14 @@ void bsp_usart_flush(void);
 int bsp_usart_write(char * data, int data_lenght);
 int bsp_usart_read(char * data, int data_lenght);
 
+void bsp_usart1_setup(BSP_USART_UPDATE_FUNCTION update_function);
+void bsp_usart1_putc(char data);
+char bsp_usart1_getc(void);
+int  bsp_usart1_status(void);
+int bsp_usart1_fstatus(void);
+void bsp_usart1_flush(void);
+int bsp_usart1_write(char * data, int data_lenght);
+int bsp_usart1_read(char * data, int data_lenght);
 //**********************************************************************
 // BSP TIMER 16 bits Functions
 //**********************************************************************

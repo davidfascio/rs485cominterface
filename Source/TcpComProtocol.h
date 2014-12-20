@@ -69,9 +69,9 @@
 //!												 	
 //! +---+----------------------------------------+-----------------------+----------+---+
 //! |STX|				HEADER 		             |      	DATA       	 | CHECKSUM	|ETX|
-//! +---+-----+----+----+--------------+----+----+----+------------------+----------+---+
+//! +---+-----+----+----+--------------+----+----+-----------------------+----------+---+
 //! | < | BAZ | $u | $l | $cccccc(ccc) | $h | $n |  $p$p$p$p$p$p$p$p$p$p | 	$kkkk	| > |
-//! +---+-----+----+----+--------------+----+----+----+------------------+----------+---+
+//! +---+-----+----+----+--------------+----+----+-----------------------+----------+---+
 //!  
 //!  Ascii Format
 //!  < 	: Start of Transmition Character				-	
@@ -89,9 +89,9 @@
 //!						
 //! +---+----------+--------------+----------+---+
 //! |STX|  HEADER  |  	 DATA     | CHECKSUM |ETX|
-//! +---+-----+----+----+---------+----------+---+
+//! +---+-----+----+--------------+----------+---+
 //! | < | BAZ | $n | $p$p$p$p$p$p |  $kkkk   | > |
-//! +---+-----+----+----+---------+----------+---+
+//! +---+-----+----+--------------+----------+---+
 //!  
 //!  Ascii Format
 //!  < 	: Start of Transmition Character				-	
@@ -102,6 +102,11 @@
 //!  >	: Last Character in Transmition 				-
 
 //! TCP_COM_PROTOCOL
+
+#define TCP_COM_PROTOCOL_ADMINISTRATOR 									(0) 
+#define TCP_COM_PROTOCOL_DEFAULT_PASSWORD 								"123456789"
+#define TCP_COM_PROTOCOL_DEFAULT_PASSWORD_LEN							(9)
+
 #define TCP_COM_PROTOCOL_DEFAULT_STX_CHAR								'<'
 #define TCP_COM_PROTOCOL_DEFAULT_ETX_CHAR								'>'
 #define TCP_COM_PROTOCOL_DEFAULT_BREAK_CHAR								'$'
@@ -189,6 +194,7 @@
 
 //Command Id Error Codes
 #define TCP_COM_PROTOCOL_COMMAND_ID_NO_FOUND_ERROR_CODE					(TCP_COM_PROTOCOL_COMMAND_ID_BASE_ERROR_CODE |1)
+#define TCP_COM_PROTOCOL_COMMAND_ID_NO_MATCH_ERROR_CODE					(TCP_COM_PROTOCOL_COMMAND_ID_BASE_ERROR_CODE |2)
 #define TCP_COM_PROTOCOL_COMMAND_ID_CHECKSUM_POSITION_ERROR_CODE		(TCP_COM_PROTOCOL_COMMAND_ID_BASE_ERROR_CODE |3)
 #define TCP_COM_PROTOCOL_COMMAND_ID_FORMAT_ERROR_CODE					(TCP_COM_PROTOCOL_COMMAND_ID_BASE_ERROR_CODE |4)
 
@@ -246,8 +252,12 @@ void TCPComProtocol_SetComPrefix(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCont
 void TCPComProtocol_SetComUser(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, char  ComUser);
 void TCPComProtocol_SetComPassword(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, char * ComPassword, char ComPasswordLen);
 void TCPComProtocol_SetTotalDataArrived(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, int TotalDataArrived );
+void TCPComProtocol_SetDataPacketArrived(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, boolean DataPacketArrived);
+void TCPComProtocol_SetDataPacketErrorCode(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, int DataPacketErrorCode);
 
 int TCPComProtocol_GetComHndlr(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl);
+int TCPComProtocol_GetDataPacketErrorCode(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl);
+boolean TCPComProtocol_GetDataPacketArrived(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl);
 
 //**********************************************************************
 // API Prototype Fucntions

@@ -53,3 +53,9 @@ unsigned int strchecksum(char * data, int dataLen){
 	
 	return checksum;
 }
+
+void uint2str(int data,char * buffer,int bufferLen){
+	
+	memset(buffer, 0, bufferLen);
+	sprintf(buffer, "%d",data);
+}

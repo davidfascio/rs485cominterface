@@ -55,6 +55,27 @@ int TCPComProtocol_GetComHndlr(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolContro
 	return 	TCPComProtocolControl->ComHndlr;
 }
 
+int TCPComProtocol_GetDataPacketErrorCode(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl){
+	
+	return TCPComProtocolControl->DataPacketErrorCode;
+}
+
+
+void TCPComProtocol_SetDataPacketErrorCode(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, int DataPacketErrorCode){
+	
+	TCPComProtocolControl->DataPacketErrorCode = DataPacketErrorCode;
+}
+
+boolean TCPComProtocol_GetDataPacketArrived(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl){
+	
+	return TCPComProtocolControl->DataPacketArrived;
+}
+
+void TCPComProtocol_SetDataPacketArrived(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, boolean DataPacketArrived){
+	
+	TCPComProtocolControl->DataPacketArrived = 	DataPacketArrived;
+}
+
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
@@ -76,7 +97,7 @@ void TCPComProtocol_Setup(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, in
 	AddTimer(&TCPComTimer, TCP_COM_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
 
 	//!TCPComInterface_Setup();
-    bsp_usart_setup(hacer_nada);	
+    bsp_usart1_setup(hacer_nada);	
 }
 
 void hacer_nada(void){
@@ -102,13 +123,13 @@ void ErrorInTCPComProtocolCommunication(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProto
 int TCPComProtocol_ReceiveData(int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen){
 
 	//!return TCPComInterface_Read(DataReceiveBuffer, DataLen);
-	return bsp_usart_read(DataReceiveBuffer, DataLen);
+	return bsp_usart1_read(DataReceiveBuffer, DataLen);
 }
 
 int TCPComProtocol_SendData(int Com485InterfaceHandler, char * DataToSend, int DataLen){
 	
 	//!return TCPComInterface_Write(DataToSend, DataLen);
-	return bsp_usart_write(DataToSend, DataLen);
+	return bsp_usart1_write(DataToSend, DataLen);
 }
 
 
