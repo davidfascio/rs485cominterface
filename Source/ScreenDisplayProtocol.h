@@ -13,7 +13,7 @@
 //**********************************************************************
 #include "Com485Protocol.h"
 #include "ScreenDisplayCommands.h"
-#include "ScreenDisplayDevice.h" //temp
+//#include "ScreenDisplayDevice.h" //temp
 
 //**********************************************************************
 // Defines

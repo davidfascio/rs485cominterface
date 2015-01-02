@@ -11,10 +11,9 @@
 //**********************************************************************
 // BSP Includes
 //**********************************************************************
-#ifdef __ATMEGA_1284P__
+//#ifdef __ATMEGA_1284P__
 #include <mega1284p.h>
-#endif /* #ifdef __ATMEGA_1284P__ */
-
+//#endif /* #ifdef __ATMEGA_1284P__ */
 #include <SPI.h>
 #include <delay.h>
 
