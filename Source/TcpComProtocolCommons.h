@@ -1,5 +1,5 @@
 /*
- * File: ScreenMasterCommandList.h
+ * File: TcpComProtocolCommons.h
  * Author: fascio
  * 
  * Created on December 31st, 2014, 12:20

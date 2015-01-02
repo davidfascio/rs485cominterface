@@ -1,8 +1,21 @@
+/*
+ * File: Utils.h
+ * Author: fascio
+ * 
+ * Created on December 15th, 2014, 15:09
+ */ 
+
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
+//**********************************************************************
+// Includes
+//**********************************************************************
 #include "CommonSystemLibraries.h"
 
+//**********************************************************************
+// API Prototype Fucntions
+//**********************************************************************
 int str2uint(char * data, int dataLen, int base);
 int char2int(char data);
 char * strsearch(char * data,  char pattern);

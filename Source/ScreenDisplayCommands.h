@@ -1,5 +1,5 @@
 /*
- * File: ScreenDisplayProtocol.h
+ * File: ScreenDisplayCommands.h
  * Author: fascio
  * 
  * Created on November 20th, 2014, 16:22

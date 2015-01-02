@@ -1,5 +1,5 @@
 /*
- * File: Timer100ms.h
+ * File: Timer.h
  * Author: fascio
  * 
  * Created on November 27th, 2014, 6:35
