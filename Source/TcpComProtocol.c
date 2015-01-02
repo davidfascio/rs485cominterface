@@ -96,8 +96,7 @@ void TCPComProtocol_Setup(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, in
 	//! Configure Timer
 	AddTimer(&TCPComTimer, TCP_COM_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
 
-	//!TCPComInterface_Setup();
-	bsp_usart_setup(hacer_nada);
+	//!TCPComInterface_Setup();	
     bsp_usart1_setup(hacer_nada);	
 }
 
@@ -262,7 +261,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 				if (RecvBufferIndexPtr != NULL){
 					
 					TCPComProtocolControl->STXCharacter = RecvBufferIndexPtr;
-					bsp_usart_write(TCPComProtocolControl->STXCharacter, 1);
+					
 					STXCharacterReceived = TRUE;					
 				}
 			}
@@ -285,7 +284,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;
 					}
 					
-					bsp_usart_write(TCPComProtocolControl->ETXCharacter, 1);
+					
 					ETXCharacterReceived = TRUE;					
 				}				
 			}
@@ -311,15 +310,15 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 					
 					memcpy(tempChecksum, TCPComProtocolControl->Checksum, TCP_COM_PROTOCOL_CHECKSUM_SIZE);					
 					
-					bsp_usart_write(tempChecksum, sizeof(tempChecksum));						
+					
 					
 					TCPComProtocolControl->ChecksumInPacketReceived = str2uint(tempChecksum, TCP_COM_PROTOCOL_CHECKSUM_SIZE, 16);						
 										
 					for (checksumIndex = TCPComProtocolControl->STXCharacter; checksumIndex < TCPComProtocolControl->Checksum; checksumIndex ++)
 						checksumValue += *checksumIndex;
 					
-					tempdato = checksumValue;
-					bsp_usart_write((char* ) &tempdato, sizeof(tempdato));
+					
+					
 					
 					if (checksumValue != TCPComProtocolControl->ChecksumInPacketReceived) {						
 						
@@ -327,10 +326,10 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;					
 					}
 						
-					bsp_usart_write("CRC OK\n", strlen("CRC OK\n"));	
+					
 				} else {
 					
-					bsp_usart_write("CRC FAILED\n", strlen("CRC FAILED\n"));	
+					
 					TCPComProtocolControl->DataPacketErrorCode = TCP_COM_PROTOCOL_CHECKSUM_NO_FOUND_ERROR_CODE;
 					break;					
 				}
@@ -351,7 +350,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;
 					}
 					
-					bsp_usart_write("PREFIX OK\n", strlen("PREFIX OK\n"));	
+					
 				} else {
 					
 					TCPComProtocolControl->DataPacketErrorCode = TCP_COM_PROTOCOL_PREFIX_NO_FOUND_ERROR_CODE;
@@ -376,8 +375,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						
 					memcpy(tempUserBuffer, TCPComProtocolControl->User, TCP_COM_PROTOCOL_USER_SIZE);
 					
-					tempdato = str2uint(tempUserBuffer, TCP_COM_PROTOCOL_USER_SIZE, 10);
-					bsp_usart_write((char *) &tempdato, sizeof(tempdato));
+					
 					
 					if (str2uint(tempUserBuffer, TCP_COM_PROTOCOL_USER_SIZE, 10)  != 	TCPComProtocolControl->ComUser){
 						
@@ -385,7 +383,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;
 					}
 					
-					bsp_usart_write("USER OK\n", strlen("USER OK\n"));	
+					
 					
 				} else {
 					
@@ -410,16 +408,13 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;	
 					}
 					
-					bsp_usart_write(TCPComProtocolControl->PasswordLen, TCP_COM_PROTOCOL_PASSWORD_SIZE);	
+					
 					memcpy(tempPasswordLen, TCPComProtocolControl->PasswordLen, TCP_COM_PROTOCOL_PASSWORD_SIZE);
 										
 					/*if(	TCPComProtocolControl->ComPasswordLen < TCP_COM_PROTOCOL_MINIMUM_PASSWORD_SIZE || 
 						TCPComProtocolControl->ComPasswordLen > TCP_COM_PROTOCOL_MAXIMUM_PASSWORD_SIZE )*/
 					//tempdato = (int) atoi(tempPasswordLen);
-					bsp_usart_write(tempPasswordLen, TCP_COM_PROTOCOL_PASSWORD_SIZE);
 					
-					tempdato = str2uint(tempPasswordLen, TCP_COM_PROTOCOL_PASSWORD_SIZE, 10);
-					bsp_usart_write((char *) &tempdato, sizeof(tempdato));
 					
 					if (str2uint(tempPasswordLen, TCP_COM_PROTOCOL_PASSWORD_SIZE, 10)!= TCPComProtocolControl->ComPasswordLen){
 						
@@ -427,7 +422,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;
 					}
 					
-					bsp_usart_write("PASSLEN OK\n", strlen("PASSLEN OK\n"));	
+					
 					
 				} else {
 					
@@ -452,8 +447,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;	
 					}
 					
-					bsp_usart_write(TCPComProtocolControl->ComPassword, TCPComProtocolControl->ComPasswordLen);
-					//!bsp_usart_write(TCPComProtocolControl->Password, TCPComProtocolControl->ComPasswordLen);
+					
 						
 					if(memcmp(TCPComProtocolControl->ComPassword, TCPComProtocolControl->Password, TCPComProtocolControl->ComPasswordLen)){
 						
@@ -461,7 +455,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;			
 					}
 					
-					bsp_usart_write("PASS OK\n", strlen("PASS OK\n"));	
+					
 					
 				} else {
 					
@@ -496,8 +490,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						
 					TCPComProtocolControl->SlaveAddressInPacketReceived = str2uint(tempSubAddress, TCP_COM_PROTOCOL_SUBADDRESS_SIZE, 10);					
 										
-					bsp_usart_write("ADDRESS OK\n", strlen("ADDRESS OK\n"));	
-					bsp_usart_write((char *) &TCPComProtocolControl->SlaveAddressInPacketReceived, sizeof(TCPComProtocolControl->SlaveAddressInPacketReceived));
+					
 					
 				} else {
 					
@@ -530,8 +523,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 					}
 					
 					TCPComProtocolControl->CommandIdInPacketReceived = str2uint(tempCommandId, TCP_COM_PROTOCOL_COMMAND_ID_SIZE, 10);						
-					bsp_usart_write("COMMAND OK\n", strlen("COMMAND OK\n"));	
-					bsp_usart_write((char *) &TCPComProtocolControl->CommandIdInPacketReceived, sizeof(TCPComProtocolControl->CommandIdInPacketReceived));
+					
 				} else {
 					
 					TCPComProtocolControl->DataPacketErrorCode = TCP_COM_PROTOCOL_COMMAND_ID_NO_FOUND_ERROR_CODE;
@@ -554,7 +546,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 						break;					
 					}
 					
-					bsp_usart_write("PARAMETERS OK\n", strlen("PARAMETERS OK\n"));	
+					
 					
 				} else {
 					
@@ -563,7 +555,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 				}
 						
 				DataPacketReceived = TRUE;
-				bsp_usart_write("AQUI\n", strlen("AQUI\n"));
+				
 				break;
 			}
 			
@@ -572,7 +564,7 @@ int TCPComProtocol_WaitDataPacket(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolCon
 	}
 			
 	if(DataPacketReceived == TRUE)
-	{	bsp_usart_write("AQUI2\n", strlen("AQUI2\n"));
+	{	
 		TCPComProtocolControl->DataPacketArrived = TRUE;				
 		return TCP_COM_PROTOCOL_PACKET_RECEIVED;
 	}

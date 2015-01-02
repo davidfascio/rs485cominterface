@@ -59,3 +59,9 @@ void uint2str(int data,char * buffer,int bufferLen){
 	memset(buffer, 0, bufferLen);
 	sprintf(buffer, "%d",data);
 }
+
+void strappendchar(char * buffer, int bufferLen, char data){
+	
+	if( strlen(buffer) < (bufferLen - 1))	
+		*(buffer + strlen(buffer)) = data;
+}

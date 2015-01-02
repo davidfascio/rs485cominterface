@@ -21,7 +21,8 @@ void ScreenMasterProtocol_Setup(char ComAddress ){
 	
 	TCPComProtocol_Setup(&ScreenMasterProtocolControl, BSP_USART_COM_HDLR,
 						  ComAddress, TCP_COM_PROTOCOL_DEFAULT_PREFIX, TCP_COM_PROTOCOL_ADMINISTRATOR, TCP_COM_PROTOCOL_DEFAULT_PASSWORD, TCP_COM_PROTOCOL_DEFAULT_PASSWORD_LEN);	
-	//!ScreenDisplayCommands_Setup();
+	
+	ScreenMasterCommands_Setup();
 }
 
 void ScreenMasterProtocol_WaitDataPacketCheck(void){
@@ -42,7 +43,7 @@ void ScreenMasterProtocol_ProcessingDataPacketArrived(void){
 	volatile MASTER_COMMAND_RESPONSE_STRUCT MasterCommandResponseControl;
 	
 	
-	//!bsp_usart_write("AQUI", strlen("AQUI"));
+	
 	if(TCPComProtocol_GetDataPacketArrived(&ScreenMasterProtocolControl)) 
 	{
 		CommandId = ScreenMasterProtocolControl.CommandIdInPacketReceived;
@@ -50,7 +51,7 @@ void ScreenMasterProtocol_ProcessingDataPacketArrived(void){
 		Parameters = ScreenMasterProtocolControl.Parameters;
 		
 		
-		ScreenMasterCommands_ExecCommand(&MasterCommandResponseControl, SlaveAddress, CommandId, Parameters);
+		ScreenMasterCommands_ExecCommand(&MasterCommandResponseControl, SlaveAddress, CommandId, Parameters);		
 		
 		if( MasterCommandResponseControl.commandIdResponse != SCREEN_MASTER_COMMADS_NO_COMMAND_ID && 
 			MasterCommandResponseControl.commandErrorCodeResponse == SCREEN_MASTER_COMMADS_NO_ERROR_CODE ){

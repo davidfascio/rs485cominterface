@@ -505,7 +505,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
 						return COM_485_PROTOCOL_RX_WINDOW_SIZE;
 					}
 					
-					//bsp_usart_write((char *) &Com485ProtocolStateMachineControl.DataLenReceived, COM_485_PROTOCOL_DATA_PACKET_LEN_FIELD_SIZE);
+					
 					Com485ProtocolStateMachineControl.PacketLenReceived = TRUE;	
 					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_SLAVE_ADDRESS_PROCESSING;
 				}
@@ -525,7 +525,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
 					Com485ProtocolStateMachineControl.RecvBufferIndexPtr, 
 					COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE);				
 					
-					//bsp_usart_write((char *) &Com485ProtocolStateMachineControl.SlaveAddressValueReceived, COM_485_PROTOCOL_DATA_PACKET_SLAVE_ADDRESS_FIELD_SIZE);				
+					
 					Com485ProtocolStateMachineControl.SlaveAddressReceived = TRUE;	
 					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_COMMAND_ID_PROCESSING;
 				}	
@@ -544,7 +544,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
 					Com485ProtocolStateMachineControl.RecvBufferIndexPtr ,
 					COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE);
 					
-					//bsp_usart_write((char *) &Com485ProtocolStateMachineControl.CommandIDValueReceived, COM_485_PROTOCOL_DATA_PACKET_COMMAND_ID_FIELD_SIZE);				
+					
 					Com485ProtocolStateMachineControl.CommandIDReceived = TRUE;
 					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_EOT_PROCESSING;
 				}
@@ -559,7 +559,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
 					(Com485ProtocolControl->TotalDataArrived >= Com485ProtocolStateMachineControl.DataLenExpected)) {
 						
 					unsigned char * LastChar = (unsigned char *)(Com485ProtocolControl->RecvBuffer+(Com485ProtocolStateMachineControl.DataLenExpected - 1));
-					//bsp_usart_write((char *) LastChar, 1);				
+					
 					if(*LastChar == COM_485_PROTOCOL_CONFIG_DATA_PACKET_FINISH_CHAR)
 					{
 						Com485ProtocolStateMachineControl.DataPacketReceived = TRUE;					
@@ -588,7 +588,7 @@ int Com485ProtocolStateMachine_Update(COM_485_PROTOCOL_STRUCT_PTR_ Com485Protoco
 					Com485ProtocolControl->DataInPacketReceivedLen = Com485ProtocolStateMachineControl.DataLenExpected - COM_485_PROTOCOL_CONFIG_DATA_PACKET_OVERHEAD;
 					//!ComInterfaceProtocolsDataPacketArrived(Com485ProtocolControl);
 					
-					//bsp_usart_write((char *) Com485ProtocolControl->DataInPacketReceived, Com485ProtocolControl->DataInPacketReceivedLen);
+					
 					Com485ProtocolControl->DataPacketArrived = TRUE;	
 					Com485ProtocolStateMachineControl.Com485ProtocolStateMachine = COM_485_PROTOCOL_STATE_MACHINE_UNKNOW;	
 				

@@ -75,8 +75,7 @@ void ScreenDotMatrix_Render(void){
 		estado = (estado == LOW )? HIGH : LOW;
 		bsp_io_write(BSP_PIN_A1, estado);		
 		
-		/*bsp_usart_write((char * ) &ScreenDotMatrixEffect, sizeof(ScreenDotMatrixEffect));
-		bsp_usart_write((char * ) &ScreenDotMatrixEffectIndex, sizeof(ScreenDotMatrixEffectIndex));*/
+		
 		Timer_Reset(&ScreenDotMatrixTimer);
 	}
 }
@@ -199,7 +198,7 @@ int ScreenDotMatrix_SendTextWithCustomDelay(char *text, SCREEN_DOT_MATRIX_EFFECT
 		ScreenDotMatrixEffectIndex = (ScreenDotMatrixEffect == DYNAMIC_LEFT) ? SCREEN_DOT_MATRIX_MAXIMUM_POS_LIMIT_ON_X() : SCREEN_DOT_MATRIX_MINIMUM_POS_LIMIT_ON_X(strlen(ScreenDotMatrixBuffer));     
 	}
 	
-	//bsp_usart_write(ScreenDotMatrixBuffer, strlen(ScreenDotMatrixBuffer));
+	
 	
 	Timer_SetOverflowValue_MS(&ScreenDotMatrixTimer, delay_in_ms);		
 	

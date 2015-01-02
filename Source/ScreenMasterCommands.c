@@ -96,10 +96,10 @@ void  ScreenMasterCommands_ExecCommand(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ Maste
 	
 	ScreenMasterCommands_MasterCommandResponseSetup(MasterCommandResponseControl);
 	
-	while(ScreenMasterCommands_GetCommandIdResponse(MasterCommandResponseControl) == SCREEN_MASTER_COMMADS_NO_COMMAND_ID &&
+	while(ScreenMasterCommands_GetCommandErrorCodeResponse(MasterCommandResponseControl) == SCREEN_MASTER_COMMANDS_COMMAND_ID_NOT_FOUND_ERROR_CODE &&
 			index < ScreenMasterCommands_NumberOfCommandFunctions) {
 		
-		ScreenMasterCommands_CommandFunction[index](MasterCommandResponseControl, slaveAddress, commandId, data);
+		ScreenMasterCommands_CommandFunction[index](MasterCommandResponseControl, slaveAddress, commandId, data);		
 		index++;
 	}	
 }

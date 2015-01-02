@@ -13,32 +13,40 @@
 // Includes
 //**********************************************************************
 
-//!#include "ScreenDotMatrix.h"
-#include "ScreenDisplayCommands.h"
-#include "ScreenDisplayDeviceCommandList.h"
+#include "ScreenDisplayProtocol.h"
+#include "TcpComProtocolCommons.h"
+#include "ScreenMasterCommands.h"
+#include "ScreenMasterCommandList.h"
+
 
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
-void ScreenMasterDevice_Setup(void);
-int ScreenMasterDevice_LEDStatus(int status);
-
-/* For Dot Matrix Commands */
-int ScreenMatrixDevice_SendTextWithCustomDelay(char *text,  int effect, int delay_in_ms);
-int ScreenMatrixDevice_SendText(char *text, int effect);
+void ScreenMasterDevice_Setup(char ComAddress);
 
 //**********************************************************************
 // Command List Fucntions
 //
 // Acoording to this pattern:
 //
-// COMMAND_RESPONSE_STRUCT (* SCREEN_DISPLAY_COMMANDS_FUNCTION )(int commandId, char * data, int dataSize)
+// void  (* SCREEN_MASTER_COMMANDS_FUNCTION )(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, char slaveAddress, int commandId, char * data);
 //
 // More Information see ScreenDisplayCommands.h library
 //**********************************************************************
-COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_LEDStatusFunction(int commandId, char * data, int dataSize);
-COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextFunction(int commandId, char * data, int dataSize);
-COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextWithCustomDelayFunction(int commandId, char * data, int dataSize);
 
+void ScreenMasterDotMatrixDevice_LEDStatusFunction(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
+													char slaveAddress, int commandId, char * data);
+													
+void ScreenMasterDotMatrixDevice_SendTextFunction(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
+												  char slaveAddress, int commandId, char * data);
+													
+void ScreenMasterDotMatrixDevice_SendTextWithCustomDelayFunction(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
+																char slaveAddress, int commandId, char * data);
+
+void ScreenMasterDisplayDevice_LEDStatus(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
+										char slaveAddress, int commandId, char * data);
+
+void ScreenMasterDisplayDevice_UpdateValue(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
+											char slaveAddress, int commandId, char * data);
 
 #endif /* __SCREEN_MASTER_DEVICE_H__ */
