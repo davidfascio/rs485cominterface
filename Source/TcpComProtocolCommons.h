@@ -19,7 +19,7 @@
 
 // High Level Defines
 #ifndef TCP_COM_PROTOCOL_RX_WINDOW_SIZE   
-#define TCP_COM_PROTOCOL_RX_WINDOW_SIZE 								(50)
+#define TCP_COM_PROTOCOL_RX_WINDOW_SIZE 								(100)
 #endif
 
 #ifndef RTCS_ERROR

@@ -34,7 +34,7 @@ void main(void)
 	//! AFTER SETUP                                	
 	bsp_pin_mode(BSP_PIN_A0, OUTPUT);
 	bsp_io_write(BSP_PIN_A0, HIGH);
-	AddTimer(&myTimer, 1000);	                                      	
+	AddTimer(&myTimer, 500);	                                      	
 	
 	//! LOOP
 	while(TRUE){

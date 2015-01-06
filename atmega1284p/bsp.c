@@ -182,6 +182,22 @@ void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin){
 			DDRA.3 = dir_pin ; 
 			break;
 		
+		case BSP_PIN_A4:
+			DDRA.4 = dir_pin ; 
+			break;
+			
+		case BSP_PIN_A5:
+			DDRA.5 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_A6:
+			DDRA.6 = dir_pin ; 
+			break;
+			
+		case BSP_PIN_A7:
+			DDRA.7 = dir_pin ; 
+			break;			
+		
 		case BSP_PIN_B0:
 			DDRB.0 = dir_pin ; 
 			break;
@@ -196,6 +212,22 @@ void bsp_pin_mode(BSP_PORT bsp_pin, int dir_pin){
 			
 		case BSP_PIN_B3:
 			DDRB.3 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_C0:
+			DDRC.0 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_C1:
+			DDRC.1 = dir_pin ; 
+			break;
+		
+		case BSP_PIN_C2:
+			DDRC.2 = dir_pin ; 
+			break;
+			
+		case BSP_PIN_C3:
+			DDRC.3 = dir_pin ; 
 			break;
 						
 		case BSP_PIN_D2:
@@ -242,6 +274,22 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 			PORTA.3 = state_pin;
 			break;
 		
+		case BSP_PIN_A4:
+			PORTA.4 = state_pin;
+			break;
+		
+		case BSP_PIN_A5:
+			PORTA.5 = state_pin;
+			break;
+			
+		case BSP_PIN_A6:
+			PORTA.6 = state_pin;
+			break;
+			
+		case BSP_PIN_A7:
+			PORTA.7 = state_pin;
+			break;
+			
 		case BSP_PIN_B0:
 			PORTB.0 = state_pin;
 			break;
@@ -256,6 +304,22 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin){
 			
 		case BSP_PIN_B3:
 			PORTB.3 = state_pin;
+			break;
+			
+		case BSP_PIN_C0:
+			PORTC.0 = state_pin;
+			break;
+		
+		case BSP_PIN_C1:
+			PORTC.1 = state_pin;
+			break;
+			
+		case BSP_PIN_C2:
+			PORTC.2 = state_pin;
+			break;
+			
+		case BSP_PIN_C3:
+			PORTC.3 = state_pin;
 			break;
 		
 		case BSP_PIN_D2:
@@ -391,7 +455,7 @@ interrupt [USART0_RXC] void usart0_rx_isr(void)
 		char data;
 
 		while (rx_counter0==0){
-			bsp_io_write(BSP_PIN_A2, HIGH);
+			//bsp_io_write(BSP_PIN_A2, HIGH);
 		}
 
 		data=rx_buffer0[rx_rd_index0++];

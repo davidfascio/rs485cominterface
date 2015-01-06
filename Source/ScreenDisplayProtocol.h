@@ -22,8 +22,13 @@
 #define SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS			   	(0x01)
 #define SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS		   	(0x00)
 
-#define SCREEN_DISPLAY_PROTOCOL_WAIT_TIME_OUT					   (100)
+#ifdef  __MASTER_DEVICE__
+	#define SCREEN_DISPLAY_PROTOCOL_WAIT_TIME_OUT					   (250)
+#else 
+	#define SCREEN_DISPLAY_PROTOCOL_WAIT_TIME_OUT					   (150)
+#endif /* __MASTER_DEVICE__ */
 
+#define SCREEN_DISPLAY_PROTOCOL_WAIT_RESPONSE_DEFAULT_RETIES			(3)
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************

@@ -19,7 +19,7 @@ COM_485_PROTOCOL_STRUCT ScreenDisplayProtocolControl;
 
 void ScreenDisplayProtocol_Setup(char ComAddress ){
 	
-	Com485Protocol_Setup(&ScreenDisplayProtocolControl, BSP_USART_COM_HDLR, ComAddress, COM_485_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
+	Com485Protocol_Setup(&ScreenDisplayProtocolControl, BSP_USART_COM_HDLR, ComAddress, SCREEN_DISPLAY_PROTOCOL_WAIT_TIME_OUT);
 	ScreenDisplayCommands_Setup();
 }
 

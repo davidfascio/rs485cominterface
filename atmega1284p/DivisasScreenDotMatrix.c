@@ -28,7 +28,7 @@ void main(void)
 	ScreenDotMatrixDevice_Setup();	
 	
 	// Demo
-	ScreenDotMatrix_SendText("GRUPO ELEKTRA",  DYNAMIC_LEFT);	
+	ScreenDotMatrix_SendText("EUR",  STATIC_TEXT);	
 	
 	//! LOOP
 	while(TRUE){

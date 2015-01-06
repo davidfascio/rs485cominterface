@@ -44,6 +44,13 @@ char * Com485Protocol_GetRecvBuffer(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolC
 	return 	Com485ProtocolControl->RecvBuffer;
 }
 
+void Com485Protocol_ClearRecvBuffer(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl){
+	
+	memset(Com485Protocol_GetRecvBuffer(Com485ProtocolControl), 
+										0, 
+										Com485Protocol_GetRecvBufferSize(Com485ProtocolControl));
+}
+
 int Com485Protocol_GetRecvBufferSize(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl){
 	
 	return	sizeof(Com485ProtocolControl->RecvBuffer);
@@ -160,6 +167,8 @@ void Com485Protocol_Setup(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, in
 }
 
 void Com485Protocol_RecvBufferReset(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl){
+	
+	Com485Protocol_ClearRecvBuffer(Com485ProtocolControl);
 	
 	Com485Protocol_SetTotalDataArrived(Com485ProtocolControl, 0);	
 	

@@ -74,5 +74,42 @@ void uint2str(int data,char * buffer,int bufferLen){
 void strappendchar(char * buffer, int bufferLen, char data){
 	
 	if( strlen(buffer) < (bufferLen - 1))	
-		*(buffer + strlen(buffer)) = data;
+		*(buffer + strlen(buffer)) = data;		
+}
+
+float str2float(char * data, int dataLen){
+	
+	char buffer[10];
+	float value = 0.0;
+	float base = 1.0;
+    
+    int index;
+    int dotIndex = -1;
+    
+	if (dataLen > 10)
+	 return -1;
+	 
+	memset(buffer, 0, sizeof(buffer));
+	memcpy(buffer, data, dataLen);
+	
+	for ( index = 0; index < dataLen; index++){
+		
+		if ((*(buffer + index) >= '0' )&& 
+		   (*(buffer + index) <= '9' ) ){
+			   
+			   value = (float) (*(buffer + index)- '0') + 10.0 * value;
+		   }
+		   
+		if(*(buffer + index) == '.')
+			dotIndex = index;
+	}
+	
+	if (dotIndex >= 0){
+		for ( index = dotIndex + 1; index < dataLen; index++)
+			base =  base * 10.0;
+			
+		value = value / base;
+	}	
+		
+	return value;	
 }

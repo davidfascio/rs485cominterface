@@ -26,4 +26,6 @@ unsigned int strchecksum(char * data, int dataLen);
 void uint2str(int data,char * buffer,int bufferLen);
 void strappendchar(char * buffer, int bufferLen, char data);
 
+float str2float(char * data, int dataLen);
+
 #endif /* __UTILS_H__ */

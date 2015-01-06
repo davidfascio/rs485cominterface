@@ -127,6 +127,7 @@ char Com485Protocol_GetComAddress(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolCon
 
 // Received Buffer resource information
 char * Com485Protocol_GetRecvBuffer(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
+void Com485Protocol_ClearRecvBuffer(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 int Com485Protocol_GetRecvBufferSize(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl);
 
 void Com485Protocol_SetRecvBufferPtr(COM_485_PROTOCOL_STRUCT_PTR_ Com485ProtocolControl, char * RecvBufferPtr);
