@@ -34,18 +34,22 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void){
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
-void ScreenDisplayDevice_Setup(void){
+void ScreenDisplayDevice_Setup(char * data, int dataLen){
 	
-	ScreenDispla7Seg_Setup(&ScreenDisplay7SegControl, 0.0,  ScreenDisplay7SegBuffer, ScreenDisplay7SegBufferLen);
+	ScreenDispla7Seg_Setup(&ScreenDisplay7SegControl, data, dataLen,  ScreenDisplay7SegBuffer, ScreenDisplay7SegBufferLen);
 	
 	/* Install Commands*/	
-	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_UpdateValue);
+	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_UpdateStringValue);
 	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_LEDStatus);
 	
 }
 
 int ScreenDisplayDevice_Update(float data){
 	return ScreenDispla7Seg_UpdateData(&ScreenDisplay7SegControl, data);
+}
+
+int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen){
+	return ScreenDispla7Seg_UpdateStringData(&ScreenDisplay7SegControl, data, dataLen);
 }
 
 // DEMO
@@ -125,6 +129,33 @@ COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * da
 		memcpy((char *) &command_parameter , data, sizeof(command_parameter));
 		
 		commandErrorCodeResponse = ScreenDisplayDevice_Update(command_parameter);
+		
+		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
+	}
+	return	CommandResponseControl;		
+}
+
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateStringValue(int commandId, char * data, int dataSize){
+	
+	//! Upper Cast Implementation for ScreenDisplayDevice_UpdateValue Command	
+	//!
+	//! Notice:
+	//! 	- *data is char * type
+	//! 	- dataSize is strlen(char *)
+	//!
+	//! 
+	
+    COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	int commandErrorCodeResponse;
+	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);	
+	
+	if((commandId == SCREEN_DISPLAY_DEVICE_MASTER_COMMAND_ID_FLOAT_VALUE_UPDATE)) {
+		
+		ScreenDisplayCommands_SetCommandIdResponse(&CommandResponseControl, SCREEN_DISPLAY_DEVICE_SLAVE_COMMAND_ID_FLOAT_VALUE_UPDATE);
+		
+		//memcpy((char *) &command_parameter , data, sizeof(command_parameter));
+		
+		commandErrorCodeResponse = ScreenDisplayDevice_UpdateStringData(data, dataSize);
 		
 		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
 	}

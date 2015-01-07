@@ -64,8 +64,11 @@
 #define DISPLAY_7_SEG_CHARACTER_DOT  (DISPLAY_7_SEG_DP)
 
 // Error Code Defines
+#define DISPLAY_7_SEG_NO_ERROR_CODE									(0)
 #define DISPLAY_7_SEG_OUT_OF_RANGE_ERROR_CODE						(-1)
 #define DISPLAY_7_SEG_OUT_OF_MAX_BUFFER_SIZE_ERROR_CODE				(-2)
+
+#define DISPLAY_7_SEG_OUT_OF_MEMORY_ERROR_CODE						(-3)
 
 // API Defines
 #define DISPLAY_7_SEG_MAX_CHARACTER_INDEX 							(10)
@@ -94,6 +97,7 @@ int Display7Seg_GetBufferByIndex(DISPLAY_7_SEG_PTR display7seg, int index);
 // API Functions
 void Display7Seg_Setup(DISPLAY_7_SEG_PTR display7seg, int * display7segbuffer, int display7segbuffersize);
 void Display7Seg_SendDataInterface(int data);
+int  Display7Seg_ReverseBuffer(DISPLAY_7_SEG_PTR display7seg);
 void  Display7Seg_SendBuffer(DISPLAY_7_SEG_PTR display7seg);
 int  Display7Seg_IntParseTo7Seg(int integerData);
 

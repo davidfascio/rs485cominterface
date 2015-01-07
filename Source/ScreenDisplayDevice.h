@@ -29,8 +29,9 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void);
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
-void ScreenDisplayDevice_Setup(void);
+void ScreenDisplayDevice_Setup(char * data, int dataLen);
 int ScreenDisplayDevice_Update(float data);
+int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen);
 
 //**********************************************************************
 // Command List Fucntions
@@ -43,7 +44,7 @@ int ScreenDisplayDevice_Update(float data);
 //**********************************************************************
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_LEDStatus(int commandId, char * data, int dataSize);
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * data, int dataSize);
-
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateStringValue(int commandId, char * data, int dataSize);
 int LEDStatus(int status);
 
 #endif /* __SCREEN_DISPLAY_DEVICE_H__  */

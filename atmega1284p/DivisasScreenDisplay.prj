@@ -198,7 +198,7 @@ WarningExternalDeclaredNeverDefined=1
 WarningUnknownPragma=1
 DebugBootLoader=0
 WatchAVR8LAutoVariables=0
-Build=185
+Build=198
 UseEEPROMLocation0=1
 ExternalInterruptVectors=0
 IncludePath0=E:\development\DivisasDisplay\CodeVisionAVR\Source
@@ -447,7 +447,7 @@ BK7=-1
 BK8=-1
 BK9=-1
 [Bookmarks5]
-TimeStamp=1167029702
+TimeStamp=1176863645
 Row=0
 Column=0
 ScrollPosX=0
@@ -639,7 +639,7 @@ BK7=-1
 BK8=-1
 BK9=-1
 [Bookmarks16]
-TimeStamp=1168069280
+TimeStamp=1176863788
 Row=0
 Column=0
 ScrollPosX=0
@@ -808,6 +808,14 @@ BK6=-1
 BK7=-1
 BK8=-1
 BK9=-1
+[FoldedCode6]
+Blocks=0
+[FoldedCode5]
+Blocks=0
+[FoldedCode16]
+Blocks=0
+[FoldedCode24]
+Blocks=0
 [HeadersList]
 Files=12
 F1=E:\development\DivisasDisplay\CodeVisionAVR\atmega1284p\DivisasScreenDisplay.c
@@ -887,7 +895,7 @@ F11=bsp.h
 F12=E:\cvavr2\inc\SPI.h
 F13=E:\cvavr2\inc\delay.h
 [Header6]
-Files=14
+Files=15
 F1=..\Source\ScreenDisplay7Seg.h
 F2=..\Source\Display7Seg.h
 F3=..\Source\TPIC6B595.h
@@ -902,6 +910,7 @@ F11=E:\cvavr2\inc\mega1284p_bits.h
 F12=bsp.h
 F13=E:\cvavr2\inc\SPI.h
 F14=E:\cvavr2\inc\delay.h
+F15=..\Source\Com485Interface.h
 [Header7]
 Files=14
 F1=..\Source\Com485Protocol.h
@@ -997,11 +1006,3 @@ F9=E:\cvavr2\inc\mega1284p_bits.h
 F10=bsp.h
 F11=E:\cvavr2\inc\SPI.h
 F12=E:\cvavr2\inc\delay.h
-[FoldedCode6]
-Blocks=0
-[FoldedCode16]
-Blocks=0
-[FoldedCode24]
-Blocks=0
-[FoldedCode5]
-Blocks=0

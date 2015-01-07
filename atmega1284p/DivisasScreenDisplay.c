@@ -28,7 +28,7 @@ void main(void)
 	ScreenDisplayProtocol_Setup(0x12);		
 	
 	//! AFTER SETUP
-	ScreenDisplayDevice_Setup();
+	ScreenDisplayDevice_Setup("0.0", strlen("0.0"));
 	
 	
 	#ifdef __DIVISAS_SCREEN_DISPLAY_DEBUG__

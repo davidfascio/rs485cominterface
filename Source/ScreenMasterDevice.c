@@ -309,7 +309,7 @@ void ScreenMasterDisplayDevice_LEDStatus(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ Mas
 void ScreenMasterDisplayDevice_UpdateValue(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
 											char slaveAddress, int commandId, char * data){
 
-char displayParameters [20];	
+	char displayParameters [20];	
 	char * 	displayParametersIndex = displayParameters;
 	float  displayValue;
 	//char dotMatrixMessage[10];											  	
@@ -317,7 +317,7 @@ char displayParameters [20];
 	char * displayValueEnd;
 	int displayValueLen;
 	
-	char temp [20];
+	
 	
 	volatile int commandProcessed;
 	int response;
@@ -325,24 +325,12 @@ char displayParameters [20];
 	
 	if (commandId == SCREEN_DISPLAY_DEVICE_MASTER_COMMAND_ID_FLOAT_VALUE_UPDATE)
 	{			
-		
-		
-		
 		//dotMatrixMessageBegin = strchr(data, TCP_COM_PROTOCOL_DEFAULT_BREAK_CHAR) + 1;
 		displayValueBegin = data;
 		displayValueEnd = strrchr(data, TCP_COM_PROTOCOL_DEFAULT_BREAK_CHAR);
 		displayValueLen = displayValueEnd - displayValueBegin;
 		
-		displayValue = str2float(data, displayValueLen);	
-		
-		memset(temp,0, sizeof(temp));	
-		memcpy(temp, data, displayValueLen);
-		
-		//sprintf(temp,"El valor es: %f", displayValue);
-		Com485Interface_Write(temp, strlen(temp));		
-		
-		if ((displayValue < 0) || 
-			(displayValueBegin == NULL) || 
+		if ((displayValueBegin == NULL) || 
 			(displayValueLen <= 0)){			
 	
 			ScreenMasterCommands_SetCommandErrorCodeResponse(MasterCommandResponseControl, 
@@ -351,14 +339,9 @@ char displayParameters [20];
 			return;
 		}
 		
-		memset(displayParametersIndex, 0, sizeof(displayParametersIndex));
-		
-		memcpy(displayParametersIndex, (char *) &displayValue, sizeof(displayValue));
-		
-		displayParametersIndex += sizeof(displayValue);
-		
-		
-		
+		memset(displayParameters, 0, sizeof(displayParameters));		
+		memcpy(displayParametersIndex, displayValueBegin, displayValueLen);		
+		displayParametersIndex += displayValueLen;
 		
 		commandProcessed = ScreenDisplayProtocol_SendDataPackWaitForResponse(	slaveAddress, 
 															commandId, 

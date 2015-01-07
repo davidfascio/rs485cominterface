@@ -87,14 +87,45 @@ int  Display7Seg_IntParseTo7Seg( int integerData){
 	return Display7SegCharacters[integerData];
 }
 
+int  Display7Seg_ReverseBuffer(DISPLAY_7_SEG_PTR display7seg){	
+	
+	int * buffer;
+	int bufferSize;
+	int index;
+	int reverseIndex;
+	int dataIndex;
+	
+	bufferSize = Display7Seg_GetBufferSize(display7seg);
+	buffer = (int *) malloc( bufferSize * sizeof(int));
+	
+	if (buffer == NULL)
+		return DISPLAY_7_SEG_OUT_OF_MEMORY_ERROR_CODE; 
+	
+	reverseIndex = bufferSize - 1;
+	
+	for	(index = 0; index < bufferSize ; index++ ){
+		
+		dataIndex = Display7Seg_GetBufferByIndex(display7seg, index);
+		*(buffer + reverseIndex) = dataIndex;
+		--reverseIndex;
+	}
+	
+	memcpy(Display7Seg_GetBuffer(display7seg), buffer, bufferSize);
+	free(buffer);
+	
+	return 	DISPLAY_7_SEG_NO_ERROR_CODE;
+}
+
 void  Display7Seg_SendBuffer(DISPLAY_7_SEG_PTR display7seg){
 	int index = 0;
-	
+	int bufferSize = Display7Seg_GetBufferSize(display7seg);
+	int reverseIndex = bufferSize - 1;
 	TPIC6B595_HideData();
         
 	for	(index = 0; index < Display7Seg_GetBufferSize(display7seg) ; index++ ){
 		
-		Display7Seg_SendDataInterface(Display7Seg_GetBufferByIndex(display7seg, index));
+		Display7Seg_SendDataInterface(Display7Seg_GetBufferByIndex(display7seg, reverseIndex));
+		--reverseIndex;
 	}
 
     TPIC6B595_ShowData();             
