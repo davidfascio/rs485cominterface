@@ -11,9 +11,12 @@
 //**********************************************************************
 // Variables
 //**********************************************************************
-SCREEN_DISPLAY_7_SEG ScreenDisplay7SegControl;
-int ScreenDisplay7SegBuffer[SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE];
-int ScreenDisplay7SegBufferLen = SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE;
+volatile SCREEN_DISPLAY_7_SEG ScreenDisplay7SegControl;
+volatile int ScreenDisplay7SegBuffer[SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE];
+volatile int ScreenDisplay7SegBufferLen = SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE;
+
+int ScreenDisplay7SegUpdateLed = LOW;
+TIMER_STRUCT ScreenDisplay7SegTimer;
 
 //**********************************************************************
 // Setters and Getters Prototype Functions
@@ -42,11 +45,26 @@ void ScreenDisplayDevice_Setup(char * data, int dataLen){
 	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_UpdateStringValue);
 	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_LEDStatus);
 	
+	// Timer
+	AddTimer(&ScreenDisplay7SegTimer,SCREEN_DISPLAY_DEVICE_DEFAULT_TIMER_REFRESH_MS_VALUE);
+	
+	bsp_pin_mode(SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR, OUTPUT);
+	
 }
 
-int ScreenDisplayDevice_Update(float data){
-	return ScreenDispla7Seg_UpdateData(&ScreenDisplay7SegControl, data);
+void ScreenDisplayDevice_Update(void){
+	
+	if(Timer_GetOverflow(&ScreenDisplay7SegTimer) == TRUE) {
+		
+		ScreenDisplay7SegUpdateLed = (ScreenDisplay7SegUpdateLed == LOW )? HIGH : LOW;
+		bsp_io_write(SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR, ScreenDisplay7SegUpdateLed);
+		ScreenDispla7Seg_Update(&ScreenDisplay7SegControl);
+		Timer_Reset(&ScreenDisplay7SegTimer);
+	}
 }
+/*int ScreenDisplayDevice_Update(float data){
+	return ScreenDispla7Seg_UpdateData(&ScreenDisplay7SegControl, data);
+}*/
 
 int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen){
 	return ScreenDispla7Seg_UpdateStringData(&ScreenDisplay7SegControl, data, dataLen);
@@ -104,7 +122,7 @@ COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_LEDStatus(int commandId, char * data
 	}
 	return	CommandResponseControl;		
 }
-
+/*
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * data, int dataSize){
 	
 	//! Upper Cast Implementation for ScreenDisplayDevice_UpdateValue Command	
@@ -133,7 +151,7 @@ COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * da
 		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
 	}
 	return	CommandResponseControl;		
-}
+}*/
 
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateStringValue(int commandId, char * data, int dataSize){
 	

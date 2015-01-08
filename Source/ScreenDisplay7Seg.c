@@ -7,7 +7,8 @@
 // Includes
 //**********************************************************************
 #include "ScreenDisplay7Seg.h"
-#include "Com485Interface.h"
+//#include "Com485Interface.h"
+
 
 //**********************************************************************
 // Functions
@@ -37,11 +38,17 @@ void ScreenDispla7Seg_SetStringData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, 
 	
 	ScreenDispla7Seg_ClearStringData(screendisplay7seg);
 	memcpy(ScreenDispla7Seg_GetStringData(screendisplay7seg), data, dataLen );	
+	screendisplay7seg->stringdataLen = dataLen;
 }
 
 char * ScreenDispla7Seg_GetStringData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg){
 	
 	return screendisplay7seg->stringdata;
+}
+
+int ScreenDispla7Seg_GetStringDataLen(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg){
+
+	return screendisplay7seg->stringdataLen;
 }
 
 DISPLAY_7_SEG_PTR ScreenDispla7Seg_GetDisplay7Seg(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg){
@@ -63,6 +70,13 @@ void ScreenDispla7Seg_Setup(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * d
 	ScreenDispla7Seg_UpdateStringData(screendisplay7seg, data, dataLen);
 }
 
+void ScreenDispla7Seg_Update(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg){
+	
+	/*ScreenDispla7Seg_UpdateStringData(screendisplay7seg, 
+									ScreenDispla7Seg_GetStringData(screendisplay7seg),
+									ScreenDispla7Seg_GetStringDataLen(screendisplay7seg));*/
+	Display7Seg_SendBuffer(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));											
+}
 int ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data){	
 	
 	volatile int error_code;
@@ -87,7 +101,7 @@ int ScreenDispla7Seg_UpdateStringData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg
 	error_code = ScreenDispla7Seg_StringParseToScreenDisplay(screendisplay7seg, data, dataLen);
 	
 	if( error_code == SCREEN_DISPLAY_7_SEG_NO_ERROR_CODE){
-			
+		//Com485Interface_Write(data, dataLen);
 		Display7Seg_SendBuffer(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));	
 		ScreenDispla7Seg_SetStringData(screendisplay7seg, data, dataLen);	
 	}

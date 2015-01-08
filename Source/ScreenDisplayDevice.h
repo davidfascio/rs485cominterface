@@ -11,6 +11,7 @@
 //**********************************************************************
 // Includes
 //**********************************************************************
+#include "Timer.h"
 #include "ScreenDisplay7Seg.h"
 #include "ScreenDisplayCommands.h"
 #include "ScreenDisplayDeviceCommandList.h"
@@ -19,6 +20,9 @@
 // Defines
 //**********************************************************************
 #define SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE						 (4)
+#define SCREEN_DISPLAY_DEVICE_DEFAULT_TIMER_REFRESH_MS_VALUE	  (1000)
+
+#define SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR 			(BSP_PIN_A1)
 
 //**********************************************************************
 // Setters and Getters Prototype Functions
@@ -30,7 +34,7 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void);
 // API Prototype Fucntions
 //**********************************************************************
 void ScreenDisplayDevice_Setup(char * data, int dataLen);
-int ScreenDisplayDevice_Update(float data);
+void ScreenDisplayDevice_Update(void);
 int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen);
 
 //**********************************************************************
@@ -43,7 +47,7 @@ int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen);
 // More Information see ScreenDisplayCommands.h library
 //**********************************************************************
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_LEDStatus(int commandId, char * data, int dataSize);
-COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * data, int dataSize);
+//COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * data, int dataSize);
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateStringValue(int commandId, char * data, int dataSize);
 int LEDStatus(int status);
 
