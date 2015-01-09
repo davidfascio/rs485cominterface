@@ -60,16 +60,16 @@ SCREEN_DOT_MATRIX_EFFECT ParseIntToEffect(int effect){
 	}
 }
 
-int ScreenDotMatrixDevice_SendTextWithCustomDelay(char *text,  int effect, int delay_in_ms){
+int ScreenDotMatrixDevice_SendTextWithCustomDelay(char *text, int textLen, int effect, int delay_in_ms){
 	
 	SCREEN_DOT_MATRIX_EFFECT dotMatrixEffect = ParseIntToEffect(effect);
-	return ScreenDotMatrix_SendTextWithCustomDelay(text,  dotMatrixEffect, delay_in_ms);	
+	return ScreenDotMatrix_SendTextWithCustomDelay(text, textLen,  dotMatrixEffect, delay_in_ms);	
 }
 
-int ScreenDotMatrixDevice_SendText(char *text, int effect){
+int ScreenDotMatrixDevice_SendText(char *text, int textLen, int effect){
 	
 	SCREEN_DOT_MATRIX_EFFECT dotMatrixEffect = ParseIntToEffect(effect);
-	return ScreenDotMatrix_SendText(text,  dotMatrixEffect);	
+	return ScreenDotMatrix_SendText(text, textLen,  dotMatrixEffect);	
 }
 
 
@@ -125,6 +125,7 @@ COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextFunction(int commandId, ch
 	
 	int command_parameter_effect = 0;
 	char * command_parameter_text;
+	int command_parameter_text_len;
     
     COMMAND_RESPONSE_STRUCT CommandResponseControl;	
 	int commandErrorCodeResponse;
@@ -138,7 +139,9 @@ COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextFunction(int commandId, ch
 		memcpy((char *) &command_parameter_effect , data, sizeof(command_parameter_effect));
 		command_parameter_text = data + sizeof(command_parameter_effect);
 		
-		commandErrorCodeResponse = ScreenDotMatrixDevice_SendText(command_parameter_text, command_parameter_effect);
+		command_parameter_text_len = dataSize - (command_parameter_text - data);
+		
+		commandErrorCodeResponse = ScreenDotMatrixDevice_SendText(command_parameter_text, command_parameter_text_len, command_parameter_effect);
 		
 		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
 	}
@@ -160,6 +163,7 @@ COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextWithCustomDelayFunction(in
 	int command_parameter_effect = 0;
     int command_parameter_delay_ms = SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS;
 	char * command_parameter_text;
+	int command_parameter_text_len;
     
     COMMAND_RESPONSE_STRUCT CommandResponseControl;	
 	int commandErrorCodeResponse;
@@ -169,15 +173,17 @@ COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextWithCustomDelayFunction(in
 		dataSize > sizeof(command_parameter_effect)) {
 		
 		ScreenDisplayCommands_SetCommandIdResponse(&CommandResponseControl, SCREEN_DOT_MATRIX_DEVICE_SLAVE_COMMAND_ID_SEND_TEXT_DELAY);
+		
 		command_parameter_text = data ;
 		memcpy((char *) &command_parameter_effect , command_parameter_text, sizeof(command_parameter_effect));
 		
-		command_parameter_text += sizeof(command_parameter_effect);
+		command_parameter_text += sizeof(	command_parameter_effect);
 		memcpy((char *) &command_parameter_delay_ms , command_parameter_text, sizeof(command_parameter_delay_ms));
 		
 		command_parameter_text +=  sizeof(command_parameter_effect);
+		command_parameter_text_len = dataSize - (command_parameter_text - data);
 		
-		commandErrorCodeResponse = ScreenDotMatrixDevice_SendTextWithCustomDelay(command_parameter_text, command_parameter_effect, command_parameter_delay_ms);
+		commandErrorCodeResponse = ScreenDotMatrixDevice_SendTextWithCustomDelay(command_parameter_text,command_parameter_text_len, command_parameter_effect, command_parameter_delay_ms);
 		
 		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
 	}

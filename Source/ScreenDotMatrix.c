@@ -187,7 +187,7 @@ void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash 
  }
 
 
-int ScreenDotMatrix_SendTextWithCustomDelay(char *text, SCREEN_DOT_MATRIX_EFFECT effect, int delay_in_ms){
+int ScreenDotMatrix_SendTextWithCustomDelay(char *text, int textLen, SCREEN_DOT_MATRIX_EFFECT effect, int delay_in_ms){
 	
 	switch(effect){
 		
@@ -195,14 +195,14 @@ int ScreenDotMatrix_SendTextWithCustomDelay(char *text, SCREEN_DOT_MATRIX_EFFECT
 		case DYNAMIC_LEFT:
 		case DYNAMIC_RIGHT:
 			
-			if(strlen(text) >= sizeof(ScreenDotMatrixBuffer))
+			if(textLen >= sizeof(ScreenDotMatrixBuffer))
 				return SCREEN_DOT_MATRIX_NO_ENOUGH_BUFFER_RESOURCES;
 
 			ScreenDotMatrixEffect = effect;	
 			ScreenDotMatrix_Clear();		
 
 			memset(ScreenDotMatrixBuffer, 0, sizeof(ScreenDotMatrixBuffer));			
-			memcpy( ScreenDotMatrixBuffer, text , strlen(text));	
+			memcpy( ScreenDotMatrixBuffer, text , textLen);	
 			
 			break;
 		default:
@@ -224,7 +224,7 @@ int ScreenDotMatrix_SendTextWithCustomDelay(char *text, SCREEN_DOT_MATRIX_EFFECT
 	return SCREEN_DOT_MATRIX_NO_ERROR;	
 }
 
-int ScreenDotMatrix_SendText(char *text, SCREEN_DOT_MATRIX_EFFECT effect){		
+int ScreenDotMatrix_SendText(char *text, int textLen, SCREEN_DOT_MATRIX_EFFECT effect){		
 	
-	return ScreenDotMatrix_SendTextWithCustomDelay(text, effect, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);	
+	return ScreenDotMatrix_SendTextWithCustomDelay(text, textLen, effect, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);	
 }

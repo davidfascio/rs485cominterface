@@ -25,8 +25,8 @@ void ScreenDotMatrixDevice_Update(void);
 int ScreenDotMatrixDevice_LEDStatus(int status);
 SCREEN_DOT_MATRIX_EFFECT ParseIntToEffect(int effect);
 
-int ScreenDotMatrixDevice_SendTextWithCustomDelay(char *text,  int effect, int delay_in_ms);
-int ScreenDotMatrixDevice_SendText(char *text, int effect);
+int ScreenDotMatrixDevice_SendTextWithCustomDelay(char *text, int textLen, int effect, int delay_in_ms);
+int ScreenDotMatrixDevice_SendText(char *text, int textLen, int effect);
 
 //**********************************************************************
 // Command List Fucntions
