@@ -43,9 +43,11 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 	
 	volatile int 	CommandIdResponse;
 	volatile int 	CommandErrorCodeResponse;
+	volatile char * CommandBufferResponse;
+	volatile int 	CommandBufferResponseLen;
 	
 	volatile COMMAND_RESPONSE_STRUCT CommandResponseControl;	
-	volatile int commandErrorCodeResponse;
+	//volatile int commandErrorCodeResponse;
 	
 	
 	if(Com485Protocol_GetDataPacketArrived(&ScreenDisplayProtocolControl)) 
@@ -73,13 +75,28 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 			// Answering to Master Request
 			if (CommandIdResponse != SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID &&
 				SlaveAddress!= SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS) {
+					
+				// Answer By CommandBufferResponse
+				CommandBufferResponseLen = ScreenDisplayCommands_GetCommandBufferResponseLen(&CommandResponseControl);
 				
+				if(CommandBufferResponseLen > 0){
+					
+					CommandBufferResponse = ScreenDisplayCommands_GetCommandBufferResponse(&CommandResponseControl);	
+					
+					ScreenDisplayProtocol_SendDataPacket( SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS,
+														CommandIdResponse, 
+														CommandBufferResponse, 
+														CommandBufferResponseLen);
+				
+				} else {
+				// Answer By CommandErrorResponse
 				CommandErrorCodeResponse = ScreenDisplayCommands_GetCommandErrorCodeResponse(&CommandResponseControl);			
 				
 				ScreenDisplayProtocol_SendDataPacket(	SCREEN_DISPLAY_PROTOCOL_DEFAULT_MASTER_ADDRESS,
 														CommandIdResponse, 
 														(char *) & CommandErrorCodeResponse, 
 														sizeof(CommandErrorCodeResponse));
+				}
 			}
 		}
 		

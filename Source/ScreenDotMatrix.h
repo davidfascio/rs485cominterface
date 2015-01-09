@@ -39,6 +39,11 @@ typedef enum screendotmatrixeffect{
 	DYNAMIC_RIGHT
 } SCREEN_DOT_MATRIX_EFFECT;
 
+char * ScreenDotMatrix_GetText(void);
+int ScreenDotMatrix_GetTextLen(void);
+int ScreenDotMatrix_GetEffect(void);
+int ScreenDotMatrix_GetDelay_ms(void);
+
 void ScreenDotMatrix_Setup(void);
 void ScreenDotMatrix_Render(void);
 void ScreenDotMatrix_Clear(void);

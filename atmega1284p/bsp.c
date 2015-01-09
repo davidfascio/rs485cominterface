@@ -379,9 +379,9 @@ void bsp_spi_setup(void){
 	SPSR=0x00;    
 }
 
-void bsp_spi_send(int data){
+unsigned char bsp_spi_send(int data){
 
-	spi(data);
+	return spi(data);
 }
 
 

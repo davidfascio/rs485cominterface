@@ -27,6 +27,29 @@ int ScreenDisplayCommands_GetCommandIdResponse(COMMAND_RESPONSE_STRUCT_PTR_ Comm
 	return CommandIdResponseControl->commandIdResponse;
 }
 
+void ScreenDisplayCommands_SetCommandBufferResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl, char * commandBufferResponse, int commandBufferResponseLen){	
+	
+	if (commandBufferResponse == NULL)
+		return;
+	
+	if(commandBufferResponseLen > SCREEN_DISPLAY_COMMANDS_MAX_BUFFER_RESPONSE_LEN)	
+		return;
+	
+	memset(CommandIdResponseControl->commandBufferResponse, 0, SCREEN_DISPLAY_COMMANDS_MAX_BUFFER_RESPONSE_LEN);
+	memcpy(CommandIdResponseControl->commandBufferResponse, commandBufferResponse, commandBufferResponseLen);
+	CommandIdResponseControl->commandBufferResponseLen = commandBufferResponseLen;
+}
+
+char * ScreenDisplayCommands_GetCommandBufferResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl){
+
+	return CommandIdResponseControl->commandBufferResponse;
+}
+
+int ScreenDisplayCommands_GetCommandBufferResponseLen(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl){
+
+	return CommandIdResponseControl->commandBufferResponseLen;
+}
+
 void ScreenDisplayCommands_SetCommandErrorCodeResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl, int commandErrorCodeResponse){
 	
 	CommandIdResponseControl->commandErrorCodeResponse = commandErrorCodeResponse;

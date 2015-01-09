@@ -28,6 +28,25 @@ int estado = LOW;
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
+char * ScreenDotMatrix_GetText(void){
+	
+	return ScreenDotMatrixBuffer;
+}
+
+int ScreenDotMatrix_GetTextLen(void){
+	
+	return strlen(ScreenDotMatrixBuffer);
+}
+
+int ScreenDotMatrix_GetEffect(void){
+	
+	return (int) ScreenDotMatrixEffect;
+}
+
+int ScreenDotMatrix_GetDelay_ms(void){
+
+	return Timer_GetOverflowValue(&ScreenDotMatrixTimer);
+}
 
 void ScreenDotMatrix_Setup(void){
 	

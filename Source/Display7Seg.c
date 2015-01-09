@@ -62,6 +62,17 @@ int Display7Seg_GetBufferSize(DISPLAY_7_SEG_PTR display7seg){
 	return display7seg->display7segbuffersize;
 }
 
+
+void Display7Seg_SetFeedbackError(DISPLAY_7_SEG_PTR display7seg, boolean display7segfeedbackerror){
+
+	display7seg->display7segfeedbackerror = display7segfeedbackerror;
+}
+
+boolean Display7Seg_GetFeedbackError(DISPLAY_7_SEG_PTR display7seg){
+
+	return display7seg->display7segfeedbackerror;	
+}
+
 // API Functions
 
 void Display7Seg_Setup(DISPLAY_7_SEG_PTR display7seg, int * display7segbuffer, int display7segbuffersize){
@@ -73,10 +84,10 @@ void Display7Seg_Setup(DISPLAY_7_SEG_PTR display7seg, int * display7segbuffer, i
 	TPIC6B595_Setup();
 }
 
-void Display7Seg_SendDataInterface(int data) {
+unsigned char Display7Seg_SendDataInterface(int data) {
   
   //Driver
-  TPIC6B595_WriteData(data);	
+  return TPIC6B595_WriteData(data);	
 }
 
 int  Display7Seg_IntParseTo7Seg( int integerData){
@@ -117,16 +128,30 @@ int  Display7Seg_ReverseBuffer(DISPLAY_7_SEG_PTR display7seg){
 }
 
 void  Display7Seg_SendBuffer(DISPLAY_7_SEG_PTR display7seg){
+	
 	int index = 0;
 	int bufferSize = Display7Seg_GetBufferSize(display7seg);
 	int reverseIndex = bufferSize - 1;
+	unsigned char checksum;
+	unsigned char checksumResponse;
+	
+	checksum = bufferchecksum(Display7Seg_GetBuffer(display7seg),Display7Seg_GetBufferSize(display7seg));
+	
 	TPIC6B595_HideData();
-        
+	
+    Display7Seg_SendDataInterface(checksum);
 	for	(index = 0; index < Display7Seg_GetBufferSize(display7seg) ; index++ ){
 		
-		Display7Seg_SendDataInterface(Display7Seg_GetBufferByIndex(display7seg, reverseIndex));
+		checksumResponse = Display7Seg_SendDataInterface(Display7Seg_GetBufferByIndex(display7seg, reverseIndex));
 		--reverseIndex;
 	}
 
     TPIC6B595_ShowData();             
+    
+    if(checksum != checksumResponse){
+		Display7Seg_SetFeedbackError(display7seg, TRUE);
+	}
+	else{
+		Display7Seg_SetFeedbackError(display7seg, FALSE);
+	}    
 }

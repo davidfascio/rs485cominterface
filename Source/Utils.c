@@ -65,6 +65,17 @@ unsigned int strchecksum(char * data, int dataLen){
 	return checksum;
 }
 
+unsigned char bufferchecksum(int * data, int dataLen){
+	
+	int index;
+	unsigned char checksum = 0;
+	
+	for(index = 0; index < dataLen ; index++ )
+		checksum = checksum + *(data +  index);
+	
+	return checksum;	
+}
+
 void uint2str(int data,char * buffer,int bufferLen){
 	
 	memset(buffer, 0, bufferLen);

@@ -43,6 +43,7 @@ void ScreenDisplayDevice_Setup(char * data, int dataLen){
 	
 	/* Install Commands*/	
 	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_UpdateStringValue);
+	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_GetStringValue);
 	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_LEDStatus);
 	
 	// Timer
@@ -68,6 +69,16 @@ void ScreenDisplayDevice_Update(void){
 
 int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen){
 	return ScreenDispla7Seg_UpdateStringData(&ScreenDisplay7SegControl, data, dataLen);
+}
+
+char * ScreenDisplayDevice_GetStringData(void){
+
+	return ScreenDispla7Seg_GetStringData(&ScreenDisplay7SegControl);
+}
+
+int ScreenDisplayDevice_GetStringDataLen(void){
+	
+	return ScreenDispla7Seg_GetStringDataLen(&ScreenDisplay7SegControl);
 }
 
 // DEMO
@@ -118,6 +129,7 @@ COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_LEDStatus(int commandId, char * data
 		
 		commandErrorCodeResponse = LEDStatus(command_parameter);
 		
+		ScreenDisplayCommands_SetCommandBufferResponse(&CommandResponseControl,(char *) &commandErrorCodeResponse,sizeof(commandErrorCodeResponse));				
 		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
 	}
 	return	CommandResponseControl;		
@@ -175,7 +187,41 @@ COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateStringValue(int commandId, cha
 		
 		commandErrorCodeResponse = ScreenDisplayDevice_UpdateStringData(data, dataSize);
 		
+		ScreenDisplayCommands_SetCommandBufferResponse(&CommandResponseControl,(char *) &commandErrorCodeResponse,sizeof(commandErrorCodeResponse));				
 		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
+	}
+	return	CommandResponseControl;		
+}
+
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_GetStringValue(int commandId, char * data, int dataSize){
+	
+	//! Upper Cast Implementation for ScreenDisplayDevice_UpdateValue Command	
+	//!
+	//! Notice:
+	//! 	- *data is char * type
+	//! 	- dataSize is strlen(char *)
+	//!
+	//! 
+	
+    COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	
+	int commandErrorCodeResponse;
+	char * commandBufferResponse;
+	int commandBufferResponseLen;
+	
+	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);	
+	
+	if((commandId == SCREEN_DISPLAY_DEVICE_MASTER_COMMAND_ID_GET_VALUE)) {
+		
+		ScreenDisplayCommands_SetCommandIdResponse(&CommandResponseControl, SCREEN_DISPLAY_DEVICE_SLAVE_COMMAND_ID_GET_VALUE);
+		
+		commandBufferResponse = ScreenDisplayDevice_GetStringData();
+		commandBufferResponseLen = ScreenDisplayDevice_GetStringDataLen();
+		
+		ScreenDisplayCommands_SetCommandBufferResponse(&CommandResponseControl,commandBufferResponse,commandBufferResponseLen);				
+		
+		if(commandBufferResponseLen == 0)
+			ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, SCREEN_DISPLAY_DEVICE_EMPTY_BUFFER);
 	}
 	return	CommandResponseControl;		
 }

@@ -12,6 +12,7 @@
 // Includes
 //********************************************************************** 
 #include "TPIC6B595.h"
+#include "Utils.h"
 
 //**********************************************************************
 // Defines
@@ -78,7 +79,8 @@
 //********************************************************************** 
 typedef struct display7segstruct{	
 	int *  display7segbuffer;
-	int display7segbuffersize;	
+	int display7segbuffersize;
+	boolean display7segfeedbackerror;	
 } DISPLAY_7_SEG, * DISPLAY_7_SEG_PTR;
 
 //**********************************************************************
@@ -94,9 +96,11 @@ int * Display7Seg_GetBuffer(DISPLAY_7_SEG_PTR display7seg);
 int Display7Seg_GetBufferSize(DISPLAY_7_SEG_PTR display7seg);
 int Display7Seg_GetBufferByIndex(DISPLAY_7_SEG_PTR display7seg, int index);
 
+void Display7Seg_SetFeedbackError(DISPLAY_7_SEG_PTR display7seg, boolean display7segfeedbackerror);
+boolean Display7Seg_GetFeedbackError(DISPLAY_7_SEG_PTR display7seg);
 // API Functions
 void Display7Seg_Setup(DISPLAY_7_SEG_PTR display7seg, int * display7segbuffer, int display7segbuffersize);
-void Display7Seg_SendDataInterface(int data);
+unsigned char Display7Seg_SendDataInterface(int data);
 int  Display7Seg_ReverseBuffer(DISPLAY_7_SEG_PTR display7seg);
 void  Display7Seg_SendBuffer(DISPLAY_7_SEG_PTR display7seg);
 int  Display7Seg_IntParseTo7Seg(int integerData);

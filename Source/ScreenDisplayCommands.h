@@ -24,12 +24,17 @@
 // Command Id
 #define SCREEN_DISPLAY_COMMADS_NO_COMMAND_ID						 (0)
 
+// Buffer
+#define SCREEN_DISPLAY_COMMANDS_MAX_BUFFER_RESPONSE_LEN				(20)
+
 //**********************************************************************
 // Vartypes
 //**********************************************************************
 
 typedef struct command_result_struct{
 	int commandIdResponse;
+	char commandBufferResponse[SCREEN_DISPLAY_COMMANDS_MAX_BUFFER_RESPONSE_LEN];
+	int commandBufferResponseLen;
 	int commandErrorCodeResponse;
 } COMMAND_RESPONSE_STRUCT, * COMMAND_RESPONSE_STRUCT_PTR_;
 
@@ -40,6 +45,10 @@ typedef COMMAND_RESPONSE_STRUCT  (* SCREEN_DISPLAY_COMMANDS_FUNCTION )(int comma
 //**********************************************************************
 void ScreenDisplayCommands_SetCommandIdResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl, int commandIdResponse);
 int ScreenDisplayCommands_GetCommandIdResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl);
+
+void ScreenDisplayCommands_SetCommandBufferResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl, char * commandBufferResponse, int commandBufferResponseLen);
+char * ScreenDisplayCommands_GetCommandBufferResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl);
+int ScreenDisplayCommands_GetCommandBufferResponseLen(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl);
 
 void ScreenDisplayCommands_SetCommandErrorCodeResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl, int commandErrorCodeResponse);
 int ScreenDisplayCommands_GetCommandErrorCodeResponse(COMMAND_RESPONSE_STRUCT_PTR_ CommandIdResponseControl);

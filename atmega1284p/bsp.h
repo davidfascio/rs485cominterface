@@ -71,7 +71,7 @@ void bsp_io_write(BSP_PORT bsp_pin, int state_pin);
 // BSP SPI Functions
 //**********************************************************************
 void bsp_spi_setup(void);
-void bsp_spi_send(int data);
+unsigned char  bsp_spi_send(int data);
 
 
 //**********************************************************************

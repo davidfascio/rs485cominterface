@@ -15,10 +15,11 @@ void ScreenDotMatrixDevice_Setup(void){
 	
 	ScreenDotMatrix_Setup();
 	
-	/* Install Commands*/	
-	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction);
+	/* Install Commands*/		
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_SendTextFunction);
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_SendTextWithCustomDelayFunction);
+	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_GetTextWithCustomDelayFunction);
+	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction);
 	
 }
 
@@ -180,5 +181,67 @@ COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextWithCustomDelayFunction(in
 		
 		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
 	}
+	return	CommandResponseControl;		
+}
+
+COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_GetTextWithCustomDelayFunction(int commandId, char * data, int dataSize){
+	
+	//! Upper Cast Implementation for ScreenDisplayDevice_UpdateValue Command	
+	//!
+	//! Notice:
+	//! 	- 
+	//! 	- 
+	//!
+	//! memcpy((char *) &command_parameter , data, sizeof(command_parameter));
+	
+	int command_parameter_effect;	
+    int command_parameter_delay_ms;
+	char * command_parameter_text;
+	int command_parameter_text_len;
+    
+    char command_parammeters[50];
+    char * command_parammeters_index;
+    int command_parammeters_len;
+    
+    COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	int commandErrorCodeResponse;
+	
+	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);	
+	
+	if(commandId == SCREEN_DOT_MATRIX_DEVICE_MASTER_COMMAND_ID_GET_TEXT_DELAY){
+		
+		command_parameter_effect 	= ScreenDotMatrix_GetEffect();		
+		command_parameter_delay_ms 	= ScreenDotMatrix_GetDelay_ms();
+		command_parameter_text 		= ScreenDotMatrix_GetText();
+		command_parameter_text_len 	= ScreenDotMatrix_GetTextLen();
+
+		ScreenDisplayCommands_SetCommandIdResponse(&CommandResponseControl, SCREEN_DOT_MATRIX_DEVICE_SLAVE_COMMAND_ID_GET_TEXT_DELAY);
+		
+		if(command_parameter_text_len == 0){
+			
+			ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, SCREEN_DOT_MATRIX_DEVICE_EMPTY_BUFFER);
+			return CommandResponseControl;
+		}
+			
+		// Clear command_parameters buffer
+		memset(command_parammeters, 0, sizeof(command_parammeters));
+		
+		// Filling command_parammeters
+		command_parammeters_index = command_parammeters;
+		memcpy(command_parammeters_index, (char * ) &command_parameter_effect, sizeof(command_parameter_effect));
+		
+		command_parammeters_index += sizeof(command_parameter_effect);
+		memcpy(command_parammeters_index, (char * ) &command_parameter_delay_ms, sizeof(command_parameter_delay_ms));
+		
+		command_parammeters_index += sizeof(command_parameter_delay_ms);
+		memcpy(command_parammeters_index, command_parameter_text, command_parameter_text_len);		
+		
+		command_parammeters_index += command_parameter_text_len;
+		command_parammeters_len = command_parammeters_index - command_parammeters;
+		
+		ScreenDisplayCommands_SetCommandBufferResponse(&CommandResponseControl,command_parammeters, command_parammeters_len);				
+		
+	}
+	
 	return	CommandResponseControl;		
 }

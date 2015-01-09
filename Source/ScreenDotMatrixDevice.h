@@ -15,6 +15,7 @@
 #include "ScreenDisplayCommands.h"
 #include "ScreenDisplayDeviceCommandList.h"
 
+#define SCREEN_DOT_MATRIX_DEVICE_EMPTY_BUFFER							(-1)
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
@@ -39,6 +40,6 @@ int ScreenDotMatrixDevice_SendText(char *text, int effect);
 COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_LEDStatusFunction(int commandId, char * data, int dataSize);
 COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextFunction(int commandId, char * data, int dataSize);
 COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextWithCustomDelayFunction(int commandId, char * data, int dataSize);
-
+COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_GetTextWithCustomDelayFunction(int commandId, char * data, int dataSize);
 
 #endif /* __SCREEN_DOT_MATRIX_DEVICE_H__ */

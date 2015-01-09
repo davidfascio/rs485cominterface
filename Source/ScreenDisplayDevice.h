@@ -24,6 +24,7 @@
 
 #define SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR 			(BSP_PIN_A1)
 
+#define SCREEN_DISPLAY_DEVICE_EMPTY_BUFFER							(-1)
 //**********************************************************************
 // Setters and Getters Prototype Functions
 //**********************************************************************
@@ -33,6 +34,9 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void);
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
+char * ScreenDisplayDevice_GetStringData(void);
+int ScreenDisplayDevice_GetStringDataLen(void);
+
 void ScreenDisplayDevice_Setup(char * data, int dataLen);
 void ScreenDisplayDevice_Update(void);
 int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen);
@@ -49,6 +53,8 @@ int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen);
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_LEDStatus(int commandId, char * data, int dataSize);
 //COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateValue(int commandId, char * data, int dataSize);
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateStringValue(int commandId, char * data, int dataSize);
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_GetStringValue(int commandId, char * data, int dataSize);
+
 int LEDStatus(int status);
 
 #endif /* __SCREEN_DISPLAY_DEVICE_H__  */
