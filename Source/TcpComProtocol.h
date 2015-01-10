@@ -82,7 +82,7 @@ boolean TCPComProtocol_GetDataPacketArrived(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComP
 
 void TCPComProtocol_Setup(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, int comHndlr,
 						  char ComAddress, char * ComPrefix , char ComUser, char * ComPassword, char ComPasswordLen);
-void hacer_nada(void);
+void do_nothing(void);
 void TCPComProtocol_RecvBufferReset(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl);
 void ErrorInTCPComProtocolCommunication(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl);
 

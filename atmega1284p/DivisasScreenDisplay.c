@@ -8,6 +8,7 @@
 //**********************************************************************
 // Includes
 //**********************************************************************
+#include "System.h"
 #include "ScreenDisplayDevice.h"
 #include "ScreenDisplayProtocol.h"
 
@@ -15,11 +16,9 @@
 // API Fucntions
 //**********************************************************************
 void main(void)
-{
-        	
-	//! SETUP
-	bsp_setup();    
-	Timer_Setup();	
+{        	
+	//! SETUP	
+	System_Setup();
 	ScreenDisplayProtocol_Setup(0x12);		
 	
 	//! AFTER SETUP
@@ -28,11 +27,13 @@ void main(void)
 	//! LOOP
 	while(TRUE){
 		
-		ScreenDisplayDevice_Update();
+		//! System Loop Process
+		System_Update();
 		
-		//!*************************************************************
-		//! Communication Protocol Process 
-		//!*************************************************************
+		//! Device Render Process 
+		ScreenDisplayDevice_Update();	
+		
+		//! Communication Protocol Process 		
 		//ScreenDisplayProtocol_WaitDataPacketCheck();
 		ScreenDisplayProtocol_StateMachineUpdate();
 		ScreenDisplayProtocol_ProcessingDataPacketArrived();	

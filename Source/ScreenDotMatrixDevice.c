@@ -19,8 +19,7 @@ void ScreenDotMatrixDevice_Setup(void){
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_SendTextFunction);
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_SendTextWithCustomDelayFunction);
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_GetTextWithCustomDelayFunction);
-	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction);
-	
+	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction);	
 }
 
 

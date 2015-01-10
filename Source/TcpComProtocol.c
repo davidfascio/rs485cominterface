@@ -97,10 +97,10 @@ void TCPComProtocol_Setup(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, in
 	AddTimer(&TCPComTimer, TCP_COM_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
 
 	//!TCPComInterface_Setup();	
-    bsp_usart1_setup(hacer_nada);	
+    bsp_usart1_setup(do_nothing);	
 }
 
-void hacer_nada(void){
+void do_nothing(void){
 	
 }
 

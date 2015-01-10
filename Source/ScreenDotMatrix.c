@@ -60,9 +60,7 @@ void ScreenDotMatrix_Setup(void){
 	AddTimer(&ScreenDotMatrixTimer, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);	
 	
 	bsp_pin_mode(BSP_PIN_A1, OUTPUT);		
-	bsp_io_write(BSP_PIN_A1, estado);	
-	
-	
+	bsp_io_write(BSP_PIN_A1, estado);		
 }
 
 void ScreenDotMatrix_Render(void){

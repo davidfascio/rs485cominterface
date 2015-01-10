@@ -8,20 +8,18 @@
 //**********************************************************************
 // Includes
 //**********************************************************************
-
+#include "System.h"
 #include "ScreenDotMatrixDevice.h"
 #include "ScreenDisplayProtocol.h"
-#include "Timer.h"
+
 
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
 void main(void)
 {
-	 int estado = LOW;    	
 	//! SETUP
-	bsp_setup();    
-	Timer_Setup();	
+	System_Setup();	
 	ScreenDisplayProtocol_Setup(0x11);	
 	
 	//! AFTER SETUP	
@@ -32,15 +30,14 @@ void main(void)
 	
 	//! LOOP
 	while(TRUE){
-	
-		//!*************************************************************
-		//! Render Process 
-		//!*************************************************************
+		
+		//! System Loop Process
+		System_Update();
+		
+		//! Render Process 		
 		ScreenDotMatrixDevice_Update();				
 		
-		//!*************************************************************
-		//! Communication Protocol Process 
-		//!*************************************************************
+		//! Communication Protocol Process 		
 		//ScreenDisplayProtocol_WaitDataPacketCheck();
 		ScreenDisplayProtocol_StateMachineUpdate();		
 		ScreenDisplayProtocol_ProcessingDataPacketArrived();			

@@ -12,7 +12,10 @@
 // Includes
 //**********************************************************************
 
-#include "CommonSystemLibraries.h"
+//#include "CommonSystemLibraries.h"
+#include "bsp.h"
+#include "psp.h"
+#include "string.h"
 
 
 //**********************************************************************

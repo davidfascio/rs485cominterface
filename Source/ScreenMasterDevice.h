@@ -48,5 +48,11 @@ void ScreenMasterDisplayDevice_LEDStatus(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ Mas
 
 void ScreenMasterDisplayDevice_UpdateValue(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
 											char slaveAddress, int commandId, char * data);
+											
+void ScreenMasterDotMatrixDevice_GetTextWithCustomDelayFunction(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
+																char slaveAddress, int commandId, char * data);
+																
+void ScreenMasterDisplayDevice_GetValue(MASTER_COMMAND_RESPONSE_STRUCT_PTR_ MasterCommandResponseControl, 
+											char slaveAddress, int commandId, char * data);																
 
 #endif /* __SCREEN_MASTER_DEVICE_H__ */
