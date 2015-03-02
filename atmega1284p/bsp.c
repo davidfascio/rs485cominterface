@@ -371,11 +371,11 @@ void bsp_spi_setup(void){
 		
 	// SPI initialization
 	// SPI Type: Master
-	// SPI Clock Rate: 2000.000 kHz
+	// SPI Clock Rate: 5000.000 kHz
 	// SPI Clock Phase: Cycle Start
 	// SPI Clock Polarity: Low
 	// SPI Data Order: MSB First
-	SPCR=0x52;
+	SPCR=0x50;
 	SPSR=0x00;    
 }
 
@@ -570,7 +570,7 @@ void bsp_usart_setup(BSP_USART_UPDATE_FUNCTION update_function){
 	UCSR0B=0xD8;
 	UCSR0C=0x06;
 	UBRR0H=0x00;
-	UBRR0L=0x33;
+	UBRR0L=0x81;
 	
 	bsp_usart_update = update_function;
 	// Global enable interrupts
@@ -788,7 +788,7 @@ void bsp_usart1_setup(BSP_USART_UPDATE_FUNCTION update_function){
 	UCSR1B=0xD8;
 	UCSR1C=0x06;
 	UBRR1H=0x00;
-	UBRR1L=0x33;
+	UBRR1L=0x81;
 	
 	bsp_usart1_update = update_function;
 	
@@ -889,13 +889,13 @@ void bsp_timer_setup(BSP_TIMER_UPDATE_FUNCTION update_function){
 	// Compare A Match Interrupt: On
 	// Compare B Match Interrupt: Off
 	TCCR1A=0x00;
-	TCCR1B=0x0B;
+	TCCR1B=0x0A;
 	TCNT1H=0x00;
 	TCNT1L=0x00;
 	ICR1H=0x00;
 	ICR1L=0x00;
-	OCR1AH=0x00;
-	OCR1AL=0x7D;
+	OCR1AH=0x09;
+	OCR1AL=0xC4;
 	OCR1BH=0x00;
 	OCR1BL=0x00;
 	
