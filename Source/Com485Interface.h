@@ -16,7 +16,7 @@
 //**********************************************************************
 // Defines
 //**********************************************************************
-#define COM_485_INTERFACE_ENALE_TRANSMITION						BSP_PIN_A3//BSP_PIN_D2
+#define COM_485_INTERFACE_ENALE_TRANSMITION						BSP_PIN_D5//BSP_PIN_A3//BSP_PIN_D2
 #define COM_485_INTERFACE_TX_ON									HIGH
 #define COM_485_INTERFACE_TX_OFF								LOW
 

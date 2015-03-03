@@ -15,7 +15,7 @@
 #include "psp.h"
 #include "Timer.h"
 
-#define SYSTEM_LED_INDICATOR_STATUS							(BSP_PIN_C0) // Temporally
+#define SYSTEM_LED_INDICATOR_STATUS							(BSP_PIN_C3) // It needs to disable JTAGEN fusible
 #define SYSTEM_LED_INDICATOR_STATUS_DELAY_IN_MS				(500)
 //**********************************************************************
 // API Prototype Fucntions

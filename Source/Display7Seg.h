@@ -39,14 +39,14 @@
 ////////////////////////////////////////////////////////////////////////
 
 // Pinout 7 Segments Defines
-#define DISPLAY_7_SEG_A			(0x02)
-#define DISPLAY_7_SEG_B			(0x01)
-#define DISPLAY_7_SEG_C			(0x20)
-#define DISPLAY_7_SEG_D			(0x10)
-#define DISPLAY_7_SEG_E			(0x04)
-#define DISPLAY_7_SEG_F			(0x40)
-#define DISPLAY_7_SEG_G			(0x08)
-#define DISPLAY_7_SEG_DP		(0x80)
+#define DISPLAY_7_SEG_A			(0x20)	//(0x02)
+#define DISPLAY_7_SEG_B			(0x40)	//(0x01)
+#define DISPLAY_7_SEG_C			(0x01)	//(0x20)
+#define DISPLAY_7_SEG_D			(0x08)	//(0x10)
+#define DISPLAY_7_SEG_E			(0x10)	//(0x04)
+#define DISPLAY_7_SEG_F			(0x02)	//(0x40)
+#define DISPLAY_7_SEG_G			(0x04)	//(0x08)
+#define DISPLAY_7_SEG_DP		(0x80)	//(0x80)
 
 // Characters Defines
 #define DISPLAY_7_SEG_CHARACTER_0 (DISPLAY_7_SEG_A | DISPLAY_7_SEG_B | DISPLAY_7_SEG_C | DISPLAY_7_SEG_E | DISPLAY_7_SEG_F | DISPLAY_7_SEG_G)

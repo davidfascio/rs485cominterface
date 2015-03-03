@@ -29,6 +29,7 @@
 // BSP Data Types
 //**********************************************************************
 typedef enum bsp_ports{
+	BSP_NO_PIN,
 	BSP_PIN_A0,
 	BSP_PIN_A1,
 	BSP_PIN_A2,
