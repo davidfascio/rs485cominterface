@@ -57,7 +57,8 @@ void ScreenDisplayProtocol_ProcessingDataPacketArrived(void){
 		
 		// Verifying Slave Address with Device Address
 		if (ComAddress == SlaveAddress ||
-			SlaveAddress == SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS){
+			SlaveAddress == SCREEN_DISPLAY_PROTOCOL_DEFAULT_BROADCAST_ADDRESS ||
+			SlaveAddress == SCREEN_DISPLAY_PROTOCOL_DEFAULT_PEER_TO_PEER_ADDRESS){
 		
 			Handler 		= Com485Protocol_GetComHndlr(&ScreenDisplayProtocolControl);			
 			TotalDataSize 	= Com485Protocol_GetTotalDataArrived(&ScreenDisplayProtocolControl);			

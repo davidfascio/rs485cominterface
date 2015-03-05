@@ -98,6 +98,21 @@ int  Display7Seg_IntParseTo7Seg( int integerData){
 	return Display7SegCharacters[integerData];
 }
 
+int Display7Seg_Symbols(SYMBOLS_ENUM symbol){
+	
+	switch(symbol){
+				
+		case DOT:
+			return DISPLAY_7_SEG_CHARACTER_DOT;
+			
+		case HYPHEN:
+			return DISPLAY_7_SEG_CHARACTER_HYPHEN;
+			
+		default:
+			return DISPLAY_7_SEG_CHARACTER_NO_SYMBOL;
+	}	
+}
+
 int  Display7Seg_ReverseBuffer(DISPLAY_7_SEG_PTR display7seg){	
 	
 	int * buffer;
@@ -143,6 +158,35 @@ void  Display7Seg_SendBuffer(DISPLAY_7_SEG_PTR display7seg){
 	for	(index = 0; index < Display7Seg_GetBufferSize(display7seg) ; index++ ){
 		
 		checksumResponse = Display7Seg_SendDataInterface(Display7Seg_GetBufferByIndex(display7seg, reverseIndex));
+		--reverseIndex;
+	}
+
+    TPIC6B595_ShowData();             
+    
+    if(checksum != checksumResponse){
+		Display7Seg_SetFeedbackError(display7seg, TRUE);
+	}
+	else{
+		Display7Seg_SetFeedbackError(display7seg, FALSE);
+	}    
+}
+
+void  Display7Seg_Clear(DISPLAY_7_SEG_PTR display7seg){
+	
+	int index = 0;
+	int bufferSize = Display7Seg_GetBufferSize(display7seg);
+	int reverseIndex = bufferSize - 1;
+	unsigned char checksum;
+	unsigned char checksumResponse;
+	
+	checksum = bufferchecksum(Display7Seg_GetBuffer(display7seg),Display7Seg_GetBufferSize(display7seg));
+	
+	TPIC6B595_HideData();
+	
+    Display7Seg_SendDataInterface(checksum);
+	for	(index = 0; index < Display7Seg_GetBufferSize(display7seg) ; index++ ){
+		
+		checksumResponse = Display7Seg_SendDataInterface(0);
 		--reverseIndex;
 	}
 

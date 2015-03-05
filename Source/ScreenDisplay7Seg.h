@@ -17,6 +17,10 @@
 #define SCREEN_DISPLAY_7_SEG_MAX_NUMBER_ALLOWED_ERROR_CODE			(-1)
 #define SCREEN_DISPLAY_7_SEG_BAD_FORMAT_ERROR_CODE					(-2)
 #define SCREEN_DISPLAY_7_SEG_MAX_STRING_DATA_BUFFER					(10)
+#define SCREEN_DISPLAY_7_SEG_ERROR_MESSAGE_ERROR_CODE				(-3)
+
+// MESSAGES
+#define SCREEN_DISPLAY_7_SEG_ERROR_MESSAGE 						"NO DATA"
 //**********************************************************************
 // Structures
 //**********************************************************************
@@ -25,6 +29,7 @@ typedef struct screendisplay7segstruct{
 	char stringdata[SCREEN_DISPLAY_7_SEG_MAX_STRING_DATA_BUFFER];
 	int stringdataLen;
 	DISPLAY_7_SEG display7seg;
+	boolean error_data;
 }SCREEN_DISPLAY_7_SEG, * SCREEN_DISPLAY_7_SEG_PTR;
 
 
@@ -42,10 +47,14 @@ int ScreenDispla7Seg_GetStringDataLen(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg
 	
 DISPLAY_7_SEG_PTR ScreenDispla7Seg_GetDisplay7Seg(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg);
 
+void ScreenDispla7Seg_SetErrorData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, boolean error_data);
+boolean ScreenDispla7Seg_IsErrorData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg);
+
 void ScreenDispla7Seg_Setup(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * data, int dataLen, int * display7segbuffer, int display7segbuffersize);
 void ScreenDispla7Seg_Update(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg);
 int ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data);
 int ScreenDispla7Seg_UpdateStringData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * data, int dataLen);
+int ScreenDispla7Seg_ErrorMessage(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * data, int dataLen);
 int ScreenDispla7Seg_FloatParseToScreenDisplay(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data);
 int ScreenDispla7Seg_StringParseToScreenDisplay(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * data, int dataLen);
 

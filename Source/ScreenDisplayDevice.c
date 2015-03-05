@@ -15,7 +15,7 @@ volatile SCREEN_DISPLAY_7_SEG ScreenDisplay7SegControl;
 volatile int ScreenDisplay7SegBuffer[SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE];
 volatile int ScreenDisplay7SegBufferLen = SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE;
 
-int ScreenDisplay7SegUpdateLed = LOW;
+//int ScreenDisplay7SegUpdateLed = LOW;
 TIMER_STRUCT ScreenDisplay7SegTimer;
 
 //**********************************************************************
@@ -37,28 +37,31 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void){
 //**********************************************************************
 // API Fucntions
 //**********************************************************************
-void ScreenDisplayDevice_Setup(char * data, int dataLen){
-	
-	ScreenDispla7Seg_Setup(&ScreenDisplay7SegControl, data, dataLen,  ScreenDisplay7SegBuffer, ScreenDisplay7SegBufferLen);
+void ScreenDisplayDevice_Setup(char * data, int dataLen, int display7segbuffersize){
+
+    ScreenDisplayDevice_SetDisplay7SegBufferLen(display7segbuffersize);	
+	ScreenDispla7Seg_Setup(&ScreenDisplay7SegControl, data, dataLen,  ScreenDisplay7SegBuffer, display7segbuffersize);
 	
 	/* Install Commands*/	
 	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_UpdateStringValue);
 	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_GetStringValue);
 	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_LEDStatus);
 	
+	/* Install Configuration Commands*/	
+	ScreenDisplayCommands_AddCommad(ScreenDisplayDevice_SetDeviceConfiguration);	
+	
 	// Timer
 	AddTimer(&ScreenDisplay7SegTimer,SCREEN_DISPLAY_DEVICE_DEFAULT_TIMER_REFRESH_MS_VALUE);
 	
-	bsp_pin_mode(SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR, OUTPUT);
-	
+	//bsp_pin_mode(SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR, OUTPUT);	
 }
 
 void ScreenDisplayDevice_Update(void){
 	
 	if(Timer_GetOverflow(&ScreenDisplay7SegTimer) == TRUE) {
 		
-		ScreenDisplay7SegUpdateLed = (ScreenDisplay7SegUpdateLed == LOW )? HIGH : LOW;
-		bsp_io_write(SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR, ScreenDisplay7SegUpdateLed);
+		//ScreenDisplay7SegUpdateLed = (ScreenDisplay7SegUpdateLed == LOW )? HIGH : LOW;
+		//bsp_io_write(SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR, ScreenDisplay7SegUpdateLed);
 		ScreenDispla7Seg_Update(&ScreenDisplay7SegControl);
 		Timer_Reset(&ScreenDisplay7SegTimer);
 	}
@@ -225,3 +228,46 @@ COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_GetStringValue(int commandId, char *
 	}
 	return	CommandResponseControl;		
 }
+
+
+
+////////////////////////// CONFIGURATION COMMANDS //////////////////////
+		
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_SetDeviceConfiguration(int commandId, char * data, int dataSize){
+	
+	//! Upper Cast Implementation for ScreenDisplayDevice_UpdateValue Command	
+	//!
+	//! Notice:
+	//! 	- *data is char * type
+	//! 	- dataSize is strlen(char *)
+	//!
+	//! 
+	char command_parameter0;
+	char command_parameter1;
+	char * dataptr = data;
+	
+    COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	int commandErrorCodeResponse;
+	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);	
+	
+	if((commandId == DEVICE_CONFIG_SET_ADDRESS_MASTER_COMMAND_ID) &&
+		dataSize == (2 * SIZE_OF_CHAR)) {
+		
+		ScreenDisplayCommands_SetCommandIdResponse(&CommandResponseControl, DEVICE_CONFIG_SET_ADDRESS_SLAVE_COMMAND_ID);
+		
+		memcpy((char *) &command_parameter0 , dataptr, SIZE_OF_CHAR);
+		dataptr = dataptr + SIZE_OF_CHAR;
+		
+		memcpy((char *) &command_parameter1 , dataptr, SIZE_OF_CHAR);
+		
+		
+		commandErrorCodeResponse = DeviceConfig_SetConfiguration(command_parameter0,command_parameter1);
+		
+		ScreenDisplayCommands_SetCommandBufferResponse(&CommandResponseControl,(char *) &commandErrorCodeResponse,sizeof(commandErrorCodeResponse));				
+		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
+	}
+	
+	return	CommandResponseControl;		
+}
+
+////////////////////////// CONFIGURATION COMMANDS //////////////////////

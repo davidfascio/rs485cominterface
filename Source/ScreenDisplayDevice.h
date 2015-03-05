@@ -15,6 +15,7 @@
 #include "ScreenDisplay7Seg.h"
 #include "ScreenDisplayCommands.h"
 #include "ScreenDisplayDeviceCommandList.h"
+#include "Config.h"
 
 //**********************************************************************
 // Defines
@@ -37,7 +38,7 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void);
 char * ScreenDisplayDevice_GetStringData(void);
 int ScreenDisplayDevice_GetStringDataLen(void);
 
-void ScreenDisplayDevice_Setup(char * data, int dataLen);
+void ScreenDisplayDevice_Setup(char * data, int dataLen, int display7segbuffersize);
 void ScreenDisplayDevice_Update(void);
 int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen);
 
@@ -56,5 +57,11 @@ COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_UpdateStringValue(int commandId, cha
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_GetStringValue(int commandId, char * data, int dataSize);
 
 int LEDStatus(int status);
+
+
+////////////////////////// CONFIGURATION COMMANDS //////////////////////
+
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_SetDeviceConfiguration(int commandId, char * data, int dataSize);
+
 
 #endif /* __SCREEN_DISPLAY_DEVICE_H__  */

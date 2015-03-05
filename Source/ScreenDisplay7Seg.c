@@ -9,7 +9,7 @@
 #include "ScreenDisplay7Seg.h"
 //#include "Com485Interface.h"
 
-
+int ScreenDisplay7SegUpdateLed = LOW;
 //**********************************************************************
 // Functions
 //**********************************************************************
@@ -56,6 +56,16 @@ DISPLAY_7_SEG_PTR ScreenDispla7Seg_GetDisplay7Seg(SCREEN_DISPLAY_7_SEG_PTR scree
 	return &screendisplay7seg->display7seg;
 }
 
+void ScreenDispla7Seg_SetErrorData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, boolean error_data){
+
+	screendisplay7seg->error_data = error_data;
+}
+
+boolean ScreenDispla7Seg_IsErrorData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg){
+	
+	return screendisplay7seg->error_data;
+}
+
 //**********************************************************************
 // API Functions
 //**********************************************************************
@@ -67,6 +77,7 @@ void ScreenDispla7Seg_Setup(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * d
 	Display7Seg_Setup(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg), display7segbuffer, display7segbuffersize);
 	
 	//! Preinit
+	ScreenDispla7Seg_SetErrorData(screendisplay7seg, FALSE);
 	ScreenDispla7Seg_UpdateStringData(screendisplay7seg, data, dataLen);
 }
 
@@ -75,8 +86,18 @@ void ScreenDispla7Seg_Update(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg){
 	/*ScreenDispla7Seg_UpdateStringData(screendisplay7seg, 
 									ScreenDispla7Seg_GetStringData(screendisplay7seg),
 									ScreenDispla7Seg_GetStringDataLen(screendisplay7seg));*/
-	Display7Seg_SendBuffer(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));											
+	ScreenDisplay7SegUpdateLed = (ScreenDisplay7SegUpdateLed == LOW )? HIGH : LOW;
+									
+	if (ScreenDispla7Seg_IsErrorData(screendisplay7seg) == TRUE && ScreenDisplay7SegUpdateLed == HIGH){	
+		
+		Display7Seg_Clear(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));		
+	}
+	else {
+		
+		Display7Seg_SendBuffer(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));													
+	}	
 }
+
 int ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data){	
 	
 	volatile int error_code;
@@ -97,8 +118,11 @@ int ScreenDispla7Seg_UpdateStringData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg
 	
 	volatile int error_code;
 	//! Special Messages HERE
+	error_code = ScreenDispla7Seg_ErrorMessage(screendisplay7seg, data, dataLen);
 	
-	error_code = ScreenDispla7Seg_StringParseToScreenDisplay(screendisplay7seg, data, dataLen);
+	//! Decimal data HERE
+	if (error_code != SCREEN_DISPLAY_7_SEG_NO_ERROR_CODE)
+		error_code = ScreenDispla7Seg_StringParseToScreenDisplay(screendisplay7seg, data, dataLen);
 	
 	if( error_code == SCREEN_DISPLAY_7_SEG_NO_ERROR_CODE){
 		//Com485Interface_Write(data, dataLen);
@@ -109,6 +133,37 @@ int ScreenDispla7Seg_UpdateStringData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg
 	return error_code;
 }
 
+/***********************************************************************
+ * SPECIAL ERROR MESSAGE
+ ***********************************************************************/ 
+ 
+int ScreenDispla7Seg_ErrorMessage(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * data, int dataLen){	
+	
+	int error_code = SCREEN_DISPLAY_7_SEG_ERROR_MESSAGE_ERROR_CODE;
+	int bufferSize = (Display7Seg_GetBufferSize(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg)));  
+    int bufferIndex;
+	int data7Seg;   
+    char * dataTemp  = SCREEN_DISPLAY_7_SEG_ERROR_MESSAGE;
+	
+	if(dataLen == strlen(dataTemp)){                                          
+        
+		if(!memcmp(data, dataTemp, strlen(dataTemp)))
+		{
+			data7Seg = Display7Seg_Symbols(HYPHEN);
+			
+			for(bufferIndex = 0; bufferIndex < bufferSize; bufferIndex++)
+				Display7Seg_SetBufferByIndex(	ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg), bufferIndex, data7Seg);		
+			
+			ScreenDispla7Seg_SetErrorData(screendisplay7seg, TRUE);
+			
+			error_code = SCREEN_DISPLAY_7_SEG_NO_ERROR_CODE;
+		}
+	}
+	
+	return error_code;
+} 
+
+/***********************************************************************/
 int ScreenDispla7Seg_FloatParseToScreenDisplay(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data){
 	
 	int bufferSize = (Display7Seg_GetBufferSize(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg)));
@@ -239,5 +294,6 @@ int ScreenDispla7Seg_StringParseToScreenDisplay(SCREEN_DISPLAY_7_SEG_PTR screend
 	}	
 	
 	//Display7Seg_ReverseBuffer(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));
+	ScreenDispla7Seg_SetErrorData(screendisplay7seg, FALSE);
 	return 	SCREEN_DISPLAY_7_SEG_NO_ERROR_CODE; 
 }
