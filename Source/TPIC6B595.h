@@ -28,8 +28,10 @@ void TPIC6B595_HideData();
 void TPIC6B595_ShowData();
 
 void TPIC6B595_SendBuffer(char * buffer, char bufferLen);
+void TPIC6B595_SendReverseBuffer(char * buffer, char bufferLen);
 void TPIC6B595_Clear(char bufferLen);
 
 unsigned char TPIC6B595_WriteData(char data);
+char swap_char(char data);
 
 #endif /* __TPIC6B595_H__ */

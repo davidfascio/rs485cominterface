@@ -46,6 +46,38 @@ void TPIC6B595_SendBuffer(char * buffer, char bufferLen){
 	TPIC6B595_ShowData();	 
 }
 
+void TPIC6B595_SendReverseBuffer(char * buffer, char bufferLen){
+	
+	int index ;
+	char swapbuffer;
+	
+	TPIC6B595_HideData();
+	
+	for(index = (bufferLen - 1); index >= 0; index--){
+	
+		swapbuffer = swap_char(buffer[index]);
+		bsp_spi_send(swapbuffer);
+	}
+	
+	TPIC6B595_ShowData();	 
+}
+
+char swap_char(char data){
+	
+	char temp = 0;
+		
+	temp |= (data & 0x80) >> 7;
+	temp |= (data & 0x40) >> 5;
+	temp |= (data & 0x20) >> 3;
+	temp |= (data & 0x10) >> 1;
+	temp |= (data & 0x01) << 7;
+	temp |= (data & 0x02) << 5;
+	temp |= (data & 0x04) << 3;
+	temp |= (data & 0x08) << 1;
+	
+	return temp;
+}
+
 void TPIC6B595_Clear(char bufferLen){
 	
 	char index;

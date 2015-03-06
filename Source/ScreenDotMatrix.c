@@ -172,7 +172,7 @@ void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash 
 		if(current_x_pixel >= SCREEN_DOT_MATRIX_WIDTH * 8)
 			break;
 		
-		if(current_x_pixel + (font_width -1) >= 0 ){ // font_width 
+		if(current_x_pixel /*+ (font_width -1) */>= 0 ){ // font_width 
 			
 			ScreenDotMatrix_Draw(font + (
 			((font_width % 8) ? font_width / 8 + 1 : font_width / 8 )* font_height * current_char), 

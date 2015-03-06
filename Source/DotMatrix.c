@@ -139,10 +139,10 @@ void DotMatrix_Update(DOT_MATRIX_STRUCT_PTR_ dotMatrixControl){
 	TPIC6B595_Clear(dotMatrixControl->dotMatrix_Width);
 	//SN54LS145N_ClearData();
 		
-	SN54LS145N_SendData((dotMatrixControl->dotMatrix_Height -1) - 
+	SN54LS145N_SendData(/*(dotMatrixControl->dotMatrix_Height -1) - */
 						 dotMatrixControl->dotMatrix_RenderRowIndex);		
-						 
-	TPIC6B595_SendBuffer(dotMatrixControl->dotMatrix_Buffer + 
+	TPIC6B595_SendReverseBuffer( dotMatrixControl->dotMatrix_Buffer + 
+	//TPIC6B595_SendBuffer(dotMatrixControl->dotMatrix_Buffer + 
 						(dotMatrixControl->dotMatrix_RenderRowIndex * 
 						dotMatrixControl->dotMatrix_Width), 
 						dotMatrixControl->dotMatrix_Width);
