@@ -124,6 +124,7 @@ typedef struct networkconfigstruct{
 void FirmwareRelease_Setup(	char device_type, char realise_high, char realise_low);
 
 int DeviceConfig_SetConfiguration( char device_id, char device_size);
+int DeviceConfig_GetConfiguration( char * device_id, char * device_size);
 void DeviceConfig_GetKey(char * key);
 char DeviceConfig_GetID(void);
 int DeviceConfig_SetID(char device_id);

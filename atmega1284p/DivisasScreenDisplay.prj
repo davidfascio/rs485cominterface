@@ -201,7 +201,7 @@ WarningExternalDeclaredNeverDefined=1
 WarningUnknownPragma=1
 DebugBootLoader=0
 WatchAVR8LAutoVariables=0
-Build=260
+Build=271
 UseEEPROMLocation0=1
 ExternalInterruptVectors=0
 IncludePath0=E:\development\DivisasDisplay\CodeVisionAVR\Source
@@ -971,7 +971,7 @@ F10=bsp.h
 F11=E:\cvavr2\inc\SPI.h
 F12=E:\cvavr2\inc\delay.h
 [Header9]
-Files=20
+Files=23
 F1=..\Source\ScreenDisplayDevice.h
 F2=..\Source\Timer.h
 F3=bsp.h
@@ -992,6 +992,9 @@ F17=..\Source\Utils.h
 F18=..\Source\ScreenDisplayCommands.h
 F19=..\Source\ScreenDisplayDeviceCommandList.h
 F20=..\Source\Config.h
+F21=..\Source\ScreenDisplayProtocol.h
+F22=..\Source\Com485Protocol.h
+F23=..\Source\Com485Interface.h
 [Header10]
 Files=16
 F1=..\Source\ScreenDisplayProtocol.h

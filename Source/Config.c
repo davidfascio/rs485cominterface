@@ -51,6 +51,14 @@ int DeviceConfig_SetConfiguration( char device_id, char device_size){
 	return error_code;	
 }
 
+int DeviceConfig_GetConfiguration( char * device_id, char * device_size){
+	
+	* device_id  = DeviceConfig_GetID();
+	* device_size = DeviceConfig_GetSize();
+	
+	return DEVICE_CONFIG_NO_ERROR_CODE;
+}
+
 void DeviceConfig_GetKey(char * key){
     
     char index;

@@ -48,4 +48,6 @@ int ScreenDisplayProtocol_GetCommandIdInPacketReceived(void);
 char * ScreenDisplayProtocol_GetDataInPacketReceived(void);
 int ScreenDisplayProtocol_GetDataInPacketReceivedLen(void);
 
+void ScreenDisplayProtocol_SetComAddress(char ComAddress);
+
 #endif /* __SCREEN_DISPLAY_PROTOCOL_H__ */

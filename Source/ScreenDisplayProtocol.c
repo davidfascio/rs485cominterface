@@ -145,3 +145,8 @@ int ScreenDisplayProtocol_GetDataInPacketReceivedLen(void){
 
 	return Com485Protocol_GetDataInPacketReceivedLen(&ScreenDisplayProtocolControl);		
 }
+
+void ScreenDisplayProtocol_SetComAddress(char ComAddress){
+	
+	Com485Protocol_SetComAddress(&ScreenDisplayProtocolControl, ComAddress);	
+}

@@ -90,12 +90,17 @@ void ScreenDispla7Seg_Update(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg){
 									
 	if (ScreenDispla7Seg_IsErrorData(screendisplay7seg) == TRUE && ScreenDisplay7SegUpdateLed == HIGH){	
 		
-		Display7Seg_Clear(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));		
+		ScreenDispla7Seg_Clear(screendisplay7seg);		
 	}
 	else {
 		
 		Display7Seg_SendBuffer(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));													
 	}	
+}
+
+void ScreenDispla7Seg_Clear(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg){
+	
+	Display7Seg_Clear(ScreenDispla7Seg_GetDisplay7Seg(screendisplay7seg));
 }
 
 int ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data){	

@@ -16,12 +16,14 @@
 #include "ScreenDisplayCommands.h"
 #include "ScreenDisplayDeviceCommandList.h"
 #include "Config.h"
+#include "ScreenDisplayProtocol.h"
 
 //**********************************************************************
 // Defines
 //**********************************************************************
-#define SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE						 (4)
-#define SCREEN_DISPLAY_DEVICE_DEFAULT_TIMER_REFRESH_MS_VALUE	  (1000)
+#define SCREEN_DISPLAY_DEVICE_MAX_BUFFER_SIZE						  (4)
+#define SCREEN_DISPLAY_DEVICE_DEFAULT_TIMER_REFRESH_MS_VALUE	   (1000)
+#define SCREEN_DISPLAY_DEVICE_DEFAULT_UPDATE_VALUE_TIMEOUT_MS	  (10000)
 
 #define SCREEN_DISPLAY_DEVICE_LED_UPDATE_INDICATOR 			(BSP_NO_PIN) //(BSP_PIN_A1)
 
@@ -38,8 +40,13 @@ int ScreenDisplayDevice_GetDisplay7SegBufferLen(void);
 char * ScreenDisplayDevice_GetStringData(void);
 int ScreenDisplayDevice_GetStringDataLen(void);
 
-void ScreenDisplayDevice_Setup(char * data, int dataLen, int display7segbuffersize);
+void ScreenDisplayDevice_Setup(void);
+void ScreenDisplayDevice7Seg_Setup(void);
+void ScreenDisplayDevice_Clear(void);
+//void ScreenDisplayDevice_Setup(char * data, int dataLen, int display7segbuffersize);
 void ScreenDisplayDevice_Update(void);
+void ScreenDisplayDevice_Error(void);
+
 int ScreenDisplayDevice_UpdateStringData(char * data, int dataLen);
 
 //**********************************************************************
@@ -62,6 +69,7 @@ int LEDStatus(int status);
 ////////////////////////// CONFIGURATION COMMANDS //////////////////////
 
 COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_SetDeviceConfiguration(int commandId, char * data, int dataSize);
+COMMAND_RESPONSE_STRUCT ScreenDisplayDevice_GetDeviceConfiguration(int commandId, char * data, int dataSize);
 
 
 #endif /* __SCREEN_DISPLAY_DEVICE_H__  */

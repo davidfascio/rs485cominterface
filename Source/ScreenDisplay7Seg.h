@@ -52,6 +52,8 @@ boolean ScreenDispla7Seg_IsErrorData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg)
 
 void ScreenDispla7Seg_Setup(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * data, int dataLen, int * display7segbuffer, int display7segbuffersize);
 void ScreenDispla7Seg_Update(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg);
+void ScreenDispla7Seg_Clear(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg);
+
 int ScreenDispla7Seg_UpdateData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, float data);
 int ScreenDispla7Seg_UpdateStringData(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * data, int dataLen);
 int ScreenDispla7Seg_ErrorMessage(SCREEN_DISPLAY_7_SEG_PTR screendisplay7seg, char * data, int dataLen);
