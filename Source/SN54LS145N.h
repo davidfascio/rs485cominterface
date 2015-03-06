@@ -17,10 +17,10 @@
 // Defines
 //**********************************************************************
 
-#define SN54LS145N_PIN_A  									(BSP_PIN_A4)/*(BSP_PIN_a4)*/
-#define SN54LS145N_PIN_B  									(BSP_PIN_A5)/*(BSP_PIN_D4)*/
-#define SN54LS145N_PIN_C  									(BSP_PIN_A6)/*(BSP_PIN_D5)*/
-#define SN54LS145N_PIN_D  									(BSP_PIN_A7)/*(BSP_PIN_D6)*/
+#define SN54LS145N_PIN_A  									(BSP_PIN_A7)	//(BSP_PIN_A4)	/*(BSP_PIN_a4)*/
+#define SN54LS145N_PIN_B  									(BSP_PIN_A6)	//(BSP_PIN_A5)	/*(BSP_PIN_D4)*/
+#define SN54LS145N_PIN_C  									(BSP_PIN_A5)	//(BSP_PIN_A6)	/*(BSP_PIN_D5)*/
+#define SN54LS145N_PIN_D  									(BSP_PIN_A4)	//(BSP_PIN_A7)	/*(BSP_PIN_D6)*/
 
 #define SN54LS145N_CLEAR_DATA									  (0x0F)
 

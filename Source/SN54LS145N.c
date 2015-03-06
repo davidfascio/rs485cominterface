@@ -64,20 +64,27 @@ void SN54LS145N_SendData(char data) {
 				PORTD = data;
 				break;*/
 		case 3:
+			bsp_io_write(SN54LS145N_PIN_A, HIGH);
+			bsp_io_write(SN54LS145N_PIN_B, HIGH);
+			bsp_io_write(SN54LS145N_PIN_C, LOW);
+			bsp_io_write(SN54LS145N_PIN_D, LOW);
+			break;
+			
+		case 4:
 			bsp_io_write(SN54LS145N_PIN_A, LOW);
 			bsp_io_write(SN54LS145N_PIN_B, LOW);
 			bsp_io_write(SN54LS145N_PIN_C, HIGH);
 			bsp_io_write(SN54LS145N_PIN_D, LOW);
 			break;
 			
-		case 4:
+		case 5:
 			bsp_io_write(SN54LS145N_PIN_A, HIGH);
 			bsp_io_write(SN54LS145N_PIN_B, LOW);
 			bsp_io_write(SN54LS145N_PIN_C, HIGH);
 			bsp_io_write(SN54LS145N_PIN_D, LOW);
 			break;
 			
-		case 5:
+		case 6:
 			bsp_io_write(SN54LS145N_PIN_A, LOW);
 			bsp_io_write(SN54LS145N_PIN_B, HIGH);
 			bsp_io_write(SN54LS145N_PIN_C, HIGH);
@@ -87,14 +94,7 @@ void SN54LS145N_SendData(char data) {
 		case 4:
 		case 5:
 			PORTD = data + 1;
-			break;*/
-			
-		case 6:
-			bsp_io_write(SN54LS145N_PIN_A, HIGH);
-			bsp_io_write(SN54LS145N_PIN_B, HIGH);
-			bsp_io_write(SN54LS145N_PIN_C, LOW);
-			bsp_io_write(SN54LS145N_PIN_D, LOW);
-			break;
+			break;*/		
 		/*case 6:	
 			PORTD = 0x03;
 			break;*/
