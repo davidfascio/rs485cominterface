@@ -26,7 +26,7 @@ void main(void)
 	ScreenDotMatrixDevice_Setup();	
 	
 	// Demo
-	ScreenDotMatrix_SendText("ELEKTRA", strlen("ELEKTRA"),  DYNAMIC_LEFT);	
+	ScreenDotMatrix_SendText("LA JOYA", strlen("LA JOYA"),  DYNAMIC_LEFT);	
 	
 	//! LOOP
 	while(TRUE){

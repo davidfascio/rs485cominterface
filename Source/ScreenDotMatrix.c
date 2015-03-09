@@ -59,8 +59,8 @@ void ScreenDotMatrix_Setup(void){
 	ScreenDotMatrixEffectIndex = 0;
 	AddTimer(&ScreenDotMatrixTimer, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);	
 	
-	bsp_pin_mode(BSP_PIN_A1, OUTPUT);		
-	bsp_io_write(BSP_PIN_A1, estado);		
+	//bsp_pin_mode(BSP_PIN_A1, OUTPUT);		
+	//bsp_io_write(BSP_PIN_A1, estado);		
 }
 
 void ScreenDotMatrix_Render(void){
@@ -89,8 +89,8 @@ void ScreenDotMatrix_Render(void){
 				++ScreenDotMatrixEffectIndex; 								
 		}	
 		
-		estado = (estado == LOW )? HIGH : LOW;
-		bsp_io_write(BSP_PIN_A1, estado);		
+		//estado = (estado == LOW )? HIGH : LOW;
+		//bsp_io_write(BSP_PIN_A1, estado);		
 		
 		
 		Timer_Reset(&ScreenDotMatrixTimer);
@@ -115,6 +115,17 @@ void ScreenDotMatrix_Draw(	 char flash * img, int width_pixels, int height_pixel
 	char low_mask, high_mask;	
 	int h_index, w_index, k;	
 	
+	//char buffer[50] = {0};
+	
+	boolean x_isneg = FALSE;
+	
+	if(x_pixels < 0){
+		x_pixels = 8 + x_pixels;
+		x_offset = x_pixels % 8;
+		x_isneg = TRUE;
+	}
+		
+	
 	for (h_index = y_pixels, k = 0; h_index < height_pixels; h_index ++, k++){
 		
 		if( h_index >= SCREEN_DOT_MATRIX_HEIGHT || h_index < 0 )
@@ -123,26 +134,35 @@ void ScreenDotMatrix_Draw(	 char flash * img, int width_pixels, int height_pixel
 		for (w_index = 0; w_index < (w_offset ? w_bytes + 1: w_bytes); w_index++){		
 			
 			if((x_pixels + w_index * 8 ) >= (SCREEN_DOT_MATRIX_WIDTH * 8) ||
-			   (x_pixels + w_index * 8 ) < 0 )
+			   (x_isneg && (x_pixels == 0) )  )
 				continue;
+				
+			address  = ScreenDotMatrix_GetByteAddressByPosition((x_pixels + w_index * 8 ), h_index);				
+			img_data = img [w_bytes * k + w_index];		
 			
-			address = ScreenDotMatrix_GetByteAddressByPosition((x_pixels + w_index * 8 ), h_index);
-			
-			img_data = img [w_bytes * k + w_index] ;
-			
-			if(x_offset){
+			if(x_offset)
+			{				
 				low_data = img_data >> (x_offset);
 				low_mask = 0xFF >> (x_offset);
 				high_data = img_data << (8-x_offset);
 				high_mask = 0xFF << (8-x_offset);
-				*address = ( *address & high_mask) | (low_data & low_mask);
-								
-				if((x_pixels + w_index * 8  + 8) < (SCREEN_DOT_MATRIX_WIDTH * 8) )
-					*(address + 1) |= (*(address + 1) & low_mask) | (high_data & high_mask);		
+					
+				if(x_isneg ==  TRUE){
+					
+					*address |=  (*(address ) & low_mask) | (high_data & high_mask);
+				} else {					
+					
+					*address |= ( *address & high_mask) | (low_data & low_mask);
+									
+					if((x_pixels + w_index * 8  + 8) < (SCREEN_DOT_MATRIX_WIDTH * 8) )				
+						*(address + 1) |= (*(address + 1) & low_mask) | (high_data & high_mask);		
+				}
+						
 			} else {
-				
+					
 				*address = img_data;
 			}
+			
 		}		
 	}		
 }
@@ -172,7 +192,7 @@ void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash 
 		if(current_x_pixel >= SCREEN_DOT_MATRIX_WIDTH * 8)
 			break;
 		
-		if(current_x_pixel /*+ (font_width -1) */>= 0 ){ // font_width 
+		if(current_x_pixel + (font_width) >= 0 ){ // font_width 
 			
 			ScreenDotMatrix_Draw(font + (
 			((font_width % 8) ? font_width / 8 + 1 : font_width / 8 )* font_height * current_char), 
