@@ -10,7 +10,7 @@
 //**********************************************************************
 #include "System.h"
 #include "ScreenDotMatrixDevice.h"
-#include "ScreenDisplayProtocol.h"
+#include "Config.h"
 
 
 //**********************************************************************

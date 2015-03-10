@@ -32,6 +32,7 @@
 #define SCREEN_DOT_MATRIX_MAXIMUM_POS_LIMIT_ON_X(x)					(SCREEN_DOT_MATRIX_WIDTH  * 8)
 #define SCREEN_DOT_MATRIX_MINIMUM_POS_LIMIT_ON_X(x)					((FONT_7x6_WIDTH - 1) * (int) (x -1) * (-1)) //+ SCREEN_DOT_MATRIX_DEFAULT_OFFSET_ON_X
 
+#define SCREEN_DOT_MATRIX_ERROR_MESSAGE								"Banco Azteca"
 typedef enum screendotmatrixeffect{	
 	STATIC_TEXT,
 	DYNAMIC_LEFT,
