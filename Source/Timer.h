@@ -60,7 +60,7 @@ void Timer_Reset(TIMER_STRUCT_PTR_ timer_control);
 // API Prototype
 void Timer_Setup(void);
 int AddTimer(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value_in_ms);
-int Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value_in_ms);
+unsigned long int  Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value_in_ms);
 void Timer_Update(void);
 void Timer_Event(void);
 
