@@ -35,8 +35,8 @@
 // Structures 
 //**********************************************************************
 typedef struct timer_struct{
-	int counter;
-	int overflow_value;
+	unsigned long int counter;
+	unsigned long int overflow_value;
 	boolean overflow;		
 } TIMER_STRUCT, * TIMER_STRUCT_PTR_;
 
@@ -46,11 +46,11 @@ typedef struct timer_struct{
 //**********************************************************************
 
 // Setters and Getters prototype functions
-void Timer_SetCounter(TIMER_STRUCT_PTR_ timer_control, int counter);
-int Timer_GetCounter(TIMER_STRUCT_PTR_ timer_control);
+void Timer_SetCounter(TIMER_STRUCT_PTR_ timer_control, unsigned long int counter);
+unsigned long int Timer_GetCounter(TIMER_STRUCT_PTR_ timer_control);
 
-void Timer_SetOverflowValue(TIMER_STRUCT_PTR_ timer_control, int overflow_value);
-int Timer_GetOverflowValue(TIMER_STRUCT_PTR_ timer_control);
+void Timer_SetOverflowValue(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value);
+unsigned long int Timer_GetOverflowValue(TIMER_STRUCT_PTR_ timer_control);
 
 void Timer_SetOverflow(TIMER_STRUCT_PTR_ timer_control, boolean overflow);
 boolean Timer_GetOverflow(TIMER_STRUCT_PTR_ timer_control);
@@ -59,8 +59,8 @@ void Timer_Reset(TIMER_STRUCT_PTR_ timer_control);
 
 // API Prototype
 void Timer_Setup(void);
-int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms);
-int Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms);
+int AddTimer(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value_in_ms);
+unsigned long int  Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value_in_ms);
 void Timer_Update(void);
 void Timer_Event(void);
 
