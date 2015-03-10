@@ -126,16 +126,16 @@ unsigned char  bsp_spi_send(int data);
 #define RX_COMPLETE 											(1<<RXC)
 
 // USART0 Receiver buffer
-#define RX_BUFFER_SIZE0 											(100)
+#define RX_BUFFER_SIZE0 											(128)
 
 // USART0 Transmitter buffer
-#define TX_BUFFER_SIZE0 											(100)
+#define TX_BUFFER_SIZE0 											(128)
 
 // USART1 Receiver buffer
-#define RX_BUFFER_SIZE1 											(100)
+#define RX_BUFFER_SIZE1 											(128)
 
 // USART1 Transmitter buffer
-#define TX_BUFFER_SIZE1 											(100)
+#define TX_BUFFER_SIZE1 											(128)
 
 
 #define BSP_TX_BUFFER_SIZE 								(TX_BUFFER_SIZE0)

@@ -9,23 +9,74 @@
 #include "ScreenDotMatrixDevice.h"
 
 //**********************************************************************
+// Variables
+//**********************************************************************
+//! DEFAULT PARAMMENTERS     	
+volatile char ComAddress 					 		= SCREEN_DISPLAY_PROTOCOL_DEFAULT_SLAVE_ADDRESS;	
+volatile char * DotMatrix_Message  					= SCREEN_DOT_MATRIX_ERROR_MESSAGE;
+volatile SCREEN_DOT_MATRIX_EFFECT DotMatrix_Effect 	= SCREEN_DOT_MATRIX_ERROR_EFFECT;
+
+TIMER_STRUCT ScreenDotMatrixUpdateValueTimeOut;
+//**********************************************************************
 // API Fucntions
 //**********************************************************************
 void ScreenDotMatrixDevice_Setup(void){
 	
-	ScreenDotMatrix_Setup();
+	//! LOAD CONFIGURATION
+	//******************************************************************
+	//*
+	//* It needs to use setup function:
+	//*
+	//*		void DeviceConfig_Setup( char device_id, char device_size)
+	//*
+	//******************************************************************
+	if(DeviceConfig_IsKeySet()){
+		
+		ComAddress = DeviceConfig_GetID();					// Slave Address
+		//ScreenDisplay7SegBufferLen = DeviceConfig_GetSize();	// Buffer Size
+	}
+	
+	//! AFTER SETUP
+	ScreenDisplayProtocol_Setup(ComAddress);
+	
+	ScreenDotMatrix_Setup(DotMatrix_Message, strlen(DotMatrix_Message), DotMatrix_Effect);
 	
 	/* Install Commands*/		
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_SendTextFunction);
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_SendTextWithCustomDelayFunction);
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_GetTextWithCustomDelayFunction);
-	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction);	
+	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction);
+	
+	/* Install Configuration Commands */	
+	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction); // Set Configuration
+	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction); // Get Configuration
+	
+	// Timer
+	AddTimer(&ScreenDotMatrixUpdateValueTimeOut,SCREEN_DOT_MATRIX_DEVICE_DEFAULT_UPDATE_VALUE_TIMEOUT_MS);	
 }
 
 
 void ScreenDotMatrixDevice_Update(void){
 	
 	ScreenDotMatrix_Render();
+	
+	//! Communication Protocol Process 		
+	//ScreenDisplayProtocol_WaitDataPacketCheck();
+	ScreenDisplayProtocol_StateMachineUpdate();		
+	ScreenDisplayProtocol_ProcessingDataPacketArrived();			
+	
+	if((Timer_GetOverflow(&ScreenDotMatrixUpdateValueTimeOut) == TRUE) &&
+		(ScreenDotMatrix_GetErrorData() == FALSE)) {				
+	
+		ScreenDotMatrixDevice_Error();
+		Timer_Reset(&ScreenDotMatrixUpdateValueTimeOut);
+	}
+}
+
+void ScreenDotMatrixDevice_Error(void){		
+	
+	ScreenDotMatrix_SendTextWithCustomDelay(DotMatrix_Message, strlen(DotMatrix_Message), DotMatrix_Effect, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);
+	ScreenDotMatrix_SetErrorData(TRUE);	
 }
 
 
@@ -62,12 +113,20 @@ SCREEN_DOT_MATRIX_EFFECT ParseIntToEffect(int effect){
 int ScreenDotMatrixDevice_SendTextWithCustomDelay(char *text, int textLen, int effect, int delay_in_ms){
 	
 	SCREEN_DOT_MATRIX_EFFECT dotMatrixEffect = ParseIntToEffect(effect);
+	
+	ScreenDotMatrix_SetErrorData(FALSE);	
+	Timer_Reset(&ScreenDotMatrixUpdateValueTimeOut);
+	
 	return ScreenDotMatrix_SendTextWithCustomDelay(text, textLen,  dotMatrixEffect, delay_in_ms);	
 }
 
 int ScreenDotMatrixDevice_SendText(char *text, int textLen, int effect){
 	
 	SCREEN_DOT_MATRIX_EFFECT dotMatrixEffect = ParseIntToEffect(effect);
+	
+	ScreenDotMatrix_SetErrorData(FALSE);	
+	Timer_Reset(&ScreenDotMatrixUpdateValueTimeOut);
+	
 	return ScreenDotMatrix_SendText(text, textLen,  dotMatrixEffect);	
 }
 

@@ -14,13 +14,18 @@
 #include "ScreenDotMatrix.h"
 #include "ScreenDisplayCommands.h"
 #include "ScreenDisplayDeviceCommandList.h"
+#include "Config.h"
+#include "ScreenDisplayProtocol.h"
 
-#define SCREEN_DOT_MATRIX_DEVICE_EMPTY_BUFFER							(-1)
+
+#define SCREEN_DOT_MATRIX_DEVICE_EMPTY_BUFFER								(-1)
+#define SCREEN_DOT_MATRIX_DEVICE_DEFAULT_UPDATE_VALUE_TIMEOUT_MS			(60000) // Minute
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
 void ScreenDotMatrixDevice_Setup(void);
 void ScreenDotMatrixDevice_Update(void);
+void ScreenDotMatrixDevice_Error(void);
 
 int ScreenDotMatrixDevice_LEDStatus(int status);
 SCREEN_DOT_MATRIX_EFFECT ParseIntToEffect(int effect);

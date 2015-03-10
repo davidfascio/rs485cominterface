@@ -18,29 +18,25 @@
 //**********************************************************************
 void main(void)
 {
-	//! SETUP
+	//! SYSTEM SETUP
 	System_Setup();	
-	ScreenDisplayProtocol_Setup(0x11);	
 	
-	//! AFTER SETUP	
-	ScreenDotMatrixDevice_Setup();	
+	//! SET CONFIGURATION
+	FirmwareRelease_Setup(	BAZ_DOTMATRIX_DEVICE, 
+							CONFIG_DEFAULT_FIRMWARE_RELEASE_HIGH, 
+							CONFIG_DEFAULT_FIRMWARE_RELEASE_LOW );	
 	
-	// Demo
-	ScreenDotMatrix_SendText("Banco Azteca", strlen("Banco Azteca"),  DYNAMIC_LEFT);	
-	
+	//! LOAD CONFIGURATION
+	ScreenDotMatrixDevice_Setup();		
+		
 	//! LOOP
 	while(TRUE){
 		
 		//! System Loop Process
 		System_Update();
 		
-		//! Render Process 		
-		ScreenDotMatrixDevice_Update();				
-		
-		//! Communication Protocol Process 		
-		//ScreenDisplayProtocol_WaitDataPacketCheck();
-		ScreenDisplayProtocol_StateMachineUpdate();		
-		ScreenDisplayProtocol_ProcessingDataPacketArrived();			
+		//! Device Render Process 		
+		ScreenDotMatrixDevice_Update();						
 	}
 }
 

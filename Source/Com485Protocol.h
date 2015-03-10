@@ -20,7 +20,7 @@
 
 // High Level Defines
 #ifndef COM_485_PROTOCOL_RX_WINDOW_SIZE   
-#define COM_485_PROTOCOL_RX_WINDOW_SIZE 								(20)
+#define COM_485_PROTOCOL_RX_WINDOW_SIZE 								(100)
 #endif
 
 #ifndef RTCS_ERROR

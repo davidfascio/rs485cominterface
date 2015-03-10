@@ -48,7 +48,7 @@ int ScreenDotMatrix_GetDelay_ms(void){
 	return Timer_GetOverflowValue(&ScreenDotMatrixTimer);
 }
 
-void ScreenDotMatrix_Setup(void){
+void ScreenDotMatrix_Setup(char *text, int textLen, SCREEN_DOT_MATRIX_EFFECT effect){
 	
 	ScreenDotMatrix_Clear();
 	DotMatrix_Setup(&dotMatrixControl, SCREEN_DOT_MATRIX_BUFFER, 
@@ -61,6 +61,7 @@ void ScreenDotMatrix_Setup(void){
 	
 	//bsp_pin_mode(BSP_PIN_A1, OUTPUT);		
 	//bsp_io_write(BSP_PIN_A1, estado);		
+	ScreenDotMatrix_SendText(text, textLen,  effect);	
 }
 
 void ScreenDotMatrix_Render(void){
@@ -245,4 +246,17 @@ int ScreenDotMatrix_SendTextWithCustomDelay(char *text, int textLen, SCREEN_DOT_
 int ScreenDotMatrix_SendText(char *text, int textLen, SCREEN_DOT_MATRIX_EFFECT effect){		
 	
 	return ScreenDotMatrix_SendTextWithCustomDelay(text, textLen, effect, SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS);	
+}
+
+/////////////////////////////////// SETTING AND GETTING ERROR STATE /////
+boolean ScreenDotMatrix_ErrorData = FALSE;
+
+void ScreenDotMatrix_SetErrorData(boolean error_data){
+	
+	ScreenDotMatrix_ErrorData = error_data;
+}
+
+boolean ScreenDotMatrix_GetErrorData(void){
+	
+	return ScreenDotMatrix_ErrorData;
 }

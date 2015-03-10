@@ -21,7 +21,7 @@
 #define SCREEN_DOT_MATRIX_WIDTH 									(3)
 #define SCREEN_DOT_MATRIX_HEIGHT 									(7)
 
-#define SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS					(50)
+#define SCREEN_DOT_MATRIX_DEFAULT_TIMER_VALUE_IN_MS					(40)
 #define SCREEN_DOT_MATRIX_DEFAULT_BUFFER_SIZE						(100)
 #define SCREEN_DOT_MATRIX_DEFAULT_OFFSET_ON_X						(0)//(3)
 
@@ -32,7 +32,12 @@
 #define SCREEN_DOT_MATRIX_MAXIMUM_POS_LIMIT_ON_X(x)					(SCREEN_DOT_MATRIX_WIDTH  * 8)
 #define SCREEN_DOT_MATRIX_MINIMUM_POS_LIMIT_ON_X(x)					((FONT_7x6_WIDTH - 1) * (int) (x -1) * (-1)) //+ SCREEN_DOT_MATRIX_DEFAULT_OFFSET_ON_X
 
-#define SCREEN_DOT_MATRIX_ERROR_MESSAGE								"Banco Azteca"
+#define SCREEN_DOT_MATRIX_ERROR_MESSAGE								"\"Bienvenido a Banco Azteca\""
+#define SCREEN_DOT_MATRIX_ERROR_EFFECT								DYNAMIC_LEFT
+
+//**********************************************************************
+// Vartypes
+//**********************************************************************
 typedef enum screendotmatrixeffect{	
 	STATIC_TEXT,
 	DYNAMIC_LEFT,
@@ -40,12 +45,15 @@ typedef enum screendotmatrixeffect{
 	NO_EFFECT
 } SCREEN_DOT_MATRIX_EFFECT;
 
+//**********************************************************************
+// API Fucntions
+//**********************************************************************
 char * ScreenDotMatrix_GetText(void);
 int ScreenDotMatrix_GetTextLen(void);
 int ScreenDotMatrix_GetEffect(void);
 int ScreenDotMatrix_GetDelay_ms(void);
 
-void ScreenDotMatrix_Setup(void);
+void ScreenDotMatrix_Setup(char *text, int textLen, SCREEN_DOT_MATRIX_EFFECT effect);
 void ScreenDotMatrix_Render(void);
 void ScreenDotMatrix_Clear(void);
 
@@ -57,5 +65,7 @@ void ScreenDotMatrix_DrawText(char * text, int x_pixel, int y_pixel, char flash 
 int ScreenDotMatrix_SendTextWithCustomDelay(char *text, int textLen, SCREEN_DOT_MATRIX_EFFECT effect, int delay_in_ms);
 int ScreenDotMatrix_SendText(char *text, int textLen, SCREEN_DOT_MATRIX_EFFECT effect);
 
+void ScreenDotMatrix_SetErrorData(boolean error_data);
+boolean ScreenDotMatrix_GetErrorData(void);
 
 #endif /* __SCREEN_DOT_MATRIX_H__ */
