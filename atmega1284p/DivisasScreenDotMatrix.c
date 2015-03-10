@@ -26,7 +26,7 @@ void main(void)
 	ScreenDotMatrixDevice_Setup();	
 	
 	// Demo
-	ScreenDotMatrix_SendText("LA JOYA", strlen("LA JOYA"),  DYNAMIC_LEFT);	
+	ScreenDotMatrix_SendText(" !\"#$\%&'()*+'/0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", strlen(" !\"#$\%&'()*+'/0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"),  DYNAMIC_LEFT);	
 	
 	//! LOOP
 	while(TRUE){

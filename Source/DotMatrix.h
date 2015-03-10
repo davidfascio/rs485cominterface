@@ -19,7 +19,11 @@
 //**********************************************************************
 // Defines
 //********************************************************************** 
-#define DOT_MATRIX_RENDER_ROW_TIME_DEFAULT_VALUE_IN_MS				(1)			
+#define DOT_MATRIX_RENDER_ROW_TIME_DEFAULT_VALUE_IN_MS				(1)	
+
+#define DOT_MATRIX_HORIZONTAL_MIRROR_MODE							(FALSE)	
+#define DOT_MATRIX_VERTICAL_MIRROR_MODE								(FALSE)	
+
 
 
 //**********************************************************************
