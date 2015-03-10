@@ -20,22 +20,22 @@ boolean Timer_Interrupt_Event;
 //**********************************************************************
 
 // Setters and Getters
-void Timer_SetCounter(TIMER_STRUCT_PTR_ timer_control, int counter){
+void Timer_SetCounter(TIMER_STRUCT_PTR_ timer_control, unsigned long int counter){
 	
 	timer_control->counter = counter;
 }
 
-int Timer_GetCounter(TIMER_STRUCT_PTR_ timer_control){
+unsigned long int Timer_GetCounter(TIMER_STRUCT_PTR_ timer_control){
 	
 	return timer_control->counter;
 }
 
-void Timer_SetOverflowValue(TIMER_STRUCT_PTR_ timer_control, int overflow_value){
+void Timer_SetOverflowValue(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value){
 	
 	timer_control->overflow_value = overflow_value;
 }
 
-int Timer_GetOverflowValue(TIMER_STRUCT_PTR_ timer_control){
+unsigned long int Timer_GetOverflowValue(TIMER_STRUCT_PTR_ timer_control){
 	
 	return timer_control->overflow_value;
 }
@@ -70,9 +70,9 @@ void Timer_Setup(void){
 	bsp_timer_setup(Timer_Event);
 }
 
-int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms){
+int AddTimer(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value_in_ms){
 	
-	int overflow_value = TIMER_MIN_VALUE_SUPPORT_IN_MS;
+	unsigned long int overflow_value = TIMER_MIN_VALUE_SUPPORT_IN_MS;
 	
 	if(Timer_Number >= TIMER_MAX_SUPPORTED_NUMBER)
 		return TIMER_MAX_SUPPORTED_NUMBER_OVERFLOW;	
@@ -91,9 +91,9 @@ int AddTimer(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms){
 	return Timer_Number;			
 }
 
-int Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, int overflow_value_in_ms){
+unsigned long int Timer_SetOverflowValue_MS(TIMER_STRUCT_PTR_ timer_control, unsigned long int overflow_value_in_ms){
 	
-	int overflow_value = TIMER_MIN_VALUE_SUPPORT_IN_MS;
+	unsigned long int overflow_value = TIMER_MIN_VALUE_SUPPORT_IN_MS;
 	
 	if(overflow_value_in_ms < overflow_value)
 		return TIMER_MIN_VALUE_SUPPORT_IN_MS_IS_NOT_SUPPORT;
