@@ -48,8 +48,8 @@ void ScreenDotMatrixDevice_Setup(void){
 	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction);
 	
 	/* Install Configuration Commands */	
-	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction); // Set Configuration
-	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_LEDStatusFunction); // Get Configuration
+	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_SetDeviceConfiguration); // Set Configuration
+	ScreenDisplayCommands_AddCommad(ScreenDotMatrixDevice_GetDeviceConfiguration); // Get Configuration
 	
 	// Timer
 	AddTimer(&ScreenDotMatrixUpdateValueTimeOut,SCREEN_DOT_MATRIX_DEVICE_DEFAULT_UPDATE_VALUE_TIMEOUT_MS);	
@@ -309,3 +309,95 @@ COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_GetTextWithCustomDelayFunction(int
 	
 	return	CommandResponseControl;		
 }
+
+
+////////////////////////// CONFIGURATION COMMANDS //////////////////////
+		
+COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SetDeviceConfiguration(int commandId, char * data, int dataSize){
+	
+	//! Upper Cast Implementation for ScreenDisplayDevice_UpdateValue Command	
+	//!
+	//! Notice:
+	//! 	- *data is char * type
+	//! 	- dataSize is strlen(char *)
+	//!
+	//! 
+	char command_parameter0;
+	char command_parameter1;
+	char * dataptr = data;
+	
+    COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	int commandErrorCodeResponse;
+	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);	
+	
+	if((commandId == DEVICE_CONFIG_SET_CONFIG_MASTER_COMMAND_ID) &&
+		dataSize == (2 * SIZE_OF_CHAR)) {
+		
+		ScreenDisplayCommands_SetCommandIdResponse(&CommandResponseControl, DEVICE_CONFIG_SET_CONFIG_SLAVE_COMMAND_ID);
+		
+		memcpy((char *) &command_parameter0 , dataptr, SIZE_OF_CHAR);
+		dataptr = dataptr + SIZE_OF_CHAR;
+		
+		memcpy((char *) &command_parameter1 , dataptr, SIZE_OF_CHAR);
+		
+		
+		commandErrorCodeResponse = DeviceConfig_SetConfiguration(command_parameter0,command_parameter1);
+		
+		if (commandErrorCodeResponse == DEVICE_CONFIG_NO_ERROR_CODE)
+		{
+			
+			ComAddress = command_parameter0;
+			
+			
+			// Update Information
+			ScreenDisplayProtocol_SetComAddress(ComAddress);	
+			ScreenDotMatrix_Setup(DotMatrix_Message, strlen(DotMatrix_Message), DotMatrix_Effect);
+		}
+		
+		ScreenDisplayCommands_SetCommandBufferResponse(&CommandResponseControl,(char *) &commandErrorCodeResponse,sizeof(commandErrorCodeResponse));				
+		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
+	}
+	
+	return	CommandResponseControl;		
+}
+
+		
+COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_GetDeviceConfiguration(int commandId, char * data, int dataSize){
+	
+	//! Upper Cast Implementation for ScreenDisplayDevice_UpdateValue Command	
+	//!
+	//! Notice:
+	//! 	- *data is char * type
+	//! 	- dataSize is strlen(char *)
+	//!
+	//! 
+	char command_parameter0;
+	char command_parameter1;
+	char command_response[10];
+	
+	char * dataptr = data;
+	
+    COMMAND_RESPONSE_STRUCT CommandResponseControl;	
+	int commandErrorCodeResponse;
+	ScreenDisplayCommands_CommandResponseSetup(&CommandResponseControl);	
+	
+	if((commandId == DEVICE_CONFIG_GET_CONFIG_MASTER_COMMAND_ID) &&
+		dataSize == ( SIZE_OF_CHAR)) {
+		
+		ScreenDisplayCommands_SetCommandIdResponse(&CommandResponseControl, DEVICE_CONFIG_GET_CONFIG_SLAVE_COMMAND_ID);
+		
+		
+		commandErrorCodeResponse = DeviceConfig_GetConfiguration(&command_parameter0,&command_parameter1);
+		
+		memset(command_response, 0 ,sizeof(command_response));
+		memcpy(command_response, &command_parameter0, SIZE_OF_CHAR);
+		memcpy(command_response + SIZE_OF_CHAR, &command_parameter1, SIZE_OF_CHAR);
+		
+		ScreenDisplayCommands_SetCommandBufferResponse(&CommandResponseControl,(char *) command_response,2* SIZE_OF_CHAR);				
+		ScreenDisplayCommands_SetCommandErrorCodeResponse(&CommandResponseControl, commandErrorCodeResponse);
+	}
+	
+	return	CommandResponseControl;		
+}
+
+////////////////////////// CONFIGURATION COMMANDS //////////////////////

@@ -47,4 +47,7 @@ COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextFunction(int commandId, ch
 COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SendTextWithCustomDelayFunction(int commandId, char * data, int dataSize);
 COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_GetTextWithCustomDelayFunction(int commandId, char * data, int dataSize);
 
+COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_SetDeviceConfiguration(int commandId, char * data, int dataSize);
+COMMAND_RESPONSE_STRUCT ScreenDotMatrixDevice_GetDeviceConfiguration(int commandId, char * data, int dataSize);
+
 #endif /* __SCREEN_DOT_MATRIX_DEVICE_H__ */
