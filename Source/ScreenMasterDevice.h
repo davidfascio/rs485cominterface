@@ -17,12 +17,14 @@
 #include "TcpComProtocolCommons.h"
 #include "ScreenMasterCommands.h"
 #include "ScreenMasterCommandList.h"
+#include "ScreenMaster.h"
 
 
 //**********************************************************************
 // API Prototype Fucntions
 //**********************************************************************
 void ScreenMasterDevice_Setup(char ComAddress);
+void ScreenMasterDevice_Update(void);
 
 //**********************************************************************
 // Command List Fucntions

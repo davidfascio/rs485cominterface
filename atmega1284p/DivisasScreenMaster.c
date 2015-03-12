@@ -30,14 +30,18 @@ void main(void)
 	//! AFTER SETUP                                	
 	ScreenMasterDevice_Setup(MasterAddress);		                                	
 	
+	
 	//! LOOP
 	while(TRUE){
 		
 		//! System Loop Process
 		System_Update();
 		
+		ScreenMasterDevice_Update();
+		
 		//! Communication Protocol Process 		
 		ScreenMasterProtocol_WaitDataPacketCheck();                                          		
-		ScreenMasterProtocol_ProcessingDataPacketArrived();
+		ScreenMasterProtocol_ProcessingDataPacketArrived();		
+		
 	}
 }

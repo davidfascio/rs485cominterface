@@ -14,6 +14,7 @@
 void ScreenMasterDevice_Setup(char ComAddress){
 	
 	ScreenDisplayProtocol_Setup(ComAddress);
+	ForeignMaster_Setup();
 	
 	/* Install Commands*/	
 	ScreenMasterCommands_AddCommad(ScreenMasterDotMatrixDevice_LEDStatusFunction);	
@@ -28,7 +29,10 @@ void ScreenMasterDevice_Setup(char ComAddress){
 	
 }
 
-
+void ScreenMasterDevice_Update(void){
+	
+	ForeignMaster_Update();
+}
 //**********************************************************************
 // Command List Fucntions
 //

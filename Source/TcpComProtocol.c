@@ -96,13 +96,10 @@ void TCPComProtocol_Setup(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl, in
 	//! Configure Timer
 	AddTimer(&TCPComTimer, TCP_COM_TIMER_DEFAULT_WAIT_VALUE_IN_MS);
 
-	//!TCPComInterface_Setup();	
-    bsp_usart1_setup(do_nothing);	
+	TCPComInterface_Setup();	    
 }
 
-void do_nothing(void){
-	
-}
+
 
 void TCPComProtocol_RecvBufferReset(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProtocolControl){
 	
@@ -122,14 +119,12 @@ void ErrorInTCPComProtocolCommunication(TCP_COM_PROTOCOL_STRUCT_PTR_ TCPComProto
 
 int TCPComProtocol_ReceiveData(int Com485InterfaceHandler, char * DataReceiveBuffer, int DataLen){
 
-	//!return TCPComInterface_Read(DataReceiveBuffer, DataLen);
-	return bsp_usart1_read(DataReceiveBuffer, DataLen);
+	return TCPComInterface_Read(DataReceiveBuffer, DataLen);	
 }
 
 int TCPComProtocol_SendData(int Com485InterfaceHandler, char * DataToSend, int DataLen){
 	
-	//!return TCPComInterface_Write(DataToSend, DataLen);
-	return bsp_usart1_write(DataToSend, DataLen);
+	return TCPComInterface_Write(DataToSend, DataLen);
 }
 
 
